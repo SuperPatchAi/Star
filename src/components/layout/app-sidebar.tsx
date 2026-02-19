@@ -19,6 +19,7 @@ import {
   Shield,
   ChevronsUpDown,
   User,
+  Users,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { UserProfile } from "@/lib/db/types";
@@ -99,6 +100,7 @@ export function AppSidebar({
   const isPracticeActive = pathname.startsWith("/practice");
   const isEvidenceActive = pathname.startsWith("/evidence");
   const isFavoritesActive = pathname.startsWith("/favorites");
+  const isContactsActive = pathname.startsWith("/contacts");
 
   return (
     <Sidebar variant="sidebar" collapsible="icon" {...props}>
@@ -240,6 +242,20 @@ export function AppSidebar({
                   <Link href="/favorites">
                     <Star className="h-4 w-4" />
                     <span>Favorites</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              {/* Contacts */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  tooltip="Contacts"
+                  isActive={isContactsActive}
+                >
+                  <Link href="/contacts">
+                    <Users className="h-4 w-4" />
+                    <span>Contacts</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
