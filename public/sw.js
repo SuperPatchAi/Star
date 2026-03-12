@@ -19,8 +19,8 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(title || "Follow-Up Reminder", {
       body: body || "You have a follow-up due",
-      icon: "/SuperPatch-SYMBL-3_SuperPatch_Logo_SYMBL_WHT.png",
-      badge: "/SuperPatch-SYMBL-3_SuperPatch_Logo_SYMBL_WHT.png",
+      icon: "/icon-192x192.png",
+      badge: "/icon-192x192.png",
       tag: data?.contactId || "followup",
       renotify: true,
       data: data || {},
