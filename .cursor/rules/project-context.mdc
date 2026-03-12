@@ -88,4 +88,5 @@ Key columns: `user_id`, `product_ids text[]`, `first_name`, `last_name`, `email`
 - All files go in `src/` — never create files at project root
 - Product pages are reference-only; sales flow lives at `/sales`
 - Roadmap JSON files are the single source of truth for sales scripts
+- **Every user-facing script/text** must have a copy-to-clipboard button (uses `copyToClipboard` from `src/lib/utils.ts`)
 - Update `README.md` before every commit

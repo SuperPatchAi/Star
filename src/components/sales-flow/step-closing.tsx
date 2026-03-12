@@ -17,11 +17,18 @@ interface StepClosingProps {
 
 export function StepClosing({ data, selectedTechnique, onSelect, onContinue }: StepClosingProps) {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [copiedPreClose, setCopiedPreClose] = useState(false);
 
   const handleCopy = async (text: string, index: number) => {
     await navigator.clipboard.writeText(text.trim());
     setCopiedIndex(index);
     setTimeout(() => setCopiedIndex(null), 2000);
+  };
+
+  const handleCopyPreClose = async () => {
+    await navigator.clipboard.writeText(data.pre_close);
+    setCopiedPreClose(true);
+    setTimeout(() => setCopiedPreClose(false), 2000);
   };
 
   return (
@@ -31,11 +38,23 @@ export function StepClosing({ data, selectedTechnique, onSelect, onContinue }: S
       </p>
 
       {/* Pre-close reminder */}
-      <div className="flex items-start gap-2 rounded-lg border border-blue-200 bg-blue-50 p-3 dark:bg-blue-950 dark:border-blue-800">
+      <div className="flex items-start gap-2 rounded-lg border border-blue-200 bg-blue-50 p-3 dark:bg-blue-950 dark:border-blue-800 group">
         <Info className="size-4 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
-        <p className="text-sm text-blue-700 dark:text-blue-300">
+        <p className="text-sm text-blue-700 dark:text-blue-300 flex-1">
           <strong>Pre-close:</strong> {data.pre_close}
         </p>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-7 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+          onClick={handleCopyPreClose}
+        >
+          {copiedPreClose ? (
+            <Check className="size-3.5 text-green-500" />
+          ) : (
+            <Copy className="size-3.5" />
+          )}
+        </Button>
       </div>
 
       <Separator />

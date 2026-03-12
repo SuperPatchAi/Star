@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import {
   Card,
   CardContent,
@@ -24,6 +25,7 @@ import {
   ShieldQuestion,
   CheckCircle,
   Copy,
+  Check,
   Zap,
   Target,
   Calendar,
@@ -32,6 +34,7 @@ import {
   Lightbulb,
   FlaskConical,
 } from "lucide-react";
+import { copyToClipboard } from "@/lib/utils";
 import type { Product } from "@/types";
 import type { WordTrack } from "@/types/wordtrack";
 
@@ -52,6 +55,20 @@ const sections = [
 ];
 
 export function ReferenceTabsView({ product, wordTrack }: ReferenceTabsViewProps) {
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleCopy = useCallback(async (text: string, id: string) => {
+    await copyToClipboard(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  }, []);
+
+  const CopyBtn = ({ text, id, size = "size-8", iconSize = "size-4" }: { text: string; id: string; size?: string; iconSize?: string }) => (
+    <Button variant="ghost" size="icon" className={size} onClick={(e) => { e.stopPropagation(); handleCopy(text, id); }}>
+      {copiedId === id ? <Check className={`${iconSize} text-green-500`} /> : <Copy className={iconSize} />}
+    </Button>
+  );
+
   const hasWordTrackData = wordTrack !== null;
 
   const getOverviewText = () => {
@@ -256,9 +273,7 @@ export function ReferenceTabsView({ product, wordTrack }: ReferenceTabsViewProps
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base">{script.title}</CardTitle>
-                  <Button variant="ghost" size="icon" className="size-8">
-                    <Copy className="size-4" />
-                  </Button>
+                  <CopyBtn text={script.script || script.content || ""} id={`opening-${idx}`} />
                 </div>
                 {script.scenario && (
                   <CardDescription>{script.scenario}</CardDescription>
@@ -277,9 +292,7 @@ export function ReferenceTabsView({ product, wordTrack }: ReferenceTabsViewProps
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base">Cold Call Script</CardTitle>
-                  <Button variant="ghost" size="icon" className="size-8">
-                    <Copy className="size-4" />
-                  </Button>
+                  <CopyBtn text={`"Hi [Name], this is [Your Name] from Super Patch.\n\nI'm reaching out because we've developed an innovative drug-free solution for ${product.category} that's getting remarkable results.\n\nDo you have 2 minutes to hear how it works?"`} id="fallback-cold" />
                 </div>
                 <CardDescription>Initial outreach call</CardDescription>
               </CardHeader>
@@ -297,9 +310,7 @@ Do you have 2 minutes to hear how it works?"`}
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base">Referral Opening</CardTitle>
-                  <Button variant="ghost" size="icon" className="size-8">
-                    <Copy className="size-4" />
-                  </Button>
+                  <CopyBtn text={`"Hi [Name], [Referrer] mentioned you might be interested in a drug-free ${product.category} solution.\n\nThey thought our ${product.name} patch could be a great fit. Would you like to hear more?"`} id="fallback-referral" />
                 </div>
                 <CardDescription>Following up on a referral</CardDescription>
               </CardHeader>
@@ -346,14 +357,15 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                             {questions.map((q, i) => (
                               <li
                                 key={q.id || i}
-                                className="flex items-start gap-3"
+                                className="flex items-start gap-3 group"
                               >
                                 <span className="flex items-center justify-center size-6 rounded-full bg-primary/10 text-primary text-xs font-medium shrink-0">
                                   {i + 1}
                                 </span>
-                                <p className="text-sm text-muted-foreground pt-0.5">
+                                <p className="text-sm text-muted-foreground pt-0.5 flex-1">
                                   &ldquo;{q.question}&rdquo;
                                 </p>
+                                <CopyBtn text={q.question} id={`disc-${category}-${i}`} size="size-6" iconSize="size-3" />
                               </li>
                             ))}
                           </ul>
@@ -365,29 +377,32 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
               </Accordion>
             ) : (
               <ul className="space-y-3">
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 group">
                   <span className="flex items-center justify-center size-6 rounded-full bg-primary/10 text-primary text-xs font-medium shrink-0">
                     1
                   </span>
-                  <p className="text-sm text-muted-foreground pt-0.5">
+                  <p className="text-sm text-muted-foreground pt-0.5 flex-1">
                     &ldquo;What have you tried so far for {product.category}?&rdquo;
                   </p>
+                  <CopyBtn text={`What have you tried so far for ${product.category}?`} id="fb-disc-1" size="size-6" iconSize="size-3" />
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 group">
                   <span className="flex items-center justify-center size-6 rounded-full bg-primary/10 text-primary text-xs font-medium shrink-0">
                     2
                   </span>
-                  <p className="text-sm text-muted-foreground pt-0.5">
+                  <p className="text-sm text-muted-foreground pt-0.5 flex-1">
                     &ldquo;How does {product.category} impact your daily life?&rdquo;
                   </p>
+                  <CopyBtn text={`How does ${product.category} impact your daily life?`} id="fb-disc-2" size="size-6" iconSize="size-3" />
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 group">
                   <span className="flex items-center justify-center size-6 rounded-full bg-primary/10 text-primary text-xs font-medium shrink-0">
                     3
                   </span>
-                  <p className="text-sm text-muted-foreground pt-0.5">
+                  <p className="text-sm text-muted-foreground pt-0.5 flex-1">
                     &ldquo;On a scale of 1-10, how much does this affect your quality of life?&rdquo;
                   </p>
+                  <CopyBtn text="On a scale of 1-10, how much does this affect your quality of life?" id="fb-disc-3" size="size-6" iconSize="size-3" />
                 </li>
               </ul>
             )}
@@ -417,37 +432,46 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                 />
               ) : wordTrack?.productPresentation ? (
                 <>
-                  <div>
-                    <Badge
-                      variant="outline"
-                      className="mb-2 text-red-600 border-red-200 bg-red-50"
-                    >
-                      Problem
-                    </Badge>
+                  <div className="group">
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge
+                        variant="outline"
+                        className="text-red-600 border-red-200 bg-red-50"
+                      >
+                        Problem
+                      </Badge>
+                      <CopyBtn text={wordTrack.productPresentation.problem || ""} id="pres-problem" size="size-6" iconSize="size-3" />
+                    </div>
                     <p className="text-sm text-muted-foreground">
                       {wordTrack.productPresentation.problem}
                     </p>
                   </div>
                   <Separator />
-                  <div>
-                    <Badge
-                      variant="outline"
-                      className="mb-2 text-orange-600 border-orange-200 bg-orange-50"
-                    >
-                      Agitate
-                    </Badge>
+                  <div className="group">
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge
+                        variant="outline"
+                        className="text-orange-600 border-orange-200 bg-orange-50"
+                      >
+                        Agitate
+                      </Badge>
+                      <CopyBtn text={wordTrack.productPresentation.agitate || ""} id="pres-agitate" size="size-6" iconSize="size-3" />
+                    </div>
                     <p className="text-sm text-muted-foreground">
                       {wordTrack.productPresentation.agitate}
                     </p>
                   </div>
                   <Separator />
-                  <div>
-                    <Badge
-                      variant="outline"
-                      className="mb-2 text-green-600 border-green-200 bg-green-50"
-                    >
-                      Solve
-                    </Badge>
+                  <div className="group">
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge
+                        variant="outline"
+                        className="text-green-600 border-green-200 bg-green-50"
+                      >
+                        Solve
+                      </Badge>
+                      <CopyBtn text={wordTrack.productPresentation.solve || ""} id="pres-solve" size="size-6" iconSize="size-3" />
+                    </div>
                     <p className="text-sm text-muted-foreground">
                       {wordTrack.productPresentation.solve}
                     </p>
@@ -458,9 +482,7 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <Badge variant="secondary">Full 2-Minute Script</Badge>
-                          <Button variant="ghost" size="icon" className="size-8">
-                            <Copy className="size-4" />
-                          </Button>
+                          <CopyBtn text={wordTrack.productPresentation.fullScript} id="pres-full" />
                         </div>
                         <div className="bg-muted rounded-lg p-4 font-mono text-sm whitespace-pre-wrap max-h-96 overflow-y-auto">
                           {wordTrack.productPresentation.fullScript}
@@ -472,39 +494,48 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
               ) : null
             ) : (
               <>
-                <div>
-                  <Badge
-                    variant="outline"
-                    className="mb-2 text-red-600 border-red-200 bg-red-50"
-                  >
-                    Problem
-                  </Badge>
+                <div className="group">
+                  <div className="flex items-center justify-between mb-2">
+                    <Badge
+                      variant="outline"
+                      className="text-red-600 border-red-200 bg-red-50"
+                    >
+                      Problem
+                    </Badge>
+                    <CopyBtn text={`Many people experience ${product.category} issues that significantly impact their quality of life.`} id="fb-pres-problem" size="size-6" iconSize="size-3" />
+                  </div>
                   <p className="text-sm text-muted-foreground">
                     Many people experience {product.category} issues that
                     significantly impact their quality of life.
                   </p>
                 </div>
                 <Separator />
-                <div>
-                  <Badge
-                    variant="outline"
-                    className="mb-2 text-orange-600 border-orange-200 bg-orange-50"
-                  >
-                    Agitate
-                  </Badge>
+                <div className="group">
+                  <div className="flex items-center justify-between mb-2">
+                    <Badge
+                      variant="outline"
+                      className="text-orange-600 border-orange-200 bg-orange-50"
+                    >
+                      Agitate
+                    </Badge>
+                    <CopyBtn text="This can lead to frustration, reduced productivity, and a reliance on temporary solutions." id="fb-pres-agitate" size="size-6" iconSize="size-3" />
+                  </div>
                   <p className="text-sm text-muted-foreground">
                     This can lead to frustration, reduced productivity, and a
                     reliance on temporary solutions.
                   </p>
                 </div>
                 <Separator />
-                <div>
-                  <Badge
-                    variant="outline"
-                    className="mb-2 text-green-600 border-green-200 bg-green-50"
-                  >
-                    Solve
-                  </Badge>
+                <div className="group">
+                  <div className="flex items-center justify-between mb-2">
+                    <Badge
+                      variant="outline"
+                      className="text-green-600 border-green-200 bg-green-50"
+                    >
+                      Solve
+                    </Badge>
+                    <CopyBtn text={`The ${product.name} patch offers a revolutionary, drug-free way to address ${product.category} issues through Vibrotactile Technology.`} id="fb-pres-solve" size="size-6" iconSize="size-3" />
+                  </div>
                   <p className="text-sm text-muted-foreground">
                     The {product.name} patch offers a revolutionary, drug-free
                     way to address {product.category} issues through Vibrotactile
@@ -528,9 +559,7 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                     <CardTitle className="text-base">
                       &ldquo;{obj.objection}&rdquo;
                     </CardTitle>
-                    <Button variant="ghost" size="icon" className="size-8">
-                      <Copy className="size-4" />
-                    </Button>
+                    <CopyBtn text={obj.response} id={`obj-${idx}`} />
                   </div>
                 </CardHeader>
                 <CardContent className="text-sm space-y-3">
@@ -565,9 +594,7 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                   <CardTitle className="text-base">
                     &ldquo;It&apos;s too expensive&rdquo;
                   </CardTitle>
-                  <Button variant="ghost" size="icon" className="size-8">
-                    <Copy className="size-4" />
-                  </Button>
+                  <CopyBtn text={`I understand cost is a consideration. What are you currently spending on ${product.category} solutions? When you factor in effectiveness and being completely drug-free, most people find it's quite economical.`} id="fallback-obj-expensive" />
                 </div>
               </CardHeader>
               <CardContent className="text-sm space-y-3">
@@ -590,9 +617,7 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                   <CardTitle className="text-base">
                     &ldquo;Does it really work?&rdquo;
                   </CardTitle>
-                  <Button variant="ghost" size="icon" className="size-8">
-                    <Copy className="size-4" />
-                  </Button>
+                  <CopyBtn text={`I appreciate your skepticism. Yes, it works, and we have ${product.hasClinicalStudy ? `clinical studies to back it up. The ${product.studyName} showed significant results.` : "thousands of satisfied customers."} Want to try it risk-free?`} id="fallback-obj-work" />
                 </div>
               </CardHeader>
               <CardContent className="text-sm space-y-3">
@@ -623,9 +648,7 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base">{script.title}</CardTitle>
-                  <Button variant="ghost" size="icon" className="size-8">
-                    <Copy className="size-4" />
-                  </Button>
+                  <CopyBtn text={script.script || script.content || ""} id={`closing-${idx}`} />
                 </div>
                 {script.type && (
                   <Badge variant="outline" className="w-fit text-[10px]">
@@ -646,9 +669,7 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base">Assumptive Close</CardTitle>
-                  <Button variant="ghost" size="icon" className="size-8">
-                    <Copy className="size-4" />
-                  </Button>
+                  <CopyBtn text={`Great! Should I set you up with a single pack to start, or does the 3-pack make more sense since it includes free shipping?`} id="fallback-close-assumptive" />
                 </div>
               </CardHeader>
               <CardContent>
@@ -661,9 +682,7 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base">Trial Close</CardTitle>
-                  <Button variant="ghost" size="icon" className="size-8">
-                    <Copy className="size-4" />
-                  </Button>
+                  <CopyBtn text={`We have a satisfaction guarantee, so you can try it risk-free. If you don't see results, we'll make it right. Ready to give it a shot?`} id="fallback-close-trial" />
                 </div>
               </CardHeader>
               <CardContent>
@@ -703,13 +722,7 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
                               Voicemail
                             </p>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="size-6"
-                            >
-                              <Copy className="size-3" />
-                            </Button>
+                            <CopyBtn text={item.voicemail} id={`fu-${index}-vm`} size="size-6" iconSize="size-3" />
                           </div>
                           <div className="bg-muted rounded-lg p-3 text-sm whitespace-pre-wrap">
                             {item.voicemail}
@@ -722,13 +735,7 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
                               Email
                             </p>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="size-6"
-                            >
-                              <Copy className="size-3" />
-                            </Button>
+                            <CopyBtn text={item.email} id={`fu-${index}-email`} size="size-6" iconSize="size-3" />
                           </div>
                           <div className="bg-muted rounded-lg p-3 text-sm whitespace-pre-wrap">
                             {item.email}
@@ -741,13 +748,7 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
                               Text
                             </p>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="size-6"
-                            >
-                              <Copy className="size-3" />
-                            </Button>
+                            <CopyBtn text={item.text} id={`fu-${index}-text`} size="size-6" iconSize="size-3" />
                           </div>
                           <div className="bg-muted rounded-lg p-3 text-sm whitespace-pre-wrap">
                             {item.text}
@@ -843,25 +844,33 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ol className="space-y-2 list-decimal list-inside">
+              <ol className="space-y-2">
                 {hasWordTrackData && getQuickReference()?.bestQuestions ? (
                   getQuickReference()!.bestQuestions.map(
                     (question: string, i: number) => (
-                      <li key={i} className="text-sm text-muted-foreground">
-                        {question}
+                      <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground group">
+                        <span className="shrink-0 font-medium text-foreground">{i + 1}.</span>
+                        <span className="flex-1">{question}</span>
+                        <CopyBtn text={question} id={`qr-q-${i}`} size="size-6" iconSize="size-3" />
                       </li>
                     )
                   )
                 ) : (
                   <>
-                    <li className="text-sm text-muted-foreground">
-                      What have you tried so far?
+                    <li className="flex items-center gap-2 text-sm text-muted-foreground group">
+                      <span className="shrink-0 font-medium text-foreground">1.</span>
+                      <span className="flex-1">What have you tried so far?</span>
+                      <CopyBtn text="What have you tried so far?" id="qr-fbq-1" size="size-6" iconSize="size-3" />
                     </li>
-                    <li className="text-sm text-muted-foreground">
-                      How does this impact your daily life?
+                    <li className="flex items-center gap-2 text-sm text-muted-foreground group">
+                      <span className="shrink-0 font-medium text-foreground">2.</span>
+                      <span className="flex-1">How does this impact your daily life?</span>
+                      <CopyBtn text="How does this impact your daily life?" id="qr-fbq-2" size="size-6" iconSize="size-3" />
                     </li>
-                    <li className="text-sm text-muted-foreground">
-                      What matters most in a solution?
+                    <li className="flex items-center gap-2 text-sm text-muted-foreground group">
+                      <span className="shrink-0 font-medium text-foreground">3.</span>
+                      <span className="flex-1">What matters most in a solution?</span>
+                      <CopyBtn text="What matters most in a solution?" id="qr-fbq-3" size="size-6" iconSize="size-3" />
                     </li>
                   </>
                 )}
@@ -881,31 +890,40 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                 {hasWordTrackData && getQuickReference()?.topObjections ? (
                   getQuickReference()!.topObjections.map(
                     (obj, i: number) => (
-                      <li key={i} className="text-sm">
-                        <p className="font-medium">
-                          &ldquo;{obj.objection}&rdquo;
-                        </p>
-                        <p className="text-muted-foreground text-xs mt-1">
-                          &rarr; {obj.response || obj.shortResponse}
-                        </p>
+                      <li key={i} className="flex items-start gap-2 text-sm group">
+                        <div className="flex-1">
+                          <p className="font-medium">
+                            &ldquo;{obj.objection}&rdquo;
+                          </p>
+                          <p className="text-muted-foreground text-xs mt-1">
+                            &rarr; {obj.response || obj.shortResponse}
+                          </p>
+                        </div>
+                        <CopyBtn text={obj.response || obj.shortResponse || ""} id={`qr-obj-${i}`} size="size-6" iconSize="size-3" />
                       </li>
                     )
                   )
                 ) : (
                   <>
-                    <li className="text-sm">
-                      <p className="font-medium">&ldquo;Too expensive&rdquo;</p>
-                      <p className="text-muted-foreground text-xs mt-1">
-                        &rarr; What other factors matter to you beyond price?
-                      </p>
+                    <li className="flex items-start gap-2 text-sm group">
+                      <div className="flex-1">
+                        <p className="font-medium">&ldquo;Too expensive&rdquo;</p>
+                        <p className="text-muted-foreground text-xs mt-1">
+                          &rarr; What other factors matter to you beyond price?
+                        </p>
+                      </div>
+                      <CopyBtn text="What other factors matter to you beyond price?" id="qr-fbobj-1" size="size-6" iconSize="size-3" />
                     </li>
-                    <li className="text-sm">
-                      <p className="font-medium">
-                        &ldquo;Does it work?&rdquo;
-                      </p>
-                      <p className="text-muted-foreground text-xs mt-1">
-                        &rarr; What would help you feel confident in trying it?
-                      </p>
+                    <li className="flex items-start gap-2 text-sm group">
+                      <div className="flex-1">
+                        <p className="font-medium">
+                          &ldquo;Does it work?&rdquo;
+                        </p>
+                        <p className="text-muted-foreground text-xs mt-1">
+                          &rarr; What would help you feel confident in trying it?
+                        </p>
+                      </div>
+                      <CopyBtn text="What would help you feel confident in trying it?" id="qr-fbobj-2" size="size-6" iconSize="size-3" />
                     </li>
                   </>
                 )}
@@ -925,19 +943,21 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                 {hasWordTrackData && getQuickReference()?.bestClosingLines ? (
                   getQuickReference()!.bestClosingLines.map(
                     (line: string, i: number) => (
-                      <li key={i} className="text-sm bg-muted p-2 rounded-lg">
-                        &ldquo;{line}&rdquo;
+                      <li key={i} className="flex items-center gap-2 text-sm bg-muted p-2 rounded-lg group">
+                        <span className="flex-1">&ldquo;{line}&rdquo;</span>
+                        <CopyBtn text={line} id={`qr-cl-${i}`} size="size-6" iconSize="size-3" />
                       </li>
                     )
                   )
                 ) : (
                   <>
-                    <li className="text-sm bg-muted p-2 rounded-lg">
-                      &ldquo;How many should we start you with today?&rdquo;
+                    <li className="flex items-center gap-2 text-sm bg-muted p-2 rounded-lg group">
+                      <span className="flex-1">&ldquo;How many should we start you with today?&rdquo;</span>
+                      <CopyBtn text="How many should we start you with today?" id="qr-fbcl-1" size="size-6" iconSize="size-3" />
                     </li>
-                    <li className="text-sm bg-muted p-2 rounded-lg">
-                      &ldquo;Would you prefer the single pack or the 3-pack for
-                      better value?&rdquo;
+                    <li className="flex items-center gap-2 text-sm bg-muted p-2 rounded-lg group">
+                      <span className="flex-1">&ldquo;Would you prefer the single pack or the 3-pack for better value?&rdquo;</span>
+                      <CopyBtn text="Would you prefer the single pack or the 3-pack for better value?" id="qr-fbcl-2" size="size-6" iconSize="size-3" />
                     </li>
                   </>
                 )}

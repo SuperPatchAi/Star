@@ -37,6 +37,7 @@ function interpolateText(text: string, questionsAsked: string[]): string {
 
 export function StepPresentation({ data, product, metadata, questionsAsked = [], onContinue }: StepPresentationProps) {
   const [copied, setCopied] = useState(false);
+  const [copiedPhase, setCopiedPhase] = useState(false);
   const [currentPhase, setCurrentPhase] = useState(0);
 
   const phases = useMemo(() => [
@@ -51,6 +52,12 @@ export function StepPresentation({ data, product, metadata, questionsAsked = [],
     await navigator.clipboard.writeText(fullScript);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyPhase = async () => {
+    await navigator.clipboard.writeText(phases[currentPhase].text);
+    setCopiedPhase(true);
+    setTimeout(() => setCopiedPhase(false), 2000);
   };
 
   return (
@@ -103,6 +110,13 @@ export function StepPresentation({ data, product, metadata, questionsAsked = [],
               Phase {currentPhase + 1} of 3
             </CardTitle>
             <div className="flex gap-1">
+              <Button variant="ghost" size="icon" className="size-8" onClick={handleCopyPhase}>
+                {copiedPhase ? (
+                  <Check className="size-3.5 text-green-500" />
+                ) : (
+                  <Copy className="size-3.5" />
+                )}
+              </Button>
               {currentPhase > 0 && (
                 <Button variant="ghost" size="sm" onClick={() => setCurrentPhase(p => p - 1)}>
                   Previous

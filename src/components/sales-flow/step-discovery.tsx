@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Copy, Check } from "lucide-react";
+import { copyToClipboard } from "@/lib/utils";
 import type { RoadmapDiscovery } from "@/types/roadmap";
 
 interface StepDiscoveryProps {
@@ -30,8 +32,15 @@ function normalizeCategory(type: string): string {
 }
 
 export function StepDiscovery({ data, questionsAsked, onToggleQuestion, onContinue }: StepDiscoveryProps) {
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
   const categories = [...new Set(data.questions.map(q => normalizeCategory(q.type)))];
   const askedCount = questionsAsked.length;
+
+  const handleCopy = async (text: string, idx: number) => {
+    await copyToClipboard(text);
+    setCopiedIdx(idx);
+    setTimeout(() => setCopiedIdx(null), 2000);
+  };
 
   return (
     <div className="space-y-4">
@@ -63,23 +72,38 @@ export function StepDiscovery({ data, questionsAsked, onToggleQuestion, onContin
             </CardHeader>
             <CardContent className="space-y-3">
               {questions.map((q, i) => {
+                const globalIdx = data.questions.indexOf(q);
                 const isAsked = questionsAsked.includes(q.question);
                 return (
-                  <label
+                  <div
                     key={i}
-                    className={`flex items-start gap-3 cursor-pointer p-2 rounded-lg transition-colors ${
+                    className={`flex items-start gap-3 p-2 rounded-lg transition-colors group ${
                       isAsked ? "bg-primary/5" : "hover:bg-muted/50"
                     }`}
                   >
-                    <Checkbox
-                      checked={isAsked}
-                      onCheckedChange={() => onToggleQuestion(q.question)}
-                      className="mt-0.5"
-                    />
-                    <span className={`text-sm ${isAsked ? "text-muted-foreground line-through" : ""}`}>
-                      &ldquo;{q.question}&rdquo;
-                    </span>
-                  </label>
+                    <label className="flex items-start gap-3 cursor-pointer flex-1 min-w-0">
+                      <Checkbox
+                        checked={isAsked}
+                        onCheckedChange={() => onToggleQuestion(q.question)}
+                        className="mt-0.5"
+                      />
+                      <span className={`text-sm ${isAsked ? "text-muted-foreground line-through" : ""}`}>
+                        &ldquo;{q.question}&rdquo;
+                      </span>
+                    </label>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-7 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => handleCopy(q.question, globalIdx)}
+                    >
+                      {copiedIdx === globalIdx ? (
+                        <Check className="size-3.5 text-green-500" />
+                      ) : (
+                        <Copy className="size-3.5" />
+                      )}
+                    </Button>
+                  </div>
                 );
               })}
             </CardContent>

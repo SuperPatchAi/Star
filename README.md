@@ -304,6 +304,21 @@ npm run lint         # ESLint
 
 Products are accessible at `/products` and `/products/[product]` but are not in the main navigation — they serve as reference pages only.
 
+## Copy-to-Clipboard
+
+Every user-facing script and speakable text has a copy-to-clipboard button with visual feedback (checkmark for 2 seconds). A shared `copyToClipboard` utility lives in `src/lib/utils.ts`.
+
+| Component | What's Copyable |
+|-----------|----------------|
+| `step-opening-picker.tsx` | Each opening approach script |
+| `step-discovery.tsx` | Each discovery question |
+| `step-presentation.tsx` | Each P-A-S phase + full script |
+| `step-send-samples.tsx` | Sample offer script |
+| `step-objections.tsx` | Each objection response |
+| `step-closing.tsx` | Pre-close reminder + each closing technique |
+| `step-followup.tsx` | Each follow-up template |
+| `reference-tabs-view.tsx` | All scripts across Opening, Discovery, Presentation (P-A-S + full script), Objections, Closing, Follow-Up, and Quick Ref tabs |
+
 ## Commit Convention
 
 Before every commit, ensure README.md and cursor rules are up to date with any architectural or structural changes made in the session.
