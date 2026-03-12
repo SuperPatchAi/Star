@@ -13,7 +13,7 @@ import { TourSpotlight } from "./tour-spotlight";
 import { TourTooltip } from "./tour-tooltip";
 
 interface TourStep {
-  target: string;
+  targets: string[];
   title: string;
   message: string;
   placement: "top" | "bottom" | "left" | "right";
@@ -21,40 +21,52 @@ interface TourStep {
 
 const TOUR_STEPS: TourStep[] = [
   {
-    target: "new-contact",
+    targets: ["new-contact"],
     title: "Start Here",
     message:
       "Add your first contact and pick a product to kick off a guided sales conversation.",
     placement: "bottom",
   },
   {
-    target: "notification-bell",
+    targets: ["contacts-nav", "contacts-bottom-nav"],
+    title: "Your Contacts",
+    message:
+      "Your contacts and pipeline live here. Tap to see where each prospect stands.",
+    placement: "top",
+  },
+  {
+    targets: ["notification-bell"],
     title: "Follow-Up Reminders",
     message:
       "Your follow-up reminders show up here. We'll nudge you so no lead slips through.",
     placement: "bottom",
   },
   {
-    target: "contacts-nav",
-    title: "Your Contacts",
+    targets: ["activity-bottom-nav", "practice-nav"],
+    title: "Activities & Practice",
     message:
-      "Your contacts and pipeline live here. Tap to see where each prospect stands.",
-    placement: "right",
-  },
-  {
-    target: "practice-nav",
-    title: "Practice & Prepare",
-    message:
-      "Sharpen your skills with objection flashcards and rehearse your pitch before every call.",
-    placement: "right",
+      "Track your follow-up schedule and sharpen your skills with objection flashcards.",
+    placement: "top",
   },
 ];
 
-function isElementVisible(selector: string): boolean {
-  const el = document.querySelector(selector);
-  if (!el) return false;
-  const rect = el.getBoundingClientRect();
-  return rect.width > 0 && rect.height > 0 && rect.top < window.innerHeight && rect.bottom > 0;
+function findVisibleTarget(targets: string[]): string | null {
+  for (const target of targets) {
+    const el = document.querySelector(`[data-tour-step="${target}"]`);
+    if (!el) continue;
+    const rect = el.getBoundingClientRect();
+    if (rect.width > 0 && rect.height > 0 && rect.top < window.innerHeight && rect.bottom > 0) {
+      return target;
+    }
+  }
+  return null;
+}
+
+interface ResolvedStep {
+  target: string;
+  title: string;
+  message: string;
+  placement: "top" | "bottom" | "left" | "right";
 }
 
 interface TourContextType {
@@ -82,34 +94,45 @@ interface TourProviderProps {
 
 export function TourProvider({ children, onboardingStep }: TourProviderProps) {
   const [isActive, setIsActive] = useState(false);
-  const [visibleSteps, setVisibleSteps] = useState<TourStep[]>([]);
+  const [resolvedSteps, setResolvedSteps] = useState<ResolvedStep[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const buildVisibleSteps = useCallback(() => {
-    return TOUR_STEPS.filter((step) =>
-      isElementVisible(`[data-tour-step="${step.target}"]`)
-    );
+  const buildSteps = useCallback(() => {
+    const steps: ResolvedStep[] = [];
+    for (const step of TOUR_STEPS) {
+      const visibleTarget = findVisibleTarget(step.targets);
+      if (visibleTarget) {
+        const isBottomNav = visibleTarget.endsWith("-bottom-nav");
+        steps.push({
+          target: visibleTarget,
+          title: step.title,
+          message: step.message,
+          placement: isBottomNav ? "top" : step.placement,
+        });
+      }
+    }
+    return steps;
   }, []);
 
   const startTour = useCallback(() => {
-    const visible = buildVisibleSteps();
-    if (visible.length === 0) {
+    const steps = buildSteps();
+    if (steps.length === 0) {
       completeTour();
       return;
     }
-    setVisibleSteps(visible);
+    setResolvedSteps(steps);
     setCurrentIndex(0);
     setIsActive(true);
-  }, [buildVisibleSteps]);
+  }, [buildSteps]);
 
   const handleNext = useCallback(async () => {
-    if (currentIndex < visibleSteps.length - 1) {
+    if (currentIndex < resolvedSteps.length - 1) {
       setCurrentIndex((prev) => prev + 1);
     } else {
       setIsActive(false);
       await completeTour();
     }
-  }, [currentIndex, visibleSteps.length]);
+  }, [currentIndex, resolvedSteps.length]);
 
   const handlePrev = useCallback(() => {
     if (currentIndex > 0) {
@@ -124,19 +147,19 @@ export function TourProvider({ children, onboardingStep }: TourProviderProps) {
 
   useEffect(() => {
     if (onboardingStep === "tour") {
-      const timer = setTimeout(() => startTour(), 800);
+      const timer = setTimeout(() => startTour(), 2000);
       return () => clearTimeout(timer);
     }
   }, [onboardingStep, startTour]);
 
-  const step = visibleSteps[currentIndex];
+  const step = resolvedSteps[currentIndex];
 
   return (
     <TourContext.Provider
       value={{
         isActive,
         currentStep: currentIndex,
-        totalSteps: visibleSteps.length,
+        totalSteps: resolvedSteps.length,
         startTour,
       }}
     >
@@ -152,7 +175,7 @@ export function TourProvider({ children, onboardingStep }: TourProviderProps) {
             message={step.message}
             placement={step.placement}
             currentStep={currentIndex}
-            totalSteps={visibleSteps.length}
+            totalSteps={resolvedSteps.length}
             onNext={handleNext}
             onPrev={handlePrev}
             onSkip={handleSkip}

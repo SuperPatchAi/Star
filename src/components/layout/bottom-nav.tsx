@@ -7,9 +7,9 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
 const tabs = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/contacts", label: "Contacts", icon: Users },
-  { href: "/activity", label: "Activity", icon: Bell },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, tourStep: undefined },
+  { href: "/contacts", label: "Contacts", icon: Users, tourStep: "contacts-bottom-nav" },
+  { href: "/activity", label: "Activity", icon: Bell, tourStep: "activity-bottom-nav" },
 ] as const;
 
 export function BottomNav() {
@@ -25,6 +25,7 @@ export function BottomNav() {
             <Link
               key={tab.href}
               href={tab.href}
+              data-tour-step={tab.tourStep}
               className={cn(
                 "flex flex-1 flex-col items-center justify-center gap-1 text-[11px] transition-colors",
                 isActive
