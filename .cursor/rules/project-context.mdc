@@ -38,6 +38,7 @@ A Next.js 16 sales enablement platform for SuperPatch D2C reps. Guided 8-step sa
 - `activity/page.tsx` — Follow-up calendar + activity feed
 - `products/[product]/page.tsx` — Product detail (reference only)
 - `onboarding/page.tsx` — New user onboarding carousel (Phase 1, outside AppShell)
+- `api/cron/send-reminders/route.ts` — Vercel Cron endpoint: queries due reminders, sends push via `web-push`
 - `(auth)/login/page.tsx` — Login form
 - `(auth)/signup/page.tsx` — Invite-only signup
 
@@ -59,8 +60,11 @@ A Next.js 16 sales enablement platform for SuperPatch D2C reps. Guided 8-step sa
 - `roadmap-specs-v2/*.json` — Product-specific sales scripts (RoadmapV2 type)
 - `wordtracks/` — Legacy word track scripts per product
 
+### PWA (`src/components/pwa/`)
+- `install-prompt.tsx` — PWA install banner (Chrome beforeinstallprompt + iOS Safari instructions)
+
 ### Onboarding (`src/components/onboarding/`)
-- `onboarding-carousel.tsx` — 6-slide swipeable feature carousel (Phase 1)
+- `onboarding-carousel.tsx` — 7-slide swipeable feature carousel (Phase 1, includes install app slide)
 - `carousel-slide.tsx` — Individual slide with gradient, icon, headline
 - `carousel-dots.tsx` — Dot navigation indicators
 - `tour-provider.tsx` — Context provider for interactive tour (Phase 2), auto-starts on `tour` step
@@ -112,7 +116,7 @@ Key columns: `user_id`, `endpoint`, `p256dh`, `auth` — stores web push subscri
 
 ## Environment Variables
 
-`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_VAPID_PUBLIC_KEY` (optional, for push), `VAPID_PRIVATE_KEY` (optional, for push)
+`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_VAPID_PUBLIC_KEY` (push notifications), `VAPID_PRIVATE_KEY` (push, server-side only), `CRON_SECRET` (Vercel Cron auth)
 
 ## Conventions
 

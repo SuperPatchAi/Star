@@ -320,6 +320,9 @@ All actions use the server Supabase client and scope queries to the authenticate
 NEXT_PUBLIC_SUPABASE_URL=        # Supabase project URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY=   # Supabase anon/public key
 SUPABASE_SERVICE_ROLE_KEY=       # Supabase service role key (server-side only)
+NEXT_PUBLIC_VAPID_PUBLIC_KEY=    # VAPID public key for push subscriptions
+VAPID_PRIVATE_KEY=               # VAPID private key for sending push (server-side only)
+CRON_SECRET=                     # Secret for authenticating Vercel Cron requests
 ```
 
 ## Development
@@ -337,13 +340,10 @@ npm run lint         # ESLint
 | Nav Item | Route | Purpose |
 |----------|-------|---------|
 | Dashboard | `/dashboard` | Main entry |
-| Start Conversation | `/contacts` | Contact list + Kanban pipeline (unified search) |
 | Contacts | `/contacts` | Contact list + Kanban pipeline (unified search) |
-| Activity | `/activity` | Follow-up reminders & activity feed |
-| Evidence | `/evidence` | Clinical studies |
+| Activities | `/activity` | Follow-up reminders & activity feed |
 | Practice | `/practice` | Objection flashcards |
-| Favorites | `/favorites` | Saved scripts |
-| Roadmaps | `/roadmaps` | Visual roadmap gallery |
+| Clinical Evidence | `/evidence` | Clinical studies |
 
 Products are accessible at `/products` and `/products/[product]` but are not in the main navigation — they serve as reference pages only.
 
@@ -427,9 +427,10 @@ The app includes a comprehensive mobile-first experience informed by HubSpot, Pi
 A three-phase onboarding system that walks new reps through the app on first login.
 
 ### Phase 1: Feature Carousel (`/onboarding`)
-- 6 full-screen swipeable slides showcasing key features (guided conversations, pipeline, follow-ups, product scripts, objections, closing)
+- 7 full-screen swipeable slides showcasing key features (guided conversations, pipeline, follow-ups, product scripts, objections, closing, install app)
 - Mobile-first with CSS scroll-snap, keyboard arrows on desktop
 - Skip option available; middleware redirects new users here automatically
+- Final slide encourages PWA installation
 
 ### Phase 2: Interactive Tour (Dashboard)
 - 4-step tooltip tour highlighting key UI elements (Contacts nav, New Contact button, notification bell, Roadmaps nav)
@@ -468,8 +469,10 @@ A two-phase notification system that reminds reps to follow up with contacts at 
 ### Phase 2: Push Notifications
 - **Service worker** (`public/sw.js`) handles push events and notification click deep-linking
 - **Push subscription** table (`d2c_push_subscriptions`) with RLS policies
-- **Permission banner** inside the activity feed (non-blocking, dismissable)
-- **Supabase Edge Function** (`supabase/functions/send-follow-up-reminders/`) runs on cron to send push notifications
+- **Permission banner** shown on both dashboard and activity feed (non-blocking, dismissable)
+- **Vercel Cron** (`vercel.json`) triggers daily at 12:00 UTC (8 AM ET)
+- **Next.js API route** (`src/app/api/cron/send-reminders/route.ts`) processes reminders and sends push via `web-push` library with proper VAPID auth
+- Expired push subscriptions (410/404) are automatically cleaned up
 
 ### Key Files
 | File | Purpose |
@@ -482,8 +485,33 @@ A two-phase notification system that reminds reps to follow up with contacts at 
 | `src/components/follow-ups/push-permission-banner.tsx` | Non-blocking push permission prompt |
 | `src/hooks/use-service-worker.ts` | Service worker registration hook |
 | `src/lib/actions/push-subscriptions.ts` | Push subscription server actions |
+| `src/app/api/cron/send-reminders/route.ts` | Cron-triggered API route for sending push notifications |
 | `public/sw.js` | Service worker for push events |
-| `supabase/functions/send-follow-up-reminders/index.ts` | Edge Function for scheduled dispatch |
+| `vercel.json` | Vercel Cron schedule (daily at 12:00 UTC) |
+
+## Progressive Web App (PWA)
+
+The app is installable as a PWA on both Android and iOS devices.
+
+### Install Experience
+- **Chrome/Edge**: `beforeinstallprompt` event triggers a bottom banner with an "Install" button
+- **iOS Safari**: Banner shows instructions to tap Share > "Add to Home Screen"
+- **Onboarding slide**: The final carousel slide encourages new users to install the app
+- **Dismissal**: Banner hides for 7 days after dismissal (stored in localStorage)
+- **Auto-hide**: Banner does not show if the app is already installed (standalone mode)
+
+### Manifest & Icons
+- `public/manifest.json` — PWA manifest with `display: standalone`, `start_url: /dashboard`
+- `public/icon-192x192.png` — Home screen icon (192x192)
+- `public/icon-512x512.png` — Splash screen icon (512x512, also maskable)
+- `public/apple-touch-icon.png` — iOS home screen icon (180x180)
+
+### Key Files
+| File | Purpose |
+|------|---------|
+| `src/components/pwa/install-prompt.tsx` | PWA install banner (Chrome + iOS) |
+| `public/manifest.json` | PWA web app manifest |
+| `public/sw.js` | Service worker (push + install) |
 
 ## Share / Copy-to-Clipboard
 
