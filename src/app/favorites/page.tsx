@@ -1,16 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,8 +13,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Heart, Trash2, Copy, ExternalLink } from "lucide-react";
+import { Heart, Trash2, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { ShareCopyButton } from "@/components/ui/share-copy-button";
 
 type FavoriteItem = {
   id: string;
@@ -78,63 +71,68 @@ const demoFavorites: FavoriteItem[] = [
   },
 ];
 
+const TABS = [
+  { value: "all", label: "All" },
+  { value: "scripts", label: "Scripts" },
+  { value: "objections", label: "Objections" },
+  { value: "products", label: "Products" },
+] as const;
+
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<FavoriteItem[]>(demoFavorites);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<(typeof TABS)[number]["value"]>("all");
 
   const scripts = favorites.filter((f) => f.type === "script");
   const objections = favorites.filter((f) => f.type === "objection");
   const productFavs = favorites.filter((f) => f.type === "product");
 
-  const handleCopy = async (content: string, id: string) => {
-    await navigator.clipboard.writeText(content);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
+  const tabCounts = {
+    all: favorites.length,
+    scripts: scripts.length,
+    objections: objections.length,
+    products: productFavs.length,
   };
+
+  const displayedItems =
+    activeTab === "all"
+      ? favorites
+      : activeTab === "scripts"
+        ? scripts
+        : activeTab === "objections"
+          ? objections
+          : productFavs;
 
   const handleRemove = (id: string) => {
     setFavorites((prev) => prev.filter((f) => f.id !== id));
   };
 
-  const FavoriteCard = ({ item }: { item: FavoriteItem }) => (
-    <Card className="group">
-      <CardHeader className="pb-2">
+  const FavoriteRow = ({ item }: { item: FavoriteItem }) => (
+    <div className="flat-list-row group">
+      <div className="flex flex-col gap-2">
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0 flex-1">
             {item.productEmoji && (
               <span className="text-lg shrink-0">{item.productEmoji}</span>
             )}
-            <CardTitle className="text-sm font-medium truncate">
-              {item.title}
-            </CardTitle>
+            <div>
+              <h2 className="text-base font-semibold truncate">{item.title}</h2>
+              {item.productName && (
+                <p className="text-xs text-muted-foreground">{item.productName}</p>
+              )}
+            </div>
           </div>
-          <Badge variant="outline" className="text-[10px] shrink-0">
+          <span className="text-xs text-muted-foreground shrink-0 capitalize">
             {item.type}
-          </Badge>
+          </span>
         </div>
-        {item.productName && (
-          <CardDescription className="text-xs">
-            {item.productName}
-          </CardDescription>
-        )}
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
+        <p className="text-sm text-muted-foreground line-clamp-3">
           {item.content}
         </p>
         <div className="flex items-center justify-between">
           <div className="flex gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 px-2"
-              onClick={() => handleCopy(item.content, item.id)}
-            >
-              <Copy className="size-3 mr-1" />
-              {copiedId === item.id ? "Copied!" : "Copy"}
-            </Button>
+            <ShareCopyButton text={item.content} variant="labeled" className="h-8 px-2 text-xs" iconClassName="size-3" />
             {item.productName && item.productName !== "All Products" && (
-              <Button variant="ghost" size="sm" className="h-7 px-2" asChild>
+              <Button variant="ghost" size="sm" className="h-8 px-2 text-xs" asChild>
                 <Link href={`/products/${item.productName.toLowerCase()}`}>
                   <ExternalLink className="size-3 mr-1" />
                   View
@@ -148,7 +146,7 @@ export default function FavoritesPage() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-7 px-2 text-muted-foreground hover:text-destructive"
+                className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
               >
                 <Trash2 className="size-3" />
               </Button>
@@ -170,8 +168,8 @@ export default function FavoritesPage() {
             </AlertDialogContent>
           </AlertDialog>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 
   const EmptyState = ({ type }: { type: string }) => (
@@ -189,93 +187,71 @@ export default function FavoritesPage() {
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
       <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-1">
-            <h1 className="text-2xl font-semibold tracking-tight">Favorites</h1>
-            <p className="text-sm text-muted-foreground">
-              Your saved scripts, objections, and quick references.
-            </p>
-          </div>
-          <Badge variant="secondary" className="text-sm">
-            {favorites.length} saved
-          </Badge>
+        <div className="flex flex-col gap-1">
+          <h1 className="text-xl font-semibold tracking-tight">Favorites</h1>
+          <p className="text-sm text-muted-foreground">
+            Your saved scripts, objections, and quick references.
+            {favorites.length > 0 && (
+              <span className="ml-1">({favorites.length} saved)</span>
+            )}
+          </p>
         </div>
+      </div>
 
-        {favorites.length === 0 ? (
-          <Card className="flex flex-1 items-center justify-center">
-            <CardContent className="text-center py-12">
-              <Heart className="size-16 text-muted-foreground/30 mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-1">No favorites yet</h3>
-              <p className="text-sm text-muted-foreground max-w-sm">
-                Click the heart icon on any script, objection, or product to
-                save it here for quick access.
-              </p>
-              <Button asChild className="mt-4">
-                <Link href="/products">Browse Products</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <Tabs defaultValue="all" className="flex-1">
-            <TabsList>
-              <TabsTrigger value="all">
-                All ({favorites.length})
-              </TabsTrigger>
-              <TabsTrigger value="scripts">
-                Scripts ({scripts.length})
-              </TabsTrigger>
-              <TabsTrigger value="objections">
-                Objections ({objections.length})
-              </TabsTrigger>
-              <TabsTrigger value="products">
-                Products ({productFavs.length})
-              </TabsTrigger>
-            </TabsList>
+      {favorites.length === 0 ? (
+        <div className="flex flex-1 items-center justify-center text-center py-12">
+          <div>
+            <Heart className="size-16 text-muted-foreground/30 mx-auto mb-4" />
+            <h3 className="text-lg font-medium mb-1">No favorites yet</h3>
+            <p className="text-sm text-muted-foreground max-w-sm">
+              Click the heart icon on any script, objection, or product to
+              save it here for quick access.
+            </p>
+            <Button asChild className="mt-4">
+              <Link href="/products">Browse Products</Link>
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex-1">
+          <div className="flex items-center border-b overflow-x-auto scrollbar-none">
+            {TABS.map((tab) => (
+              <button
+                key={tab.value}
+                onClick={() => setActiveTab(tab.value)}
+                className={cn(
+                  "shrink-0 px-3 pb-2.5 text-sm font-medium border-b-2 transition-colors -mb-px",
+                  activeTab === tab.value
+                    ? "border-foreground text-foreground"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {tab.label} ({tabCounts[tab.value]})
+              </button>
+            ))}
+          </div>
 
-            <TabsContent value="all" className="mt-4">
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {favorites.map((item) => (
-                  <FavoriteCard key={item.id} item={item} />
+          <div className="mt-4">
+            {displayedItems.length > 0 ? (
+              <div className="space-y-0">
+                {displayedItems.map((item) => (
+                  <FavoriteRow key={item.id} item={item} />
                 ))}
               </div>
-            </TabsContent>
-
-            <TabsContent value="scripts" className="mt-4">
-              {scripts.length > 0 ? (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {scripts.map((item) => (
-                    <FavoriteCard key={item.id} item={item} />
-                  ))}
-                </div>
-              ) : (
-                <EmptyState type="scripts" />
-              )}
-            </TabsContent>
-
-            <TabsContent value="objections" className="mt-4">
-              {objections.length > 0 ? (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {objections.map((item) => (
-                    <FavoriteCard key={item.id} item={item} />
-                  ))}
-                </div>
-              ) : (
-                <EmptyState type="objections" />
-              )}
-            </TabsContent>
-
-            <TabsContent value="products" className="mt-4">
-              {productFavs.length > 0 ? (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {productFavs.map((item) => (
-                    <FavoriteCard key={item.id} item={item} />
-                  ))}
-                </div>
-              ) : (
-                <EmptyState type="products" />
-              )}
-            </TabsContent>
-          </Tabs>
-        )}
+            ) : (
+              <EmptyState
+                type={
+                  activeTab === "scripts"
+                    ? "scripts"
+                    : activeTab === "objections"
+                      ? "objections"
+                      : "products"
+                }
+              />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

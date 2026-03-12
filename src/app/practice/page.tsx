@@ -1,26 +1,17 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Image from "next/image";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, RotateCcw, Shuffle } from "lucide-react";
 import { PRODUCTS } from "@/data/products";
+import { cn } from "@/lib/utils";
 
 type Flashcard = {
   id: string;
@@ -156,7 +147,7 @@ export default function PracticePage() {
     <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
         {/* Header */}
         <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <h1 className="text-xl font-semibold tracking-tight">
             Practice Mode
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -165,47 +156,62 @@ export default function PracticePage() {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-3">
-          <Select value={productFilter} onValueChange={setProductFilter}>
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Product" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Products</SelectItem>
-              {PRODUCTS.map((p) => (
-                <SelectItem key={p.id} value={p.id}>
-                  <div className="flex items-center gap-2">
-                    <div className="relative size-5 flex-shrink-0 rounded-full overflow-hidden">
-                      <Image
-                        src={p.image}
-                        alt={p.name}
-                        fill
-                        className="object-cover"
-                        sizes="20px"
-                      />
-                    </div>
-                    {p.name}
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              {categories.map((cat) => (
-                <SelectItem key={cat} value={cat}>
-                  {cat}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Button variant="outline" size="icon" onClick={shuffle}>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
+            <button
+              onClick={() => setProductFilter("all")}
+              className={cn(
+                "shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                productFilter === "all"
+                  ? "bg-foreground text-background"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              )}
+            >
+              All
+            </button>
+            {PRODUCTS.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => setProductFilter(p.id)}
+                className={cn(
+                  "shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                  productFilter === p.id
+                    ? "bg-foreground text-background"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                )}
+              >
+                {p.name}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
+            <button
+              onClick={() => setCategoryFilter("all")}
+              className={cn(
+                "shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                categoryFilter === "all"
+                  ? "bg-foreground text-background"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              )}
+            >
+              All
+            </button>
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setCategoryFilter(cat)}
+                className={cn(
+                  "shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                  categoryFilter === cat
+                    ? "bg-foreground text-background"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                )}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+          <Button variant="outline" size="icon" onClick={shuffle} className="shrink-0">
             <Shuffle className="size-4" />
           </Button>
         </div>
@@ -222,17 +228,14 @@ export default function PracticePage() {
         {currentCard ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4">
             <Card
-              className="w-full max-w-xl cursor-pointer transition-all hover:shadow-lg min-h-[280px] flex flex-col"
+              className="w-full max-w-xl cursor-pointer transition-all hover:shadow-lg min-h-[280px] flex flex-col border-border/50"
               onClick={() => setIsFlipped(!isFlipped)}
             >
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                  <Badge
-                    variant={isFlipped ? "default" : "secondary"}
-                    className="text-xs"
-                  >
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                     {isFlipped ? "Response" : "Objection"}
-                  </Badge>
+                  </span>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline" className="text-xs">
                       {currentCard.category}
@@ -259,29 +262,30 @@ export default function PracticePage() {
             </Card>
 
             {/* Controls */}
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" onClick={goPrev}>
+            <div className="grid grid-cols-4 gap-2 w-full max-w-xl sm:flex sm:items-center sm:justify-center sm:w-auto">
+              <Button variant="outline" className="h-10" onClick={goPrev}>
                 <ChevronLeft className="size-4" />
               </Button>
 
               <Button
                 variant="outline"
-                size="sm"
+                className="h-10"
                 onClick={() => setIsFlipped(!isFlipped)}
               >
-                <RotateCcw className="mr-2 size-4" />
-                Flip
+                <RotateCcw className="size-4 sm:mr-2" />
+                <span className="hidden sm:inline">Flip</span>
               </Button>
 
               <Button
                 variant={masteredCards.has(currentCard.id) ? "default" : "outline"}
-                size="sm"
+                className="h-10"
                 onClick={toggleMastered}
               >
-                {masteredCards.has(currentCard.id) ? "✓ Mastered" : "Mark Mastered"}
+                <span className="sm:hidden">{masteredCards.has(currentCard.id) ? "✓" : "Master"}</span>
+                <span className="hidden sm:inline">{masteredCards.has(currentCard.id) ? "✓ Mastered" : "Mark Mastered"}</span>
               </Button>
 
-              <Button variant="outline" size="icon" onClick={goNext}>
+              <Button variant="outline" className="h-10" onClick={goNext}>
                 <ChevronRight className="size-4" />
               </Button>
             </div>

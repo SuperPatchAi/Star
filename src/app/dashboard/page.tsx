@@ -1,0 +1,202 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import {
+  TrendingUp,
+  Users,
+  Trophy,
+  XCircle,
+  CalendarCheck,
+  Clock,
+  Plus,
+  Bell,
+} from "lucide-react";
+import { getDashboardStats, type DashboardStats } from "@/lib/actions/contacts";
+import { getFollowUpReminders } from "@/lib/actions/reminders";
+import { FeedEntry } from "@/components/follow-ups/feed-entry";
+import { SALES_STEPS } from "@/types/roadmap";
+import type { FollowUpReminder } from "@/types/reminders";
+import { cn } from "@/lib/utils";
+
+const STEP_LABELS: Record<string, string> = {};
+for (const s of SALES_STEPS) {
+  STEP_LABELS[s.id] = s.label;
+}
+STEP_LABELS["closed"] = "Closed";
+
+function getTimeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
+function StatCard({ label, value, icon: Icon, color }: {
+  label: string;
+  value: string | number;
+  icon: React.ElementType;
+  color: string;
+}) {
+  return (
+    <div className="rounded-lg border p-4 space-y-1">
+      <div className="flex items-center justify-between">
+        <span className="text-xs text-muted-foreground uppercase tracking-wide font-medium">{label}</span>
+        <Icon className={cn("size-4", color)} />
+      </div>
+      <p className="text-2xl font-bold tabular-nums">{value}</p>
+    </div>
+  );
+}
+
+export default function DashboardPage() {
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [reminders, setReminders] = useState<FollowUpReminder[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      const [s, r] = await Promise.all([
+        getDashboardStats(),
+        getFollowUpReminders(),
+      ]);
+      setStats(s);
+      const list = r.data ?? [];
+      setReminders(list.filter(rem => rem.urgency === "overdue" || rem.urgency === "due_today"));
+      setLoading(false);
+    }
+    load();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
+        <div className="h-8 w-48 bg-muted animate-pulse rounded" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="rounded-lg border p-4 h-20 bg-muted/50 animate-pulse" />
+          ))}
+        </div>
+        <div className="rounded-lg border p-4 h-48 bg-muted/50 animate-pulse" />
+      </div>
+    );
+  }
+
+  if (!stats) return null;
+
+  const stageOrder = SALES_STEPS.filter(s => s.id !== "add_contact").map(s => s.id);
+  const maxStageCount = Math.max(1, ...stageOrder.map(s => stats.pipelineCounts[s] || 0));
+
+  return (
+    <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">Your sales pipeline at a glance.</p>
+        </div>
+        <Button asChild size="sm">
+          <Link href="/contacts">
+            <Plus className="size-4 mr-1.5" />
+            New Contact
+          </Link>
+        </Button>
+      </div>
+
+      {/* Stat cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <StatCard label="Active" value={stats.totalActive} icon={Users} color="text-primary" />
+        <StatCard label="Won" value={stats.wonCount} icon={Trophy} color="text-green-600 dark:text-green-400" />
+        <StatCard label="Lost" value={stats.lostCount} icon={XCircle} color="text-red-600 dark:text-red-400" />
+        <StatCard label="Win Rate" value={`${stats.winRate}%`} icon={TrendingUp} color="text-primary" />
+      </div>
+
+      {/* Pipeline breakdown */}
+      <div className="rounded-lg border p-4 space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Pipeline</h2>
+        <div className="space-y-2">
+          {stageOrder.map((stepId) => {
+            const count = stats.pipelineCounts[stepId] || 0;
+            const pct = (count / maxStageCount) * 100;
+            return (
+              <div key={stepId} className="flex items-center gap-3">
+                <span className="text-xs text-muted-foreground w-24 truncate">{STEP_LABELS[stepId] || stepId}</span>
+                <div className="flex-1">
+                  <Progress value={pct} className="h-2" />
+                </div>
+                <span className="text-xs font-semibold tabular-nums w-6 text-right">{count}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Today's follow-ups */}
+      <div className="rounded-lg border p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-1.5">
+            <Bell className="size-3.5" />
+            Follow-Ups
+          </h2>
+          <Button variant="ghost" size="sm" className="text-xs h-7" asChild>
+            <Link href="/activity">View all</Link>
+          </Button>
+        </div>
+        {reminders.length > 0 ? (
+          <div className="rounded-lg border divide-y divide-border">
+            {reminders.slice(0, 5).map((r) => (
+              <FeedEntry key={r.contact.id} reminder={r} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground py-3 text-center">All caught up. No follow-ups due.</p>
+        )}
+      </div>
+
+      {/* Recent activity */}
+      <div className="rounded-lg border p-4 space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-1.5">
+          <Clock className="size-3.5" />
+          Recent Activity
+        </h2>
+        {stats.recentActivity.length > 0 ? (
+          <div className="rounded-lg border divide-y divide-border">
+            {stats.recentActivity.map((entry) => (
+              <div key={entry.id} className="px-3 py-2.5 flex items-center justify-between">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium truncate">{entry.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {STEP_LABELS[entry.step] || entry.step}
+                    {entry.outcome !== "pending" && (
+                      <span className={cn(
+                        "ml-1.5",
+                        entry.outcome === "won" && "text-green-600 dark:text-green-400",
+                        entry.outcome === "lost" && "text-red-600 dark:text-red-400",
+                      )}>
+                        · {entry.outcome}
+                      </span>
+                    )}
+                  </p>
+                </div>
+                <span className="text-xs text-muted-foreground shrink-0 ml-2">{getTimeAgo(entry.updatedAt)}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground py-3 text-center">No activity yet.</p>
+        )}
+      </div>
+
+      {/* Performance */}
+      <div className="grid grid-cols-2 gap-3">
+        <StatCard label="This Week" value={stats.contactsThisWeek} icon={CalendarCheck} color="text-primary" />
+        <StatCard label="Active Conversations" value={stats.totalActive} icon={Users} color="text-primary" />
+      </div>
+    </div>
+  );
+}

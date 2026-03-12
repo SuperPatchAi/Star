@@ -18,6 +18,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { AppSidebar } from "./app-sidebar";
+import { BottomNav } from "./bottom-nav";
+import { NotificationBell } from "@/components/follow-ups/notification-bell";
 import { AuthProvider } from "@/contexts/auth-context";
 import { products } from "@/data/products";
 import type { UserProfile } from "@/lib/db/types";
@@ -73,22 +75,22 @@ export function AppShell({ children, user, profile }: AppShellProps) {
       <SidebarProvider>
         <AppSidebar user={user} profile={profile} />
         <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
+          <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4 overflow-hidden">
+            <SidebarTrigger className="-ml-1 hidden md:inline-flex" />
+            <Separator orientation="vertical" className="mr-2 h-4 hidden md:block" />
+            <Breadcrumb className="min-w-0 flex-1">
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                  <BreadcrumbLink href="/" className="text-sm">Home</BreadcrumbLink>
                 </BreadcrumbItem>
                 {breadcrumbs.map((crumb, index) => (
                   <React.Fragment key={crumb.href || index}>
                     <BreadcrumbSeparator className="hidden md:block" />
-                    <BreadcrumbItem>
+                    <BreadcrumbItem className="min-w-0">
                       {index === breadcrumbs.length - 1 ? (
-                        <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
+                        <BreadcrumbPage className="truncate text-sm">{crumb.label}</BreadcrumbPage>
                       ) : (
-                        <BreadcrumbLink href={crumb.href}>
+                        <BreadcrumbLink href={crumb.href} className="truncate text-sm">
                           {crumb.label}
                         </BreadcrumbLink>
                       )}
@@ -97,11 +99,13 @@ export function AppShell({ children, user, profile }: AppShellProps) {
                 ))}
               </BreadcrumbList>
             </Breadcrumb>
+            {user && <NotificationBell />}
           </header>
-          <main className="flex-1 overflow-auto">
+          <main className="flex-1 overflow-y-auto overflow-x-hidden pb-16 md:pb-0">
             {children}
           </main>
         </SidebarInset>
+        <BottomNav />
       </SidebarProvider>
     </AuthProvider>
   );

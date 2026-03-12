@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import { User, Session } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { getMyProfile } from '@/lib/actions/profile'
 import type { UserProfile, UserRole } from '@/lib/db/types'
 
 interface AuthContextType {
@@ -35,26 +36,19 @@ export function AuthProvider({
   const router = useRouter()
   const supabase = createClient()
 
-  // Fetch user profile from database
-  const fetchProfile = useCallback(async (userId: string) => {
+  const fetchProfile = useCallback(async (_userId: string) => {
     try {
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('id', userId)
-        .single()
-
+      const { data, error } = await getMyProfile()
       if (error) {
         console.error('Error fetching profile:', error)
         return null
       }
-
-      return data as UserProfile
+      return data
     } catch (err) {
       console.error('Error in fetchProfile:', err)
       return null
     }
-  }, [supabase])
+  }, [])
 
   // Refresh profile data
   const refreshProfile = useCallback(async () => {

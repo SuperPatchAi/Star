@@ -46,13 +46,13 @@ function RoadmapViewer({ roadmap }: RoadmapViewerProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="secondary" size="sm">
+        <Button variant="secondary" size="sm" className="min-h-[44px]">
           <Maximize2 className="size-4 mr-1" />
           View
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[95vw] max-h-[95vh] w-full">
-        <DialogHeader className="flex flex-row items-center justify-between gap-4">
+        <DialogHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <DialogTitle className="flex items-center gap-2">
               {roadmap.image ? (
@@ -72,17 +72,17 @@ function RoadmapViewer({ roadmap }: RoadmapViewerProps) {
               {roadmap.description} - D2C Sales
             </DialogDescription>
           </div>
-          <div className="flex items-center gap-1">
-            <Button variant="outline" size="icon" onClick={handleZoomOut}>
+          <div className="flex flex-wrap items-center gap-1">
+            <Button variant="outline" size="icon" className="size-9 min-h-[44px] min-w-[44px]" onClick={handleZoomOut}>
               <ZoomOut className="size-4" />
             </Button>
             <Badge variant="secondary" className="px-2 min-w-[60px] text-center">
               {Math.round(zoom * 100)}%
             </Badge>
-            <Button variant="outline" size="icon" onClick={handleZoomIn}>
+            <Button variant="outline" size="icon" className="size-9 min-h-[44px] min-w-[44px]" onClick={handleZoomIn}>
               <ZoomIn className="size-4" />
             </Button>
-            <Button variant="outline" size="icon" onClick={handleReset}>
+            <Button variant="outline" size="icon" className="size-9 min-h-[44px] min-w-[44px]" onClick={handleReset}>
               <RotateCcw className="size-4" />
             </Button>
           </div>
@@ -119,16 +119,10 @@ export default function RoadmapsPage() {
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:p-4">
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-xs">
-              D2C
-            </Badge>
-            <span className="text-xs text-muted-foreground">•</span>
-            <span className="text-xs text-muted-foreground">
-              {roadmaps.length} roadmaps
-            </span>
-          </div>
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <p className="text-xs text-muted-foreground">
+            {roadmaps.length} roadmaps
+          </p>
+          <h1 className="text-xl font-semibold tracking-tight">
             D2C Sales Roadmaps
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -140,7 +134,7 @@ export default function RoadmapsPage() {
           {roadmaps.map((roadmap) => {
             const imagePath = getRoadmapImagePath(roadmap.id);
             return (
-              <Card key={roadmap.id} className="group overflow-hidden">
+              <Card key={roadmap.id} className="group overflow-hidden border-border/50">
                 <CardHeader className="pb-2">
                   <div className="flex items-center gap-2">
                     {roadmap.image ? (
@@ -176,10 +170,10 @@ export default function RoadmapsPage() {
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                     />
 
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 flex items-end justify-center gap-2 md:inset-0 md:bg-black/60 md:opacity-0 md:group-hover:opacity-100 md:transition-opacity md:items-center md:p-0">
                       <RoadmapViewer roadmap={roadmap} />
 
-                      <Button variant="secondary" size="sm" asChild>
+                      <Button variant="secondary" size="sm" className="min-h-[44px]" asChild>
                         <a href={imagePath} download={`${roadmap.id}-roadmap.png`}>
                           <Download className="size-4 mr-1" />
                           Download
@@ -193,7 +187,7 @@ export default function RoadmapsPage() {
           })}
         </div>
 
-        <Card className="bg-muted/30 mt-4">
+        <Card className="bg-muted/30 mt-4 border-border/50">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm">About These Roadmaps</CardTitle>
           </CardHeader>

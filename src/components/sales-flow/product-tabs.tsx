@@ -21,36 +21,41 @@ export function ProductTabs({ products, children }: ProductTabsProps) {
 
   const activeProduct = products[activeIndex];
 
+  const showCompact = products.length > 3;
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-1 p-1 bg-muted rounded-lg overflow-x-auto">
-        {products.map((product, index) => (
-          <button
-            key={product.id}
-            onClick={() => setActiveIndex(index)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm whitespace-nowrap transition-all ${
-              index === activeIndex
-                ? "bg-background shadow-sm font-medium"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <div className="relative size-5 flex-shrink-0 rounded-full overflow-hidden bg-muted">
-              <Image
-                src={product.image}
-                alt={product.name}
-                fill
-                className="object-cover"
-                sizes="20px"
-              />
-            </div>
-            <span className="flex flex-col items-start">
-              <span>{product.name}</span>
-              {index === activeIndex && (
-                <span className="text-[10px] text-muted-foreground font-normal">{product.tagline}</span>
-              )}
-            </span>
-          </button>
-        ))}
+      <div className="flex items-center gap-1 p-1 bg-muted rounded-lg overflow-x-auto scrollbar-none snap-x snap-mandatory">
+        {products.map((product, index) => {
+          const isActive = index === activeIndex;
+          return (
+            <button
+              key={product.id}
+              onClick={() => setActiveIndex(index)}
+              className={`flex items-center gap-2 px-3 py-2 min-h-[44px] rounded-md text-sm whitespace-nowrap transition-all snap-start shrink-0 ${
+                isActive
+                  ? "bg-background shadow-sm font-medium"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <div className="relative size-6 flex-shrink-0 rounded-full overflow-hidden bg-muted">
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  fill
+                  className="object-cover"
+                  sizes="24px"
+                />
+              </div>
+              <span className={`flex flex-col items-start ${showCompact && !isActive ? "sr-only sm:not-sr-only" : ""}`}>
+                <span>{product.name}</span>
+                {isActive && (
+                  <span className="text-[10px] text-muted-foreground font-normal">{product.tagline}</span>
+                )}
+              </span>
+            </button>
+          );
+        })}
       </div>
       {children(activeProduct)}
     </div>

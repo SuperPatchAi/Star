@@ -3,13 +3,11 @@ import { AppShell } from "@/components/layout/app-shell";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { TrendingUp, CheckCircle, FileText } from "lucide-react";
+import { TrendingUp, FileText } from "lucide-react";
 import Link from "next/link";
 
 const clinicalStudies = [
@@ -106,7 +104,7 @@ export default async function EvidencePage() {
     <AppShell user={user} profile={profile}>
       <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
         <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <h1 className="text-xl font-semibold tracking-tight">
             Clinical Evidence
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -114,48 +112,46 @@ export default async function EvidencePage() {
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-0">
           {clinicalStudies.map((study) => (
-            <Card key={study.id}>
-              <CardHeader className="pb-3">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="flex items-start gap-3">
-                    <span className="text-3xl">{study.productEmoji}</span>
-                    <div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <CardTitle className="text-lg">{study.name}</CardTitle>
-                        <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
-                          {study.productName}
-                        </Badge>
-                      </div>
-                      <CardDescription className="mt-0.5">
-                        {study.journal}, {study.year} • {study.type}
-                      </CardDescription>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {study.participants} participants • {study.duration}
-                      </p>
+            <div key={study.id} className="flat-list-row">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex items-start gap-3">
+                  <span className="text-3xl">{study.productEmoji}</span>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h2 className="text-base font-semibold">{study.name}</h2>
+                      <span className="text-sm text-muted-foreground">
+                        {study.productName}
+                      </span>
                     </div>
-                  </div>
-
-                  <div className="flex gap-2">
-                    {study.keyStats.map((stat, i) => (
-                      <div
-                        key={i}
-                        className="text-center px-3 py-2 bg-muted rounded-lg"
-                      >
-                        <p className="text-lg font-semibold text-primary">
-                          {stat.value}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground">
-                          {stat.label}
-                        </p>
-                      </div>
-                    ))}
+                    <p className="text-sm text-muted-foreground mt-0.5">
+                      {study.journal}, {study.year} • {study.type}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {study.participants} participants • {study.duration}
+                    </p>
                   </div>
                 </div>
-              </CardHeader>
 
-              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {study.keyStats.map((stat, i) => (
+                    <div
+                      key={i}
+                      className="text-center px-2 py-1.5 bg-muted rounded-lg min-w-[70px]"
+                    >
+                      <p className="text-lg font-semibold text-primary">
+                        {stat.value}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground">
+                        {stat.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4">
                 <div className="grid gap-4 lg:grid-cols-2">
                   <div>
                     <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1">
@@ -165,7 +161,7 @@ export default async function EvidencePage() {
                     <div className="space-y-1.5">
                       {study.results.map((result, i) => (
                         <div key={i} className="flex items-start gap-2 text-sm">
-                          <CheckCircle className="size-4 text-green-600 mt-0.5 shrink-0" />
+                          <span className="size-1.5 rounded-full bg-foreground shrink-0 mt-1.5" />
                           <div>
                             <span className="font-medium">{result.metric}:</span>{" "}
                             <span className="text-muted-foreground">
@@ -201,12 +197,12 @@ export default async function EvidencePage() {
                 >
                   View {study.productName} Word Track →
                 </Link>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
 
-        <Card className="bg-muted/30">
+        <Card className="bg-muted/30 border-border/50">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">
               Using Clinical Evidence in Sales

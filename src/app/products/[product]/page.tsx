@@ -42,7 +42,7 @@ export default async function ProductDetailPage({
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-2xl font-semibold tracking-tight">
+              <h1 className="text-xl font-semibold tracking-tight">
                 {product.name}
               </h1>
               {product.hasClinicalStudy && (
@@ -54,40 +54,19 @@ export default async function ProductDetailPage({
                   {product.studyName}
                 </Badge>
               )}
-              {wordTrack !== null && (
-                <Badge
-                  variant="outline"
-                  className="text-[10px] px-1.5 py-0 h-5 bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-400 dark:border-blue-800"
-                >
-                  Full Word Track
-                </Badge>
-              )}
             </div>
             <p className="text-sm text-muted-foreground mt-0.5">
               {wordTrack?.tagline || product.tagline}
             </p>
-            <div className="flex items-center gap-1.5 mt-2">
-              <Badge
-                variant="outline"
-                className="text-[10px] px-1.5 py-0 h-5"
-                style={{
-                  borderColor: product.color + "40",
-                  color: product.color,
-                  backgroundColor: product.color + "10",
-                }}
-              >
-                {product.category}
-              </Badge>
-              <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5">
-                D2C
-              </Badge>
-            </div>
+            <span className="text-xs text-muted-foreground mt-1 block">
+              {product.category}
+            </span>
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button size="sm" asChild>
-            <Link href="/sales">
+            <Link href="/contacts">
               <MessageSquarePlus className="size-4 mr-1.5" />
               Start Conversation
             </Link>
@@ -98,7 +77,7 @@ export default async function ProductDetailPage({
               Roadmap
             </Link>
           </Button>
-          <Button variant="outline" size="icon" className="size-8">
+          <Button variant="outline" size="icon" className="size-9">
             <Star className="size-4" />
           </Button>
         </div>

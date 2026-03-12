@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ChevronRight, Copy, Check } from "lucide-react";
-import { copyToClipboard } from "@/lib/utils";
+import { ShareCopyButton } from "@/components/ui/share-copy-button";
+import { ChevronRight } from "lucide-react";
 import type { RoadmapDiscovery } from "@/types/roadmap";
 
 interface StepDiscoveryProps {
@@ -32,15 +31,8 @@ function normalizeCategory(type: string): string {
 }
 
 export function StepDiscovery({ data, questionsAsked, onToggleQuestion, onContinue }: StepDiscoveryProps) {
-  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
   const categories = [...new Set(data.questions.map(q => normalizeCategory(q.type)))];
   const askedCount = questionsAsked.length;
-
-  const handleCopy = async (text: string, idx: number) => {
-    await copyToClipboard(text);
-    setCopiedIdx(idx);
-    setTimeout(() => setCopiedIdx(null), 2000);
-  };
 
   return (
     <div className="space-y-4">
@@ -72,7 +64,6 @@ export function StepDiscovery({ data, questionsAsked, onToggleQuestion, onContin
             </CardHeader>
             <CardContent className="space-y-3">
               {questions.map((q, i) => {
-                const globalIdx = data.questions.indexOf(q);
                 const isAsked = questionsAsked.includes(q.question);
                 return (
                   <div
@@ -91,18 +82,10 @@ export function StepDiscovery({ data, questionsAsked, onToggleQuestion, onContin
                         &ldquo;{q.question}&rdquo;
                       </span>
                     </label>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-7 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => handleCopy(q.question, globalIdx)}
-                    >
-                      {copiedIdx === globalIdx ? (
-                        <Check className="size-3.5 text-green-500" />
-                      ) : (
-                        <Copy className="size-3.5" />
-                      )}
-                    </Button>
+                    <ShareCopyButton
+                      text={q.question}
+                      className="size-9 min-h-[44px] min-w-[44px] shrink-0 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                    />
                   </div>
                 );
               })}

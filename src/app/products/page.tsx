@@ -10,16 +10,10 @@ export default function ProductsPage() {
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-xs">
-              D2C
-            </Badge>
-            <span className="text-xs text-muted-foreground">•</span>
-            <span className="text-xs text-muted-foreground">
-              {products.length} products
-            </span>
-          </div>
-          <h1 className="text-2xl font-semibold tracking-tight">Products</h1>
+          <p className="text-xs text-muted-foreground">
+            {products.length} products
+          </p>
+          <h1 className="text-xl font-semibold tracking-tight">Products</h1>
         </div>
 
         <div className="relative max-w-sm">
@@ -30,7 +24,7 @@ export default function ProductsPage() {
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {products.map((product) => (
             <Link key={product.id} href={`/products/${product.id}`}>
-              <Card className="h-full transition-colors hover:bg-muted/50">
+              <Card className="h-full transition-colors hover:bg-muted/50 border-border/50">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
                     <div className="relative size-12 flex-shrink-0 rounded-full overflow-hidden bg-muted">
@@ -48,17 +42,9 @@ export default function ProductsPage() {
                         {product.tagline}
                       </p>
                       <div className="flex items-center gap-1.5 mt-2">
-                        <Badge
-                          variant="outline"
-                          className="text-[10px] px-1.5 py-0 h-5"
-                          style={{
-                            borderColor: product.color + "40",
-                            color: product.color,
-                            backgroundColor: product.color + "10",
-                          }}
-                        >
+                        <span className="text-xs text-muted-foreground">
                           {product.category}
-                        </Badge>
+                        </span>
                         {product.hasClinicalStudy && (
                           <Badge
                             variant="outline"

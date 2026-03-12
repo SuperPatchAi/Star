@@ -1,11 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Copy, Check, ChevronRight, Info } from "lucide-react";
+import { ChevronRight, Info, CheckCircle } from "lucide-react";
+import { ShareCopyButton } from "@/components/ui/share-copy-button";
+import { cn } from "@/lib/utils";
 import type { RoadmapClosing } from "@/types/roadmap";
 
 interface StepClosingProps {
@@ -16,21 +14,6 @@ interface StepClosingProps {
 }
 
 export function StepClosing({ data, selectedTechnique, onSelect, onContinue }: StepClosingProps) {
-  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
-  const [copiedPreClose, setCopiedPreClose] = useState(false);
-
-  const handleCopy = async (text: string, index: number) => {
-    await navigator.clipboard.writeText(text.trim());
-    setCopiedIndex(index);
-    setTimeout(() => setCopiedIndex(null), 2000);
-  };
-
-  const handleCopyPreClose = async () => {
-    await navigator.clipboard.writeText(data.pre_close);
-    setCopiedPreClose(true);
-    setTimeout(() => setCopiedPreClose(false), 2000);
-  };
-
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
@@ -43,75 +26,49 @@ export function StepClosing({ data, selectedTechnique, onSelect, onContinue }: S
         <p className="text-sm text-blue-700 dark:text-blue-300 flex-1">
           <strong>Pre-close:</strong> {data.pre_close}
         </p>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="size-7 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-          onClick={handleCopyPreClose}
-        >
-          {copiedPreClose ? (
-            <Check className="size-3.5 text-green-500" />
-          ) : (
-            <Copy className="size-3.5" />
-          )}
-        </Button>
+        <ShareCopyButton text={data.pre_close} className="size-9 min-h-[44px] min-w-[44px] shrink-0 md:opacity-0 md:group-hover:opacity-100 transition-opacity" />
       </div>
 
-      <Separator />
-
-      <div className="grid gap-3">
+      {/* Closing techniques as flat rows */}
+      <div className="space-y-0">
         {data.techniques.map((technique, index) => {
           const isSelected = selectedTechnique === technique.name;
           return (
-            <Card
+            <div
               key={index}
-              className={`cursor-pointer transition-all ${
-                isSelected
-                  ? "ring-2 ring-primary border-primary"
-                  : "hover:border-primary/50"
-              }`}
+              className={cn(
+                "flat-list-row cursor-pointer transition-colors",
+                isSelected && "bg-primary/5"
+              )}
               onClick={() => onSelect(technique.name)}
             >
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Badge variant="outline" className="text-xs font-mono">
-                      {technique.icon}
-                    </Badge>
-                    {technique.name}
-                    {isSelected && (
-                      <Badge className="text-[10px]">Selected</Badge>
-                    )}
-                  </CardTitle>
+              <div className="flex items-start gap-3">
+                <div className={cn(
+                  "size-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors",
+                  isSelected ? "border-primary bg-primary" : "border-border"
+                )}>
+                  {isSelected && <CheckCircle className="size-3 text-primary-foreground" />}
                 </div>
-                <CardDescription className="text-xs">
-                  <strong>When:</strong> {technique.when}
-                </CardDescription>
-              </CardHeader>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{technique.icon}</span>
+                    <p className="text-sm font-semibold">{technique.name}</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    <strong>When:</strong> {technique.when}
+                  </p>
+                </div>
+              </div>
 
               {isSelected && (
-                <CardContent className="pt-0">
+                <div className="mt-3 ml-8" onClick={(e) => e.stopPropagation()}>
                   <div className="bg-muted rounded-lg p-3 text-sm whitespace-pre-wrap relative group">
                     {technique.script}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute top-2 right-2 size-7 opacity-0 group-hover:opacity-100"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCopy(technique.script, index);
-                      }}
-                    >
-                      {copiedIndex === index ? (
-                        <Check className="size-3.5 text-green-500" />
-                      ) : (
-                        <Copy className="size-3.5" />
-                      )}
-                    </Button>
+                    <ShareCopyButton text={technique.script} className="absolute top-2 right-2 size-9 min-h-[44px] min-w-[44px] md:opacity-0 md:group-hover:opacity-100 transition-opacity" />
                   </div>
-                </CardContent>
+                </div>
               )}
-            </Card>
+            </div>
           );
         })}
       </div>

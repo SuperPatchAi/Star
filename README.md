@@ -8,7 +8,7 @@ A Next.js 16 web application for SuperPatch direct-to-consumer sales representat
 |-------|-----------|
 | Framework | Next.js 16 (App Router, Turbopack) |
 | Language | TypeScript (strict mode) |
-| UI | React 19, shadcn/ui (New York style), Tailwind CSS 4 |
+| UI | React 19, shadcn/ui (New York style), Tailwind CSS 4, @dnd-kit/react |
 | Auth & DB | Supabase (Auth, PostgreSQL, RLS, Server Actions) |
 | State | React useState/useCallback/useEffect (no external state library) |
 | Deployment | Vercel |
@@ -19,12 +19,13 @@ A Next.js 16 web application for SuperPatch direct-to-consumer sales representat
 ```
 src/
 ├── app/                    # Next.js App Router pages
-│   ├── page.tsx            # Root redirect → /sales
+│   ├── page.tsx            # Root redirect → /dashboard
 │   ├── layout.tsx          # Root layout (fonts, metadata, Toaster)
 │   ├── globals.css         # Tailwind + CSS variables + themes
 │   ├── (auth)/             # Auth group (login, signup, callbacks)
-│   ├── sales/              # Main sales flow entry point
+│   ├── dashboard/          # Dashboard entry point
 │   ├── contacts/           # Contact management (list + Kanban)
+│   ├── activity/           # Follow-up reminders & activity feed
 │   ├── products/           # Product catalog (reference only)
 │   ├── evidence/           # Clinical evidence page
 │   ├── practice/           # Objection flashcards
@@ -32,17 +33,18 @@ src/
 │   ├── roadmaps/           # Roadmap image gallery
 │   └── api/auth/           # Auth API routes (signout)
 ├── components/
-│   ├── layout/             # AppShell, AppSidebar
+│   ├── layout/             # AppShell, AppSidebar, BottomNav
 │   ├── sales-flow/         # Decision tree + all step components
 │   ├── contacts/           # Contact table, Kanban, sheet
+│   ├── follow-ups/         # Notification bell, activity feed, feed entries
 │   └── ui/                 # shadcn/ui primitives
 ├── lib/
 │   ├── auth.ts             # Auth helpers (getAuthUser, requireAdmin)
 │   ├── security.ts         # Redirect/input sanitization
-│   ├── utils.ts            # cn() class merge utility
+│   ├── utils.ts            # cn(), copyToClipboard(), shareOrCopy()
 │   ├── roadmap-data.ts     # Roadmap spec loading functions
 │   ├── supabase/           # Supabase clients (server, client, middleware)
-│   ├── actions/            # Server actions (contacts CRUD)
+│   ├── actions/            # Server actions (contacts, reminders, push subscriptions)
 │   └── db/                 # Database TypeScript types
 ├── data/
 │   ├── products.ts         # Product catalog (13 products)
@@ -54,7 +56,7 @@ src/
 │   ├── roadmap.ts          # RoadmapV2 types + SALES_STEPS constant
 │   └── wordtrack.ts        # WordTrack section types
 ├── contexts/               # AuthContext provider
-├── hooks/                  # useAuth, useIsMobile
+├── hooks/                  # useAuth, useIsMobile, useServiceWorker
 └── proxy.ts                # Next.js middleware (auth guard)
 ```
 
@@ -78,7 +80,7 @@ The core feature is an 8-step guided sales conversation. Each step renders produ
 ### Data Flow Diagram
 
 ```
-User lands on /sales
+User lands on /dashboard
         │
         ▼
 ┌─────────────────┐     ┌──────────────────┐
@@ -126,8 +128,9 @@ The Presentation step (Problem-Agitate-Solve) uses a `{{discovery_callback}}` pl
 ### Resume Flow
 
 Contacts can be resumed from:
-- **Contacts page** → "Resume" button → `/sales?contactId=xxx`
-- **Kanban board** → card click → `/sales?contactId=xxx`
+- **Contacts page** → "Resume" button or row click → opens contact sheet (calls `onEdit`)
+- **Kanban board** → card click or "Resume" button → opens contact sheet (calls `onEdit`)
+- **Activity feed** → "Open Flow" / "Resume" links → `/contacts?openContact=xxx`
 
 The `DecisionTree` loads the contact's `current_step` and all saved state.
 
@@ -186,13 +189,15 @@ create table public.d2c_contacts (
   sample_products text[] default '{}',
   outcome         text default 'pending',
   follow_up_day   integer,
+  stage_entered_at timestamptz default now(),
+  peak_step       text,
   created_at      timestamptz default now() not null,
   updated_at      timestamptz default now() not null
 );
 ```
 
 - **RLS**: All policies enforce `auth.uid() = user_id` (select, insert, update, delete)
-- **Indexes**: `user_id`, `product_ids` (GIN), `outcome`, `current_step`
+- **Indexes**: `user_id`, `product_ids` (GIN), `outcome`, `current_step`, `(current_step, stage_entered_at)`
 
 ### `user_profiles` Table
 
@@ -253,10 +258,38 @@ Renders product-specific content in a tabbed interface. If only one product is s
 ### ContactsTable / ContactsKanban
 Two views of the contact pipeline:
 - **Table**: Filterable list with product avatars, step labels, progress indicators
-- **Kanban**: Columns per sales step, drag-free visual pipeline
+- **Kanban**: Stage-based pipeline board with two responsive layouts:
+  - **Desktop (md+)**: Drag-and-drop columns via `@dnd-kit/react` with droppable zones, drag overlay, and visual drop target highlighting
+  - **Mobile (below md)**: Vertical accordion layout (Radix Accordion) with collapsible stage panels, eliminating horizontal scroll
+  - **Quick actions on cards**: Stage advance/back chevrons, one-tap call/email, Won/Lost buttons (on closing/followup stages), and Resume link
+  - **Staleness indicators**: Amber ring + day count on cards that exceed per-stage idle thresholds (from `STALENESS_THRESHOLDS`)
+  - **Optimistic updates**: Stage changes (drag or button) update UI immediately, revert on server error, and manage `follow_up_day` lifecycle
+  - **Skeleton loading**: Pulsing column/card skeletons on desktop, accordion row skeletons on mobile
+  - **Column headers**: Stage number badges, contact count with pipeline fraction (e.g., "3/12")
+
+### KanbanCard (`src/components/contacts/kanban-card.tsx`)
+Shared card sub-component used by both mobile accordion and desktop DnD layouts. Renders product avatars, contact info, outcome badges, staleness indicators, quick stage navigation, call/email buttons, Win/Lost actions, and Resume link.
 
 ### ContactSheet (`src/components/contacts/contact-sheet.tsx`)
-Slide-out panel for creating/editing contacts with full field access.
+Full-width slide-out drawer that serves as the primary sales workspace:
+- **View mode**: Stacked layout with contact INFO section at top (summary, read-only stage display, contact details) and the full interactive `DecisionTree` component below
+- **New contact mode**: Opens `DecisionTree` at step 0 (`add_contact`) for creating a contact and immediately starting a sales conversation
+- **Edit mode**: Full field editing form for contact data
+- The drawer replaces the old `/sales` page -- all sales conversations now happen inside the contact drawer
+- `DecisionTree` receives `variant="drawer"` which hides the page-level header, uses inline navigation buttons, and adds flush-on-unmount to prevent data loss when the drawer closes
+
+### Dashboard (`src/app/dashboard/page.tsx`)
+Landing page with sales pipeline overview:
+- **Pipeline summary**: Stat cards (Active, Won, Lost, Win Rate) + per-stage progress bars
+- **Today's follow-ups**: Shows overdue and due-today reminders with compact `FeedEntry` components
+- **Recent activity**: Last 10 contact updates with name, step, outcome, and relative timestamp
+- **Performance stats**: Contacts this week, active conversations
+
+### FollowUpCalendar (`src/components/follow-ups/follow-up-calendar.tsx`)
+Calendar component on the Activity page:
+- **Week strip** (default): 7-day horizontal row with navigation arrows, colored dots for reminders
+- **Expanded month**: Full month grid with the same dot indicators
+- Tapping a day filters the activity feed below
 
 ## Server Actions (`src/lib/actions/contacts.ts`)
 
@@ -269,9 +302,15 @@ Slide-out panel for creating/editing contacts with full field access.
 | `deleteContact(id)` | Delete a contact |
 | `toggleSampleSent(id, sent)` | Toggle sample sent flag |
 | `updateContactOutcome(id, outcome)` | Set contact outcome |
-| `updateContactStep(id, step)` | Set current step |
+| `updateContactStep(id, step)` | Set current step (also sets `stage_entered_at` and tracks `peak_step`) |
+| `advanceFollowUpDay(id)` | Advance to next follow-up sequence step |
+| `dismissReminder(id)` | Reset `stage_entered_at` to snooze a reminder |
+| `getFollowUpReminders()` | Compute all pending reminders for the user |
+| `getFollowUpReminderCount()` | Count of pending reminders (for badge) |
+| `subscribePush(subscription)` | Save push notification subscription |
+| `unsubscribePush(endpoint)` | Remove push notification subscription |
 
-All actions use the server Supabase client and scope queries to the authenticated user's ID. Path revalidation is called for `/contacts` and `/sales`.
+All actions use the server Supabase client and scope queries to the authenticated user's ID. Path revalidation is called for `/contacts` and `/dashboard`.
 
 ## Environment Variables
 
@@ -295,8 +334,10 @@ npm run lint         # ESLint
 
 | Nav Item | Route | Purpose |
 |----------|-------|---------|
-| Start Conversation | `/sales` | Main entry — guided sales flow |
-| Contacts | `/contacts` | Contact list + Kanban pipeline |
+| Dashboard | `/dashboard` | Main entry |
+| Start Conversation | `/contacts` | Contact list + Kanban pipeline (unified search) |
+| Contacts | `/contacts` | Contact list + Kanban pipeline (unified search) |
+| Activity | `/activity` | Follow-up reminders & activity feed |
 | Evidence | `/evidence` | Clinical studies |
 | Practice | `/practice` | Objection flashcards |
 | Favorites | `/favorites` | Saved scripts |
@@ -304,12 +345,131 @@ npm run lint         # ESLint
 
 Products are accessible at `/products` and `/products/[product]` but are not in the main navigation — they serve as reference pages only.
 
-## Copy-to-Clipboard
+### Mobile Navigation
 
-Every user-facing script and speakable text has a copy-to-clipboard button with visual feedback (checkmark for 2 seconds). A shared `copyToClipboard` utility lives in `src/lib/utils.ts`.
+On mobile (below `md` breakpoint), the sidebar is replaced by a fixed bottom tab bar (`BottomNav`) with 4 tabs: **Dashboard**, **Contacts**, **Activity**, **Roadmaps**, and **More** (opens sidebar sheet). The sidebar hamburger trigger is hidden on mobile. The sales flow has a sticky Previous/Next footer above the bottom nav for step navigation.
 
-| Component | What's Copyable |
-|-----------|----------------|
+## Design System (Pipedrive-Inspired)
+
+The app follows a clean, monochromatic visual language inspired by Pipedrive CRM:
+
+### Typography Hierarchy
+- **Global font**: Inter (via `--font-sans: var(--font-inter)`)
+- **Page titles**: `text-xl font-semibold tracking-tight`
+- **List item names**: `text-base font-semibold` -- bold enough to scan quickly
+- **Supporting text**: `text-sm text-muted-foreground`
+- **Metadata**: `text-xs text-muted-foreground/70` -- lighter for tertiary info
+
+### Visual Patterns
+- **Flat list rows** with thin dividers (`.flat-list-row`) instead of bordered cards for list content
+- **Right-aligned status indicators** on contact rows (outcome icon + stage label)
+- **Filter pills** with counts instead of select dropdowns (contacts, practice pages)
+- **Floating Action Button (FAB)** for primary create actions on mobile
+- **Pipedrive-style text tabs** with underline active state for view switching
+- **Strategic color**: Green for success/won, red for lost/destructive, primary for CTAs, gray for everything else
+- **Status colors** defined as CSS variables: `--success`, `--warning`, `--urgency`
+- **Strengthened borders** (`--border` and `--input` CSS variables tuned for higher contrast); full-opacity dividers on `.flat-list-row`
+- **Border-radius**: `0.75rem` for a modern, slightly rounded appearance
+
+### Component Patterns
+- **Outcome indicators**: Colored circle icons (CheckCircle for won, XCircle for lost, Circle for pending) -- not text badges
+- **Sample sent**: Small green dot next to name, not a badge
+- **Stage labels**: Plain muted text, not colored badges
+- **Product filter**: Popover with list buttons, triggered by a filter icon
+- **Contact detail sheet**: View-first layout with summary, interactive stage navigator (chevrons advance/regress stages), Won/Lost buttons, tabbed content (INFO / SALES PROGRESS), active follow-up script with copy-to-clipboard, sticky mobile bottom action bar (Resume Flow, phone, email), and "Resume Flow" CTA. Edit mode via pencil icon toggle.
+- **Activity feed entries**: Flat list rows with type icons (phone/email/clock), red overdue dates, plain text day labels, one-tap checkbox for marking items done -- no card wrappers or colored accent bars
+- **Activity feed section headers**: Uppercase label with count (e.g., "OVERDUE 2") -- no parentheses
+- **Sales flow steps**: All step components (presentation, objections, closing, follow-up, samples) use flat div sections with border-b dividers instead of Card wrappers; Badge labels replaced with plain colored text or muted pills
+- **Reference tabs view**: All Card/CardHeader/CardContent stripped; sections use flat divs with section headers; Badge labels replaced with plain text spans
+- **Pipeline direction indicators**: Green TrendingUp arrow on kanban cards when stage_entered_at is within 24h (recently advanced); red TrendingDown arrow when current_step is behind peak_step (regressed); amber AlertCircle for stale contacts
+- **Resume flow**: DecisionTree shows a bordered contact header bar with back link to /contacts, product avatars, and bold name; step counter uses plain text instead of Badge; sales page heading shows "Resume: {name}" when resuming
+
+## Mobile UX
+
+The app includes a comprehensive mobile-first experience informed by HubSpot, Pipedrive, and Close CRM design patterns:
+
+### Navigation and Layout
+- **Bottom navigation bar** with 5 tabs (Sales, Contacts, Activity, Roadmaps, More) replaces the sidebar on mobile
+- **Scrollable step pills** replace the 8-step indicator bar on small screens, with icons and auto-centering on the active step
+- **Sticky Previous/Next footer** for easy step navigation without scrolling
+- **Global overflow-x: hidden** on html and main container to prevent any page-level horizontal scrolling
+- **Breadcrumb truncation** prevents long product names from overflowing the header
+
+### Touch and Interaction
+- **Always-visible copy buttons** on touch devices (desktop retains hover-to-reveal pattern via `md:opacity-0 md:group-hover:opacity-100`)
+- **44px minimum tap targets** for all interactive elements across all pages
+- **One-tap call/email** on contact cards using `tel:` and `mailto:` links (CRM pattern from HubSpot/Close)
+- **Mobile quick-action bar** on contact list cards: phone, email, and resume buttons visible without menus
+- **Touch-accessible roadmap overlays** with gradient bar at bottom instead of hover-only full overlay
+- **Safe area insets** for notched devices (`env(safe-area-inset-*)`)
+- **Pinch-to-zoom** enabled (viewport `maximumScale: 5`) for accessibility
+
+### Responsive Layouts
+- **Responsive form layouts** that stack to single columns on small screens (contact fields, address forms, contact sheet)
+- **Responsive filters** on contacts page: full-width search + 3-column filter row on mobile
+- **Stacked action buttons** on product detail, contacts page header
+- **Scrollable TabsList** on favorites page to prevent overflow
+- **Wrapped key stats** on evidence page for narrow viewports
+- **Responsive flashcard controls** with grid layout on mobile
+
+### CRM-Inspired Polish
+- **Compact mobile contact cards** hide secondary metadata (notes, address, progress badges) on mobile, showing only essentials
+- **Better empty states** with icons, descriptive text, and CTAs (not just "No contacts found")
+- **Contact sheet quick-action header** with call/email buttons when editing an existing contact
+- **Kanban scroll indicator** with gradient fade on the right edge to signal horizontal scrollability
+- **Product tabs** with scroll snap and touch-friendly sizing
+- **Top-center toaster** position to avoid overlap with bottom nav
+
+## Follow-Up Reminders and Activity Feed
+
+A two-phase notification system that reminds reps to follow up with contacts at every stage of the sales pipeline.
+
+### Phase 1: In-App Activity Feed
+- **Bell icon** in the app-shell header with badge count of pending reminders
+- **Activity Feed** opens as a right-side Sheet with filter pills (All, Overdue, Due Today, Upcoming)
+- **Staleness alerts** for contacts idle too long in any kanban stage (configurable thresholds per step)
+- **Follow-up sequence reminders** based on the roadmap DAY 1/3/7/14 timeline
+- **Feed entry cards** with one-tap call/email, copy script, and Mark Done/Snooze actions
+- **Script quick-view** expands inline with copy button (same pattern as `step-followup.tsx`)
+- `stage_entered_at` column tracks when a contact entered their current step
+- `peak_step` column tracks the highest step a contact has reached (for regression detection)
+- `follow_up_day` column tracks progress through the follow-up sequence
+
+### Phase 2: Push Notifications
+- **Service worker** (`public/sw.js`) handles push events and notification click deep-linking
+- **Push subscription** table (`d2c_push_subscriptions`) with RLS policies
+- **Permission banner** inside the activity feed (non-blocking, dismissable)
+- **Supabase Edge Function** (`supabase/functions/send-follow-up-reminders/`) runs on cron to send push notifications
+
+### Key Files
+| File | Purpose |
+|------|---------|
+| `src/lib/actions/reminders.ts` | `getFollowUpReminders()` server action |
+| `src/types/reminders.ts` | Types + staleness thresholds + DAY offsets |
+| `src/components/follow-ups/notification-bell.tsx` | Bell icon + badge + Sheet trigger |
+| `src/components/follow-ups/activity-feed.tsx` | Feed list with sections and filter pills |
+| `src/components/follow-ups/feed-entry.tsx` | Compact card with quick actions + script accordion |
+| `src/components/follow-ups/push-permission-banner.tsx` | Non-blocking push permission prompt |
+| `src/hooks/use-service-worker.ts` | Service worker registration hook |
+| `src/lib/actions/push-subscriptions.ts` | Push subscription server actions |
+| `public/sw.js` | Service worker for push events |
+| `supabase/functions/send-follow-up-reminders/index.ts` | Edge Function for scheduled dispatch |
+
+## Share / Copy-to-Clipboard
+
+Every user-facing script and speakable text has a share-or-copy button powered by the **Web Share API**. On share-capable devices (iOS Safari, Android Chrome, desktop Chrome/Safari), tapping the button opens the native OS share sheet so reps can send scripts directly to SMS, Instagram, Facebook Messenger, WhatsApp, email, or any installed app. On browsers that don't support `navigator.share`, the button falls back to clipboard copy. Visual feedback (checkmark for 2 seconds) is shown after sharing or copying.
+
+### Architecture
+
+| Layer | File | Purpose |
+|-------|------|---------|
+| Utility | `src/lib/utils.ts` | `shareOrCopy(text, title?)` — tries `navigator.share`, falls back to `copyToClipboard` |
+| Component | `src/components/ui/share-copy-button.tsx` | `ShareCopyButton` — reusable button with icon swap (Share2/Copy/Check), SSR-safe share detection, `"icon"` and `"labeled"` variants |
+
+### Usage across components
+
+| Component | What's Shareable |
+|-----------|-----------------|
 | `step-opening-picker.tsx` | Each opening approach script |
 | `step-discovery.tsx` | Each discovery question |
 | `step-presentation.tsx` | Each P-A-S phase + full script |
@@ -318,6 +478,11 @@ Every user-facing script and speakable text has a copy-to-clipboard button with 
 | `step-closing.tsx` | Pre-close reminder + each closing technique |
 | `step-followup.tsx` | Each follow-up template |
 | `reference-tabs-view.tsx` | All scripts across Opening, Discovery, Presentation (P-A-S + full script), Objections, Closing, Follow-Up, and Quick Ref tabs |
+| `feed-entry.tsx` | Follow-up script templates in activity feed |
+| `contact-sheet.tsx` | Active follow-up script on contact detail |
+| `favorites/page.tsx` | Saved scripts, objections, and product references |
+
+On mobile, share/copy buttons are always visible; on desktop they appear on hover (`md:opacity-0 md:group-hover:opacity-100`).
 
 ## Commit Convention
 

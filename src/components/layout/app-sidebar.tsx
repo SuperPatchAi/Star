@@ -19,6 +19,7 @@ import {
   User,
   Users,
   MessageSquarePlus,
+  LayoutDashboard,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { UserProfile } from "@/lib/db/types";
@@ -85,7 +86,7 @@ export function AppSidebar({
     return 'U';
   };
 
-  const isSalesActive = pathname.startsWith("/sales");
+  const isDashboardActive = pathname.startsWith("/dashboard");
   const isRoadmapsActive = pathname.startsWith("/roadmaps");
   const isPracticeActive = pathname.startsWith("/practice");
   const isEvidenceActive = pathname.startsWith("/evidence");
@@ -135,14 +136,28 @@ export function AppSidebar({
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              {/* Dashboard */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  tooltip="Dashboard"
+                  isActive={isDashboardActive}
+                >
+                  <Link href="/dashboard">
+                    <LayoutDashboard className="h-4 w-4" />
+                    <span>Dashboard</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
               {/* Start Conversation */}
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
                   tooltip="Start Conversation"
-                  isActive={isSalesActive}
+                  isActive={isContactsActive}
                 >
-                  <Link href="/sales">
+                  <Link href="/contacts">
                     <MessageSquarePlus className="h-4 w-4" />
                     <span>Start Conversation</span>
                   </Link>

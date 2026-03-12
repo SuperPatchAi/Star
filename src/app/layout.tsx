@@ -6,7 +6,7 @@ import "./globals.css";
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin"],
-  weight: ["400", "500", "700", "900"],
+  weight: ["400", "500", "600", "700", "900"],
   display: "swap",
 });
 
@@ -47,7 +47,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
     { media: "(prefers-color-scheme: dark)", color: "#101010" },
@@ -62,11 +63,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${montserrat.variable} ${jetbrainsMono.variable} ${inter.variable} font-sans antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} ${montserrat.variable} font-sans antialiased`}
       >
         {children}
         <Toaster 
-          position="bottom-right"
+          position="top-center"
           toastOptions={{
             style: {
               background: "var(--card)",

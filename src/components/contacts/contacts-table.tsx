@@ -1,63 +1,31 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {
-  Search,
-  MoreHorizontal,
-  Package,
-  Phone,
-  Mail,
-  StickyNote,
-  MapPin,
-  Trash2,
-  Edit,
   CheckCircle,
   XCircle,
-  Clock,
-  Repeat,
-  Play,
+  Circle,
+  ArrowUpRight,
+  Users,
+  MessageSquarePlus,
+  SlidersHorizontal,
 } from "lucide-react";
-import { toggleSampleSent, updateContactOutcome, deleteContact } from "@/lib/actions/contacts";
 import { products } from "@/data/products";
-import type { Contact, ContactOutcome } from "@/lib/db/types";
+import type { Contact, ContactStep } from "@/lib/db/types";
+import { STALENESS_THRESHOLDS } from "@/types/reminders";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 interface ContactsTableProps {
   contacts: Contact[];
   onEdit: (contact: Contact) => void;
+  onStartNew?: () => void;
 }
 
 const stepLabels: Record<string, string> = {
@@ -72,320 +40,258 @@ const stepLabels: Record<string, string> = {
   closed: "Closed",
 };
 
-function formatAddress(contact: Contact): string | null {
-  const parts = [contact.address_line1, contact.address_city, contact.address_state, contact.address_zip].filter(Boolean);
-  if (parts.length === 0) return null;
-  const street = [contact.address_line1, contact.address_line2].filter(Boolean).join(", ");
-  const cityStateZip = [contact.address_city, [contact.address_state, contact.address_zip].filter(Boolean).join(" ")].filter(Boolean).join(", ");
-  return [street, cityStateZip].filter(Boolean).join(", ");
+function OutcomeIcon({ outcome }: { outcome: string }) {
+  switch (outcome) {
+    case "won":
+      return <CheckCircle className="size-5 text-success" />;
+    case "lost":
+      return <XCircle className="size-5 text-destructive" />;
+    case "follow_up":
+      return <ArrowUpRight className="size-5 text-primary" />;
+    default:
+      return <Circle className="size-5 text-muted-foreground/40" />;
+  }
 }
 
-const outcomeConfig: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: React.ReactNode }> = {
-  pending: { label: "Pending", variant: "secondary", icon: <Clock className="size-3" /> },
-  won: { label: "Won", variant: "default", icon: <CheckCircle className="size-3" /> },
-  lost: { label: "Lost", variant: "destructive", icon: <XCircle className="size-3" /> },
-  follow_up: { label: "Follow Up", variant: "outline", icon: <Repeat className="size-3" /> },
-};
+function getTimeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  return `${Math.floor(days / 30)}mo ago`;
+}
 
-export function ContactsTable({ contacts: initialContacts, onEdit }: ContactsTableProps) {
-  const [contacts, setContacts] = useState(initialContacts);
-  const [search, setSearch] = useState("");
+function getStaleDays(contact: Contact): number {
+  if (!contact.stage_entered_at) return 0;
+  return Math.floor((Date.now() - new Date(contact.stage_entered_at).getTime()) / 86400000);
+}
+
+function isStale(contact: Contact): boolean {
+  const threshold = STALENESS_THRESHOLDS[contact.current_step as ContactStep] ?? Infinity;
+  if (threshold === Infinity || threshold === 0) return false;
+  return getStaleDays(contact) >= threshold;
+}
+
+function getContextLine(contact: Contact): { text: string; accent?: string } {
+  const contactProducts = products.filter((p) => contact.product_ids.includes(p.id));
+  const productNames = contactProducts.map((p) => p.name).join(", ") || "No product";
+  const step = stepLabels[contact.current_step] || contact.current_step;
+
+  if (contact.outcome === "won") {
+    return { text: `${productNames} · Won`, accent: "text-success" };
+  }
+  if (contact.outcome === "lost") {
+    return { text: `${productNames} · Lost`, accent: "text-destructive" };
+  }
+
+  if (contact.current_step === "followup") {
+    const day = (contact.follow_up_day ?? 0) + 1;
+    const stale = isStale(contact);
+    const label = `${productNames} · Follow-Up Day ${day}`;
+    if (stale) return { text: `${label} · overdue`, accent: "text-destructive" };
+    return { text: label };
+  }
+
+  const staleDays = getStaleDays(contact);
+  const stale = isStale(contact);
+
+  if (stale) {
+    return { text: `${productNames} · ${step} · ${staleDays}d (stale)`, accent: "text-warning" };
+  }
+
+  const timeAgo = getTimeAgo(contact.updated_at);
+  return { text: `${productNames} · ${step} · ${timeAgo}` };
+}
+
+type FilterKey = "all" | "pending" | "won" | "lost" | "follow_up" | "samples";
+
+export function ContactsTable({
+  contacts,
+  onEdit,
+  onStartNew,
+}: ContactsTableProps) {
+  const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
   const [filterProduct, setFilterProduct] = useState<string>("all");
-  const [filterOutcome, setFilterOutcome] = useState<string>("all");
-  const [filterSample, setFilterSample] = useState<string>("all");
 
   const filtered = contacts.filter((c) => {
-    const fullName = `${c.first_name} ${c.last_name}`.toLowerCase();
-    if (search && !fullName.includes(search.toLowerCase()) &&
-        !c.email?.toLowerCase().includes(search.toLowerCase()) &&
-        !c.phone?.includes(search)) return false;
-    if (filterProduct !== "all" && !c.product_ids.includes(filterProduct)) return false;
-    if (filterOutcome !== "all" && c.outcome !== filterOutcome) return false;
-    if (filterSample === "sent" && !c.sample_sent) return false;
-    if (filterSample === "not_sent" && c.sample_sent) return false;
+    if (filterProduct !== "all" && !c.product_ids.includes(filterProduct))
+      return false;
+    if (activeFilter === "pending" && c.outcome !== "pending") return false;
+    if (activeFilter === "won" && c.outcome !== "won") return false;
+    if (activeFilter === "lost" && c.outcome !== "lost") return false;
+    if (activeFilter === "follow_up" && c.outcome !== "follow_up") return false;
+    if (activeFilter === "samples" && !c.sample_sent) return false;
     return true;
   });
 
-  const handleToggleSample = async (contact: Contact) => {
-    const newValue = !contact.sample_sent;
-    setContacts(prev => prev.map(c =>
-      c.id === contact.id
-        ? { ...c, sample_sent: newValue, sample_sent_at: newValue ? new Date().toISOString() : null }
-        : c
-    ));
-    await toggleSampleSent(contact.id, newValue);
+  const getFirstProduct = (productIds: string[]) =>
+    products.find((p) => productIds.includes(p.id));
+
+  const counts = {
+    all: contacts.length,
+    pending: contacts.filter((c) => c.outcome === "pending").length,
+    won: contacts.filter((c) => c.outcome === "won").length,
+    lost: contacts.filter((c) => c.outcome === "lost").length,
+    follow_up: contacts.filter((c) => c.outcome === "follow_up").length,
+    samples: contacts.filter((c) => c.sample_sent).length,
   };
 
-  const handleOutcome = async (contact: Contact, outcome: ContactOutcome) => {
-    setContacts(prev => prev.map(c =>
-      c.id === contact.id ? { ...c, outcome } : c
-    ));
-    await updateContactOutcome(contact.id, outcome);
-  };
-
-  const handleDelete = async (id: string) => {
-    setContacts(prev => prev.filter(c => c.id !== id));
-    await deleteContact(id);
-  };
-
-  const getProducts = (productIds: string[]) => products.filter(p => productIds.includes(p.id));
+  const pills: { key: FilterKey; label: string }[] = [
+    { key: "all", label: "All" },
+    { key: "pending", label: "Open" },
+    { key: "won", label: "Won" },
+    { key: "lost", label: "Lost" },
+    { key: "follow_up", label: "Follow Up" },
+    { key: "samples", label: "Samples" },
+  ];
 
   return (
-    <div className="space-y-4">
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-[200px] max-w-sm">
-          <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-          <Input
-            placeholder="Search contacts..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-8 h-9"
-          />
+    <div className="space-y-3">
+      {/* Filter pills + product filter */}
+      <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none flex-1 pb-1">
+          {pills.map((pill) => (
+            <button
+              key={pill.key}
+              onClick={() => setActiveFilter(pill.key)}
+              className={cn(
+                "shrink-0 inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                activeFilter === pill.key
+                  ? "bg-foreground text-background"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              )}
+            >
+              {pill.label}
+              {counts[pill.key] > 0 && (
+                <span
+                  className={cn(
+                    "text-[10px] tabular-nums",
+                    activeFilter === pill.key
+                      ? "text-background/70"
+                      : "text-muted-foreground/60"
+                  )}
+                >
+                  {counts[pill.key]}
+                </span>
+              )}
+            </button>
+          ))}
         </div>
-        <Select value={filterProduct} onValueChange={setFilterProduct}>
-          <SelectTrigger className="w-[140px] h-9">
-            <SelectValue placeholder="Product" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Products</SelectItem>
-            {products.map(p => (
-              <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn(
+                "size-9 shrink-0",
+                filterProduct !== "all" && "text-primary"
+              )}
+            >
+              <SlidersHorizontal className="size-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="end" className="w-48 p-2">
+            <p className="text-xs font-medium text-muted-foreground px-2 pb-1.5">
+              Product
+            </p>
+            <button
+              onClick={() => setFilterProduct("all")}
+              className={cn(
+                "w-full text-left text-sm px-2 py-1.5 rounded-md transition-colors",
+                filterProduct === "all"
+                  ? "bg-muted font-medium"
+                  : "hover:bg-muted/60"
+              )}
+            >
+              All Products
+            </button>
+            {products.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => setFilterProduct(p.id)}
+                className={cn(
+                  "w-full text-left text-sm px-2 py-1.5 rounded-md transition-colors",
+                  filterProduct === p.id
+                    ? "bg-muted font-medium"
+                    : "hover:bg-muted/60"
+                )}
+              >
+                {p.name}
+              </button>
             ))}
-          </SelectContent>
-        </Select>
-        <Select value={filterOutcome} onValueChange={setFilterOutcome}>
-          <SelectTrigger className="w-[130px] h-9">
-            <SelectValue placeholder="Outcome" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="won">Won</SelectItem>
-            <SelectItem value="lost">Lost</SelectItem>
-            <SelectItem value="follow_up">Follow Up</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={filterSample} onValueChange={setFilterSample}>
-          <SelectTrigger className="w-[140px] h-9">
-            <SelectValue placeholder="Sample" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Samples</SelectItem>
-            <SelectItem value="sent">Sample Sent</SelectItem>
-            <SelectItem value="not_sent">Not Sent</SelectItem>
-          </SelectContent>
-        </Select>
+          </PopoverContent>
+        </Popover>
       </div>
 
-      {/* Results count */}
-      <p className="text-xs text-muted-foreground">
-        {filtered.length} contact{filtered.length !== 1 ? "s" : ""}
-      </p>
-
-      {/* Contact cards */}
+      {/* Contact rows */}
       {filtered.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground">No contacts found.</p>
-          </CardContent>
-        </Card>
+        <div className="py-16 text-center">
+          <Users className="size-12 mx-auto text-muted-foreground/30 mb-3" />
+          <h3 className="font-semibold text-base mb-1">No contacts yet</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            Start a sales conversation to add your first contact.
+          </p>
+          <Button onClick={onStartNew}>
+            <MessageSquarePlus className="size-4 mr-1.5" />
+            Start Conversation
+          </Button>
+        </div>
       ) : (
-        <div className="grid gap-3">
+        <div>
           {filtered.map((contact) => {
-            const contactProducts = getProducts(contact.product_ids);
-            const outcome = outcomeConfig[contact.outcome] || outcomeConfig.pending;
+            const firstProduct = getFirstProduct(contact.product_ids);
+            const context = getContextLine(contact);
+            const fullName = `${contact.first_name} ${contact.last_name}`;
 
             return (
-              <Card key={contact.id} className="group">
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-3 min-w-0 flex-1">
-                      {/* Product avatars */}
-                      {contactProducts.length > 0 && (
-                        <div className="flex -space-x-2 shrink-0">
-                          {contactProducts.slice(0, 3).map(p => (
-                            <div key={p.id} className="relative size-10 rounded-full overflow-hidden bg-muted ring-2 ring-background" title={p.name}>
-                              <Image
-                                src={p.image}
-                                alt={p.name}
-                                fill
-                                className="object-cover"
-                                sizes="40px"
-                              />
-                            </div>
-                          ))}
-                          {contactProducts.length > 3 && (
-                            <div className="flex size-10 items-center justify-center rounded-full bg-muted ring-2 ring-background text-xs font-medium">
-                              +{contactProducts.length - 3}
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-medium text-sm">{contact.first_name} {contact.last_name}</h3>
-                          <Badge variant={outcome.variant} className="text-[10px] px-1.5 py-0 h-5 flex items-center gap-1">
-                            {outcome.icon}
-                            {outcome.label}
-                          </Badge>
-                          {contact.sample_sent && (
-                            <Badge className="text-[10px] px-1.5 py-0 h-5 bg-green-100 text-green-700 border-green-200 dark:bg-green-950 dark:text-green-400 dark:border-green-800">
-                              <Package className="size-3 mr-0.5" />
-                              Sample Sent
-                            </Badge>
-                          )}
-                        </div>
-
-                        <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-                          {contactProducts.length > 0 && <span>{contactProducts.map(p => p.name).join(", ")}</span>}
-                          <span>Step: {stepLabels[contact.current_step] || contact.current_step}</span>
-                          {contact.email && (
-                            <span className="flex items-center gap-1">
-                              <Mail className="size-3" />
-                              {contact.email}
-                            </span>
-                          )}
-                          {contact.phone && (
-                            <span className="flex items-center gap-1">
-                              <Phone className="size-3" />
-                              {contact.phone}
-                            </span>
-                          )}
-                        </div>
-
-                        {contact.notes && (
-                          <p className="text-xs text-muted-foreground mt-1.5 line-clamp-1 flex items-start gap-1">
-                            <StickyNote className="size-3 mt-0.5 shrink-0" />
-                            {contact.notes}
-                          </p>
-                        )}
-
-                        {(() => {
-                          const openingCount = Object.keys(contact.opening_types || {}).length;
-                          const questionCount = Object.values(contact.questions_asked || {}).flat().length;
-                          const objectionCount = Object.values(contact.objections_encountered || {}).flat().length;
-                          const closingCount = Object.keys(contact.closing_techniques || {}).length;
-                          if (!openingCount && !questionCount && !objectionCount && !closingCount) return null;
-                          return (
-                            <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
-                              {openingCount > 0 && (
-                                <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
-                                  {openingCount} opening{openingCount !== 1 ? "s" : ""} set
-                                </Badge>
-                              )}
-                              {questionCount > 0 && (
-                                <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
-                                  {questionCount} question{questionCount !== 1 ? "s" : ""} asked
-                                </Badge>
-                              )}
-                              {objectionCount > 0 && (
-                                <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 border-amber-300 text-amber-700 dark:text-amber-400">
-                                  {objectionCount} objection{objectionCount !== 1 ? "s" : ""}
-                                </Badge>
-                              )}
-                              {closingCount > 0 && (
-                                <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
-                                  {closingCount} close{closingCount !== 1 ? "s" : ""} set
-                                </Badge>
-                              )}
-                            </div>
-                          );
-                        })()}
-
-                        {formatAddress(contact) && (
-                          <p className="text-xs text-muted-foreground mt-1.5 line-clamp-1 flex items-start gap-1">
-                            <MapPin className="size-3 mt-0.5 shrink-0" />
-                            {formatAddress(contact)}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex items-center gap-1">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-8 text-xs"
-                        asChild
-                      >
-                        <Link href={`/sales?contactId=${contact.id}`}>
-                          <Play className="size-3.5 mr-1" />
-                          Resume
-                        </Link>
-                      </Button>
-                      <Button
-                        variant={contact.sample_sent ? "default" : "outline"}
-                        size="sm"
-                        className="h-8 text-xs"
-                        onClick={() => handleToggleSample(contact)}
-                      >
-                        <Package className="size-3.5 mr-1" />
-                        {contact.sample_sent ? "Sent" : "Send Sample"}
-                      </Button>
-
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="size-8">
-                            <MoreHorizontal className="size-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => onEdit(contact)}>
-                            <Edit className="size-4 mr-2" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => handleOutcome(contact, "won")}>
-                            <CheckCircle className="size-4 mr-2 text-green-500" />
-                            Mark Won
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleOutcome(contact, "lost")}>
-                            <XCircle className="size-4 mr-2 text-red-500" />
-                            Mark Lost
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleOutcome(contact, "follow_up")}>
-                            <Repeat className="size-4 mr-2 text-blue-500" />
-                            Follow Up
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleOutcome(contact, "pending")}>
-                            <Clock className="size-4 mr-2" />
-                            Reset to Pending
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <DropdownMenuItem
-                                className="text-destructive"
-                                onSelect={(e) => e.preventDefault()}
-                              >
-                                <Trash2 className="size-4 mr-2" />
-                                Delete
-                              </DropdownMenuItem>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Delete contact?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  This will permanently delete {contact.first_name} {contact.last_name} from your contacts.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleDelete(contact.id)}>
-                                  Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
+              <div
+                key={contact.id}
+                className="flat-list-row flex items-center gap-3 cursor-pointer active:bg-muted/50 transition-colors"
+                onClick={() => onEdit(contact)}
+              >
+                {/* Single small product avatar */}
+                {firstProduct ? (
+                  <div className="relative size-8 rounded-full overflow-hidden bg-muted shrink-0 ring-1 ring-border">
+                    <Image
+                      src={firstProduct.image}
+                      alt={firstProduct.name}
+                      fill
+                      className="object-cover"
+                      sizes="32px"
+                    />
                   </div>
-                </CardContent>
-              </Card>
+                ) : (
+                  <div className="size-8 rounded-full bg-muted shrink-0 ring-1 ring-border flex items-center justify-center text-xs font-medium text-muted-foreground">
+                    {contact.first_name[0]}
+                  </div>
+                )}
+
+                {/* Two-line content */}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm font-semibold truncate">
+                      {fullName}
+                    </span>
+                    {contact.sample_sent && (
+                      <span
+                        className="size-1.5 rounded-full bg-success shrink-0"
+                        title="Sample sent"
+                      />
+                    )}
+                  </div>
+                  <p className={cn("text-xs truncate", context.accent || "text-muted-foreground")}>
+                    {context.text}
+                  </p>
+                </div>
+
+                {/* Outcome icon */}
+                <div className="shrink-0">
+                  <OutcomeIcon outcome={contact.outcome} />
+                </div>
+              </div>
             );
           })}
         </div>

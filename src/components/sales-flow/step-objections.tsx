@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, ChevronRight, ShieldAlert, Brain, Lightbulb } from "lucide-react";
+import { ChevronRight, ShieldAlert, Brain, Lightbulb, CheckCircle } from "lucide-react";
+import { ShareCopyButton } from "@/components/ui/share-copy-button";
+import { cn } from "@/lib/utils";
 import type { RoadmapObjectionHandling } from "@/types/roadmap";
 
 interface StepObjectionsProps {
@@ -16,13 +16,6 @@ interface StepObjectionsProps {
 
 export function StepObjections({ data, encountered, onToggle, onContinue }: StepObjectionsProps) {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
-
-  const handleCopy = async (text: string, index: number) => {
-    await navigator.clipboard.writeText(text.trim());
-    setCopiedIndex(index);
-    setTimeout(() => setCopiedIndex(null), 2000);
-  };
 
   return (
     <div className="space-y-4">
@@ -36,76 +29,61 @@ export function StepObjections({ data, encountered, onToggle, onContinue }: Step
           </p>
         </div>
         {encountered.length > 0 && (
-          <Badge variant="secondary" className="text-xs">
+          <span className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 font-medium">
+            <CheckCircle className="size-3.5" />
             {encountered.length} handled
-          </Badge>
+          </span>
         )}
       </div>
 
-      <div className="grid gap-3 md:grid-cols-2">
+      <div className="space-y-0">
         {data.objections.map((obj, index) => {
           const isEncountered = encountered.includes(obj.objection);
           const isExpanded = expandedIndex === index;
 
           return (
-            <Card
+            <div
               key={index}
-              className={`cursor-pointer transition-all ${
-                isEncountered
-                  ? "ring-1 ring-green-500/50 border-green-500/50"
-                  : "hover:border-orange-500/50"
-              }`}
+              className={cn(
+                "flat-list-row cursor-pointer transition-colors",
+                isExpanded && "bg-accent/30"
+              )}
               onClick={() => {
                 setExpandedIndex(isExpanded ? null : index);
                 if (!isEncountered) onToggle(obj.objection);
               }}
             >
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <ShieldAlert className={`size-4 ${isEncountered ? "text-green-500" : "text-orange-500"}`} />
-                    &ldquo;{obj.objection}&rdquo;
-                  </CardTitle>
-                  {isEncountered && (
-                    <Badge className="text-[10px] bg-green-100 text-green-700 border-green-200 dark:bg-green-950 dark:text-green-400">
-                      Handled
-                    </Badge>
-                  )}
+              <div className="flex items-start gap-3">
+                <ShieldAlert className={cn(
+                  "size-4 mt-0.5 shrink-0",
+                  isEncountered ? "text-green-500" : "text-orange-500"
+                )} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-semibold truncate">&ldquo;{obj.objection}&rdquo;</p>
+                    {isEncountered && <CheckCircle className="size-3.5 text-green-500 shrink-0" />}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    <Lightbulb className="size-3 inline mr-1" />
+                    Trigger: {obj.trigger}
+                  </p>
                 </div>
-                <CardDescription className="text-xs">
-                  <Lightbulb className="size-3 inline mr-1" />
-                  Trigger: {obj.trigger}
-                </CardDescription>
-              </CardHeader>
+              </div>
 
               {isExpanded && (
-                <CardContent className="pt-0 space-y-3">
+                <div className="mt-3 ml-7 space-y-3" onClick={(e) => e.stopPropagation()}>
                   <div className="bg-muted rounded-lg p-3 text-sm relative group">
                     <p className="font-medium text-xs text-muted-foreground mb-1">Response:</p>
                     <p>{obj.response}</p>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute top-2 right-2 size-7 opacity-0 group-hover:opacity-100"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCopy(obj.response, index);
-                      }}
-                    >
-                      {copiedIndex === index ? (
-                        <Check className="size-3.5 text-green-500" />
-                      ) : (
-                        <Copy className="size-3.5" />
-                      )}
-                    </Button>
+                    <ShareCopyButton text={obj.response} className="absolute top-2 right-2 size-9 min-h-[44px] min-w-[44px] md:opacity-0 md:group-hover:opacity-100 transition-opacity" />
                   </div>
                   <div className="flex items-start gap-2 text-xs text-muted-foreground">
                     <Brain className="size-3.5 mt-0.5 shrink-0" />
                     <span><strong>Psychology:</strong> {obj.psychology}</span>
                   </div>
-                </CardContent>
+                </div>
               )}
-            </Card>
+            </div>
           );
         })}
       </div>

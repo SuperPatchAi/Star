@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, ChevronRight } from "lucide-react";
+import { ShareCopyButton } from "@/components/ui/share-copy-button";
+import { ChevronRight } from "lucide-react";
 import type { RoadmapOpeningApproaches } from "@/types/roadmap";
 
 interface StepOpeningPickerProps {
@@ -23,14 +23,6 @@ const approachIcons: Record<string, string> = {
 };
 
 export function StepOpeningPicker({ data, selectedType, onSelect, onContinue }: StepOpeningPickerProps) {
-  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
-
-  const handleCopy = async (text: string, index: number) => {
-    await navigator.clipboard.writeText(text.trim());
-    setCopiedIndex(index);
-    setTimeout(() => setCopiedIndex(null), 2000);
-  };
-
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
@@ -68,21 +60,10 @@ export function StepOpeningPicker({ data, selectedType, onSelect, onContinue }: 
                 <CardContent className="pt-0">
                   <div className="bg-muted rounded-lg p-3 text-sm whitespace-pre-wrap relative group">
                     {approach.script.trim()}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute top-2 right-2 size-7 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCopy(approach.script, index);
-                      }}
-                    >
-                      {copiedIndex === index ? (
-                        <Check className="size-3.5 text-green-500" />
-                      ) : (
-                        <Copy className="size-3.5" />
-                      )}
-                    </Button>
+                    <ShareCopyButton
+                      text={approach.script.trim()}
+                      className="absolute top-2 right-2 size-9 min-h-[44px] min-w-[44px] md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                    />
                   </div>
                 </CardContent>
               )}

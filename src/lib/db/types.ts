@@ -67,6 +67,8 @@ export interface Database {
           sample_products: string[];
           outcome: ContactOutcome;
           follow_up_day: number | null;
+          peak_step: string | null;
+          stage_entered_at: string;
           created_at: string;
           updated_at: string;
         };
@@ -94,6 +96,8 @@ export interface Database {
           sample_products?: string[];
           outcome?: ContactOutcome;
           follow_up_day?: number | null;
+          peak_step?: string | null;
+          stage_entered_at?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -119,6 +123,8 @@ export interface Database {
           sample_products?: string[];
           outcome?: ContactOutcome;
           follow_up_day?: number | null;
+          peak_step?: string | null;
+          stage_entered_at?: string;
           updated_at?: string;
         };
       };

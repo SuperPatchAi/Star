@@ -119,7 +119,7 @@ export function StepAddContact({
               {error}
             </div>
           )}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label htmlFor="contact-first-name">First Name *</Label>
               <Input
@@ -140,7 +140,7 @@ export function StepAddContact({
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label htmlFor="contact-email">Email</Label>
               <Input

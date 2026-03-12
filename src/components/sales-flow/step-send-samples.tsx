@@ -1,14 +1,11 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
-import { Package, ChevronRight, MapPin, Copy, Check } from "lucide-react";
-import { useState } from "react";
+import { Package, ChevronRight, MapPin, Check } from "lucide-react";
+import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import Image from "next/image";
 import type { Product } from "@/types";
 
@@ -43,18 +40,10 @@ export function StepSendSamples({
   onSetSampleAddress,
   onContinue,
 }: StepSendSamplesProps) {
-  const [copied, setCopied] = useState(false);
-
   const address = sampleAddress || { line1: "", line2: "", city: "", state: "", zip: "" };
 
   const handleAddressChange = (field: keyof SampleAddress, value: string) => {
     onSetSampleAddress({ ...address, [field]: value });
-  };
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(SAMPLE_SCRIPT.trim());
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -63,32 +52,24 @@ export function StepSendSamples({
         After your presentation, transition into offering a sample. This builds commitment and gives the prospect a tangible reason to follow up.
       </p>
 
-      <Card>
-        <CardHeader className="pb-2">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <Badge variant="outline" className="text-xs">
-                <Package className="size-3 mr-1" />
-                Sample Offer Script
-              </Badge>
-            </CardTitle>
-            <Button variant="ghost" size="icon" className="size-7" onClick={handleCopy}>
-              {copied ? (
-                <Check className="size-3.5 text-green-500" />
-              ) : (
-                <Copy className="size-3.5" />
-              )}
-            </Button>
+      {/* Sample offer script */}
+      <div className="border-b pb-4">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <Package className="size-4 text-muted-foreground" />
+            <span className="text-sm font-semibold">Sample Offer Script</span>
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className="bg-muted rounded-lg p-4 text-sm whitespace-pre-wrap">
-            {SAMPLE_SCRIPT}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Separator />
+          <ShareCopyButton
+            text={SAMPLE_SCRIPT}
+            variant="icon"
+            className="size-7"
+            iconClassName="size-3.5"
+          />
+        </div>
+        <div className="bg-muted rounded-lg p-4 text-sm whitespace-pre-wrap">
+          {SAMPLE_SCRIPT}
+        </div>
+      </div>
 
       <div className="flex items-center space-x-2">
         <Checkbox
@@ -141,56 +122,55 @@ export function StepSendSamples({
             )}
           </div>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <MapPin className="size-4" />
-                Shipping Address
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
+          {/* Shipping address */}
+          <div className="border-t pt-4 space-y-3">
+            <div className="flex items-center gap-2 mb-2">
+              <MapPin className="size-4 text-muted-foreground" />
+              <span className="text-sm font-semibold">Shipping Address</span>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="addr-line1">Street Address *</Label>
+              <Input
+                id="addr-line1"
+                value={address.line1}
+                onChange={(e) => handleAddressChange("line1", e.target.value)}
+                placeholder="123 Main St"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="addr-line2">Apt / Suite / Unit</Label>
+              <Input
+                id="addr-line2"
+                value={address.line2}
+                onChange={(e) => handleAddressChange("line2", e.target.value)}
+                placeholder="Apt 4B"
+              />
+            </div>
+            <div className="space-y-2 sm:hidden">
               <div className="space-y-2">
-                <Label htmlFor="addr-line1">Street Address *</Label>
+                <Label htmlFor="addr-city-m">City *</Label>
                 <Input
-                  id="addr-line1"
-                  value={address.line1}
-                  onChange={(e) => handleAddressChange("line1", e.target.value)}
-                  placeholder="123 Main St"
+                  id="addr-city-m"
+                  value={address.city}
+                  onChange={(e) => handleAddressChange("city", e.target.value)}
+                  placeholder="City"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="addr-line2">Apt / Suite / Unit</Label>
-                <Input
-                  id="addr-line2"
-                  value={address.line2}
-                  onChange={(e) => handleAddressChange("line2", e.target.value)}
-                  placeholder="Apt 4B"
-                />
-              </div>
-              <div className="grid grid-cols-5 gap-3">
-                <div className="col-span-2 space-y-2">
-                  <Label htmlFor="addr-city">City *</Label>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="addr-state-m">State *</Label>
                   <Input
-                    id="addr-city"
-                    value={address.city}
-                    onChange={(e) => handleAddressChange("city", e.target.value)}
-                    placeholder="City"
-                  />
-                </div>
-                <div className="col-span-1 space-y-2">
-                  <Label htmlFor="addr-state">State *</Label>
-                  <Input
-                    id="addr-state"
+                    id="addr-state-m"
                     value={address.state}
                     onChange={(e) => handleAddressChange("state", e.target.value)}
                     placeholder="ST"
                     maxLength={2}
                   />
                 </div>
-                <div className="col-span-2 space-y-2">
-                  <Label htmlFor="addr-zip">ZIP *</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="addr-zip-m">ZIP *</Label>
                   <Input
-                    id="addr-zip"
+                    id="addr-zip-m"
                     value={address.zip}
                     onChange={(e) => handleAddressChange("zip", e.target.value)}
                     placeholder="12345"
@@ -198,8 +178,39 @@ export function StepSendSamples({
                   />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+            <div className="hidden sm:grid grid-cols-5 gap-3">
+              <div className="col-span-2 space-y-2">
+                <Label htmlFor="addr-city">City *</Label>
+                <Input
+                  id="addr-city"
+                  value={address.city}
+                  onChange={(e) => handleAddressChange("city", e.target.value)}
+                  placeholder="City"
+                />
+              </div>
+              <div className="col-span-1 space-y-2">
+                <Label htmlFor="addr-state">State *</Label>
+                <Input
+                  id="addr-state"
+                  value={address.state}
+                  onChange={(e) => handleAddressChange("state", e.target.value)}
+                  placeholder="ST"
+                  maxLength={2}
+                />
+              </div>
+              <div className="col-span-2 space-y-2">
+                <Label htmlFor="addr-zip">ZIP *</Label>
+                <Input
+                  id="addr-zip"
+                  value={address.zip}
+                  onChange={(e) => handleAddressChange("zip", e.target.value)}
+                  placeholder="12345"
+                  maxLength={10}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
