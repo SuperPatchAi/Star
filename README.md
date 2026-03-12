@@ -31,12 +31,14 @@ src/
 │   ├── practice/           # Objection flashcards
 │   ├── favorites/          # Saved scripts/objections
 │   ├── roadmaps/           # Roadmap image gallery
+│   ├── onboarding/         # New user onboarding flow (carousel, tour, checklist)
 │   └── api/auth/           # Auth API routes (signout)
 ├── components/
 │   ├── layout/             # AppShell, AppSidebar, BottomNav
 │   ├── sales-flow/         # Decision tree + all step components
 │   ├── contacts/           # Contact table, Kanban, sheet
 │   ├── follow-ups/         # Notification bell, activity feed, feed entries
+│   ├── onboarding/         # Onboarding components (carousel, tour, checklist)
 │   └── ui/                 # shadcn/ui primitives
 ├── lib/
 │   ├── auth.ts             # Auth helpers (getAuthUser, requireAdmin)
@@ -44,7 +46,7 @@ src/
 │   ├── utils.ts            # cn(), copyToClipboard(), shareOrCopy()
 │   ├── roadmap-data.ts     # Roadmap spec loading functions
 │   ├── supabase/           # Supabase clients (server, client, middleware)
-│   ├── actions/            # Server actions (contacts, reminders, push subscriptions)
+│   ├── actions/            # Server actions (contacts, reminders, onboarding, push subscriptions)
 │   └── db/                 # Database TypeScript types
 ├── data/
 │   ├── products.ts         # Product catalog (13 products)
@@ -419,6 +421,34 @@ The app includes a comprehensive mobile-first experience informed by HubSpot, Pi
 - **Kanban scroll indicator** with gradient fade on the right edge to signal horizontal scrollability
 - **Product tabs** with scroll snap and touch-friendly sizing
 - **Top-center toaster** position to avoid overlap with bottom nav
+
+## New User Onboarding
+
+A three-phase onboarding system that walks new reps through the app on first login.
+
+### Phase 1: Feature Carousel (`/onboarding`)
+- 6 full-screen swipeable slides showcasing key features (guided conversations, pipeline, follow-ups, product scripts, objections, closing)
+- Mobile-first with CSS scroll-snap, keyboard arrows on desktop
+- Skip option available; middleware redirects new users here automatically
+
+### Phase 2: Interactive Tour (Dashboard)
+- 4-step tooltip tour highlighting key UI elements (Contacts nav, New Contact button, notification bell, Roadmaps nav)
+- Custom spotlight overlay with positioned tooltips — no external library
+- Auto-triggers when user reaches the `tour` onboarding phase
+
+### Phase 3: Getting Started Checklist (Dashboard Widget)
+- 5 milestones auto-detected from real user actions: add first contact, start first conversation, complete a sales step, send first sample, set up a follow-up
+- Progress bar, celebration animation on completion, dismissible at any time
+- Hooks into existing `createContact` and `updateContact` server actions
+
+### Replay
+Users can replay the carousel or tour anytime from the user dropdown menu in the sidebar footer.
+
+### Database Columns
+- `user_profiles.onboarding_step`: `carousel | tour | checklist | completed`
+- `user_profiles.onboarding_checklist`: JSONB with 5 boolean milestone flags
+
+---
 
 ## Follow-Up Reminders and Activity Feed
 
