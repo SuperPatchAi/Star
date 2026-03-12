@@ -40,27 +40,27 @@
         {
           "type": "COLD APPROACH",
           "context": "Stranger at coffee shop",
-          "script": " \"Hi [Customer Name], it's [Your Name]. Just wanted to leave a quick message and see how you're doing. I'm really looking forward to hearing about your experience with the Peace patch. If anything comes up, or if you just want to chat, feel free to give me a call back. Hope you're having a calm day!..."
+          "script": "Hey, I couldn't help but notice you look like you've got a lot on your plate — I totally get that. I actually work with something called Peace by Super Patch that helps people manage stress and find real calm without any pills or supplements. Have you ever tried anything drug-free for stress relief?"
         },
         {
           "type": "WARM INTRO",
           "context": "Friend/family member",
-          "script": " \"Hi [Customer Name], it's [Your Name]. Just wanted to leave a quick message and see how you're doing. I'm really looking forward to hearing about your experience with the Peace patch. If anything comes up, or if you just want to chat, feel free to give me a call back. Hope you're having a calm day!..."
+          "script": "You know how you've been telling me how stressed you've been lately? I started using this patch called Peace from Super Patch — it's helped me feel so much calmer and more clear-headed, completely drug-free. Would you be open to hearing how it works?"
         },
         {
           "type": "SOCIAL MEDIA DM",
           "context": "Instagram/Facebook",
-          "script": " \"Hi [Customer Name], it's [Your Name]. Just wanted to leave a quick message and see how you're doing. I'm really looking forward to hearing about your experience with the Peace patch. If anything comes up, or if you just want to chat, feel free to give me a call back. Hope you're having a calm day!..."
+          "script": "Hey! I saw your post about how hectic things have been — I can totally relate. I've been using something called Peace by Super Patch that's been a game-changer for managing stress and staying centered throughout the day. Would you be interested in learning more about how it works?"
         },
         {
           "type": "REFERRAL",
           "context": "Mutual connection",
-          "script": " \"Hi [Customer Name], it's [Your Name]. Just wanted to leave a quick message and see how you're doing. I'm really looking forward to hearing about your experience with the Peace patch. If anything comes up, or if you just want to chat, feel free to give me a call back. Hope you're having a calm day!..."
+          "script": "Hi! [Mutual friend] mentioned you've been dealing with a lot of stress and thought I should reach out. I work with a product called Peace from Super Patch that helps people find calm and clarity naturally — no drugs, no side effects. Would you be open to a quick chat about it?"
         },
         {
           "type": "EVENT/PARTY",
           "context": "Casual networking",
-          "script": " \"Hi [Customer Name], it's [Your Name]. Just wanted to leave a quick message and see how you're doing. I'm really looking forward to hearing about your experience with the Peace patch. If anything comes up, or if you just want to chat, feel free to give me a call back. Hope you're having a calm day!..."
+          "script": "So what do you do to unwind after a long week? I ask because I work with this amazing product called Peace by Super Patch — it's a drug-free patch that helps with stress management and bringing back that sense of calm. What does your current stress-relief routine look like?"
         }
       ]
     },
@@ -69,44 +69,44 @@
       "description": "Uncover needs & pain points (ask 3-5)",
       "questions": [
         {
-          "type": "Opening",
-          "question": "How would you describe your typical day and energy levels?"
+          "type": "Opening Question",
+          "question": "What does a typical stressful day look like for you — what are the biggest things weighing on you right now?"
         },
         {
-          "type": "Opening",
-          "question": "What does feeling your best look like for you?"
+          "type": "Opening Question",
+          "question": "When you imagine feeling truly calm and clear-headed, what does that look like for you?"
         },
         {
-          "type": "Pain Point",
-          "question": "When do you typically experience challenges with this?"
+          "type": "Pain Point Question",
+          "question": "Where do you feel stress showing up in your body — headaches, tight shoulders, stomach issues, trouble sleeping?"
         },
         {
-          "type": "Pain Point",
-          "question": "On a scale of 1-10, how much does this impact your daily life?"
+          "type": "Pain Point Question",
+          "question": "How is the stress affecting your sleep? Are you able to wind down at night or does your mind just keep racing?"
         },
         {
-          "type": "Pain Point",
-          "question": "What frustrates you most about your current situation?"
+          "type": "Pain Point Question",
+          "question": "Do you feel like stress is starting to take a toll on your relationships or your patience with the people you care about?"
         },
         {
-          "type": "Impact",
-          "question": "What activities are you holding back on because of this?"
+          "type": "Impact Question",
+          "question": "If you could wake up tomorrow feeling genuinely calm and in control, what's the first thing you'd do differently with your day?"
         },
         {
-          "type": "Impact",
-          "question": "How does this affect your mood, relationships, or work?"
+          "type": "Impact Question",
+          "question": "How much of your day do you think gets lost to just feeling overwhelmed or mentally drained from stress?"
         },
         {
-          "type": "Impact",
-          "question": "If this was solved tomorrow, what would you do first?"
+          "type": "Solution Question",
+          "question": "What have you tried so far to manage your stress — meditation apps, supplements, exercise, anything like that? What worked and what didn't?"
         },
         {
-          "type": "Solution",
-          "question": "What have you tried before and what worked or didn't?"
+          "type": "Solution Question",
+          "question": "How important is it to you that a stress solution is drug-free and something you don't have to remember to take throughout the day?"
         },
         {
-          "type": "Solution",
-          "question": "What's most important to you - speed, natural, or ease of use?"
+          "type": "Solution Question",
+          "question": "If there was something simple you could wear that helped you stay calm and focused all day without any pills or side effects, would that be something you'd want to try?"
         }
       ]
     },
@@ -114,9 +114,9 @@
       "title": "\ud83c\udfa4 PRESENT THE SOLUTION",
       "framework": "Problem \u2192 Agitate \u2192 Solve",
       "content": {
-        "problem": "Many people struggle with stress challenges - feeling frustrated by temporary solutions that don't address the root cause.",
-        "agitate": "This isn't just a minor inconvenience - it impacts your productivity, relationships, mood, and overall quality of life. The costs add up over time.",
-        "solve": "That's why Peace uses Vibrotactile Technology - specialized patterns that work with your body's natural neural responses. Drug-free, non-invasive, effective.",
+        "problem": "You're carrying stress from the moment you wake up to the moment you try to fall asleep — except your mind won't let you. It feels like there's always something demanding your attention, and no matter what you do, you can't seem to quiet the noise. That constant state of overwhelm isn't just exhausting, it's becoming your normal.",
+        "agitate": "And it doesn't stop with you. The stress is stealing your sleep, leaving you tossing and turning with racing thoughts night after night. You're snapping at the people you love over things that shouldn't matter, and you can feel the tension building in your body — headaches, tight shoulders, that knot in your stomach. Chronic stress doesn't just wear you down mentally, it takes a real toll on your health and your relationships. {{discovery_callback}}",
+        "solve": "That's exactly why Peace was created. It uses Vibrotactile Technology — VTT — to support your body's natural relaxation response, helping you find genuine calm and clarity without sedatives, pills, or side effects. You just wear the patch and it works with your nervous system to ease that tension naturally. Peace gives you back the ability to breathe, think clearly, and actually be present for the moments that matter.",
         "key_benefits": [
           "Stress management",
           "Calm and clarity",
@@ -132,50 +132,50 @@
         {
           "objection": "TOO EXPENSIVE",
           "trigger": "Price concern",
-          "response": "I understand cost is important. What other criteria matter most to you beyond price?",
-          "psychology": "Shift focus to value"
+          "response": "I completely understand. Let me ask — what are you currently spending to manage stress? Between therapy sessions, meditation apps, supplements, or even just the cost of stress on your health and productivity, it adds up fast. Peace costs less per day than a coffee and supports calm and clarity all day long with zero side effects. What would real, lasting stress relief be worth to your daily life?",
+          "psychology": "Reframe cost against therapy bills, supplements, and the hidden toll stress takes on health and income"
         },
         {
           "objection": "NEED TO THINK",
           "trigger": "Stalling",
-          "response": "Of course! What specific questions would help you make this decision?",
-          "psychology": "Identify real concern"
+          "response": "Absolutely — no pressure at all. Can I ask what's on your mind? Is it whether Peace actually helps with stress, or is it more about whether you're ready to try something new? A lot of people dealing with stress feel hesitant because they've tried things before that either made them drowsy or didn't last. Peace is different — no drowsiness, no dependency, no pills to remember. What would help you feel good about this decision?",
+          "psychology": "Address the hidden fear that another stress product will disappoint or come with unwanted sedative effects"
         },
         {
           "objection": "ASK MY SPOUSE",
           "trigger": "Shared decision",
-          "response": "Great idea! What concerns might they have that we could address now?",
-          "psychology": "Surface objections early"
+          "response": "That's a great idea — and honestly, when stress goes down for one person, the whole household benefits. When you talk to your spouse, they'll probably want to know if it's safe and whether it causes drowsiness. Peace is 100% drug-free with no sedative effects — it promotes natural calm and clarity without making you foggy. They might even want to try it themselves. What questions do you think they'd have?",
+          "psychology": "Position stress relief as a family benefit — a calmer you means a calmer home"
         },
         {
           "objection": "DOES IT WORK?",
           "trigger": "Skepticism",
-          "response": "I understand the skepticism. What would you need to see or experience to feel confident?",
-          "psychology": "Let them define proof"
+          "response": "I totally get it — the stress relief space is full of products that either don't work or come with side effects like drowsiness or dependency. Here's what makes Peace different: it uses Vibrotactile Technology to work with your body's natural relaxation response — no chemicals, no CBD, no sedatives entering your system. It supports calm and clarity without the fog. What would you need to experience to feel confident it's working for you?",
+          "psychology": "Validate skepticism from the anti-anxiety supplement market, then differentiate VTT from sedatives and CBD"
         },
         {
           "objection": "TRIED BEFORE",
           "trigger": "Past failure",
-          "response": "What did you like or dislike about those solutions? What was missing?",
-          "psychology": "Learn what was missing"
+          "response": "I hear that a lot — so many people have tried meditation apps, CBD, adaptogens, or even prescription anti-anxiety meds and still feel like they're just managing symptoms. What disappointed you most about those approaches? Peace takes a completely different path — it's not a supplement you swallow or a technique you have to practice. VTT technology works with your nervous system naturally to promote calm without drowsiness or dependency. What was missing from what you tried before?",
+          "psychology": "Acknowledge the fatigue of cycling through stress products and position Peace as a fundamentally new approach"
         },
         {
           "objection": "NOT INTERESTED",
           "trigger": "Rejection",
-          "response": "That's fine. What specifically doesn't align with what you're looking for?",
-          "psychology": "Uncover hidden needs"
+          "response": "No worries at all. Just curious — is it that you feel like your stress is manageable right now, or is it more that you've given up on finding something that actually helps without side effects? If it's the second one, I totally understand. Peace isn't another calming supplement or sedative — it works with your body's own neural signals to bring real clarity and calm. What would a genuine stress solution need to look like for you?",
+          "psychology": "Distinguish between someone who's genuinely calm and someone who's resigned to living with chronic stress"
         },
         {
           "objection": "NO TIME",
           "trigger": "Busy excuse",
-          "response": "If you could solve this challenge easily, how would that help your time and energy?",
-          "psychology": "Reframe to benefit"
+          "response": "I get it — you're stressed partly because you're so busy, right? That's exactly why Peace is perfect for people with no time. There's no meditation to schedule, no supplements to remember, no therapy appointments. You wear the patch and it supports calm and focus while you power through your day. How much of your productivity is stress actually stealing from you right now? Peace could help you get that clarity back.",
+          "psychology": "Flip the time objection — stress itself is the productivity killer, and Peace requires zero time commitment"
         },
         {
           "objection": "VS COMPETITOR",
           "trigger": "Comparison",
-          "response": "What appeals to you about that option? (Then explain VTT difference)",
-          "psychology": "Highlight VTT difference"
+          "response": "Good question — what are you looking at? Most stress products fall into a few camps: prescription anti-anxiety meds with dependency risks, CBD products with varying quality and legal gray areas, or supplements like ashwagandha that take weeks to build up. Peace uses Vibrotactile Technology — nothing enters your body. No drowsiness, no dependency, no buildup period. It works with your natural neural response for calm and clarity from day one. Have you found anything else that's truly drug-free with zero side effects?",
+          "psychology": "Position VTT as uniquely safe — no dependency risk, no drowsiness, no substance entering the body unlike every alternative"
         }
       ]
     },
@@ -185,32 +185,32 @@
       "techniques": [
         {
           "name": "ASSUMPTIVE",
-          "script": "Great! Peace is exactly what you need. What's the best shipping address for your order?",
-          "when": "Strong buying signals, nodding, engaged",
+          "script": "I can tell you're ready to feel calm and in control again — imagine sleeping better tonight and being more present with your family. Let's get Peace headed your way. What's the best shipping address?",
+          "when": "They've opened up about how stress is affecting their sleep and family life, clearly ready for a change",
           "icon": "[A]"
         },
         {
           "name": "ALTERNATIVE",
-          "script": "Would you prefer the 30-day supply, or the 90-day pack for better value?",
-          "when": "Need gentle push, considering options",
+          "script": "Would you like the 30-day supply to start feeling that calm and clarity, or the 90-day pack so you can really build on the momentum and enjoy better sleep and more presence with your family long-term?",
+          "when": "They're interested but weighing options, mentioned wanting sustained relief rather than a quick fix",
           "icon": "[B]"
         },
         {
           "name": "URGENCY",
-          "script": "We have a special promotion ending this week. Want to lock that in today?",
-          "when": "They're hesitating, need reason to act",
+          "script": "We've got a promotion ending this week — and honestly, every day under that stress is another night of poor sleep and another evening you're not fully present with the people who matter most. Let's lock this in and get you that calm back starting now.",
+          "when": "They clearly want relief but keep putting it off, stress is visibly impacting their daily life",
           "icon": "[!]"
         },
         {
           "name": "SUMMARY",
-          "script": "So you want [goal], drug-free, easy to use. Peace does exactly that. Ready?",
-          "when": "Complex conversation, recap benefits",
+          "script": "So you want to feel calm and in control, sleep better without stress keeping you up, and be more present with your family — all without pills, sedatives, or side effects. That's exactly what Peace delivers, drug-free and effortless. Ready to get your calm back?",
+          "when": "Wide-ranging conversation about stress, sleep issues, and family impact — need to bring it all together",
           "icon": "[S]"
         },
         {
           "name": "REFERRAL",
-          "script": "Who else do you know dealing with similar challenges who could benefit?",
-          "when": "After close, leverage enthusiasm",
+          "script": "Think about your coworkers or friends who are dealing with the same kind of stress — who comes to mind? I'd love to help them find the same calm you're about to experience.",
+          "when": "After the sale, they're feeling relieved and hopeful, have mentioned stressed coworkers or friends dealing with burnout",
           "icon": "[R]"
         }
       ]

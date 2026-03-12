@@ -40,27 +40,27 @@
         {
           "type": "COLD APPROACH",
           "context": "Stranger at coffee shop",
-          "script": " \"Hi [Prospect's Name], this is [Your Name] from Super Patch. I'm calling because I truly believe the Kick It patch could be a game-changer for you in [mention specific habit]. I know you're busy, so I'll keep this brief, but I wanted to follow up on our conversation about how it naturally supports ..."
+          "script": "Hey, random question — have you ever wanted to kick a bad habit but felt like your willpower just wasn't enough? I work with a product called Kick It from Super Patch that actually supports your willpower naturally, no drugs or chemicals. What's a habit you've been wanting to break free from?"
         },
         {
           "type": "WARM INTRO",
           "context": "Friend/family member",
-          "script": " \"Hi [Prospect's Name], this is [Your Name] from Super Patch. I'm calling because I truly believe the Kick It patch could be a game-changer for you in [mention specific habit]. I know you're busy, so I'll keep this brief, but I wanted to follow up on our conversation about how it naturally supports ..."
+          "script": "You know how you've been saying you want to quit [habit] but it keeps pulling you back? I started working with this patch called Kick It from Super Patch — it's drug-free willpower support that helps you push through those cravings. Would you be down to try it and see if it makes a difference?"
         },
         {
           "type": "SOCIAL MEDIA DM",
           "context": "Instagram/Facebook",
-          "script": " \"Hi [Prospect's Name], this is [Your Name] from Super Patch. I'm calling because I truly believe the Kick It patch could be a game-changer for you in [mention specific habit]. I know you're busy, so I'll keep this brief, but I wanted to follow up on our conversation about how it naturally supports ..."
+          "script": "Hey! I saw your post about your journey to quit [habit] — major respect for putting that out there. I work with Super Patch and we have a product called Kick It that gives you drug-free willpower support to help you stay on track. Have you tried anything like that to help with the cravings?"
         },
         {
           "type": "REFERRAL",
           "context": "Mutual connection",
-          "script": " \"Hi [Prospect's Name], this is [Your Name] from Super Patch. I'm calling because I truly believe the Kick It patch could be a game-changer for you in [mention specific habit]. I know you're busy, so I'll keep this brief, but I wanted to follow up on our conversation about how it naturally supports ..."
+          "script": "Hi! [Mutual friend] told me you've been working on breaking a tough habit and thought I could help. I work with Super Patch and our Kick It patch is designed to support willpower naturally — completely drug-free. Would you be open to hearing how it's helped other people in a similar spot?"
         },
         {
           "type": "EVENT/PARTY",
           "context": "Casual networking",
-          "script": " \"Hi [Prospect's Name], this is [Your Name] from Super Patch. I'm calling because I truly believe the Kick It patch could be a game-changer for you in [mention specific habit]. I know you're busy, so I'll keep this brief, but I wanted to follow up on our conversation about how it naturally supports ..."
+          "script": "Great meeting you! So tell me — do you believe willpower is something you can actually strengthen? I ask because I work with this product called Kick It from Super Patch that helps people overcome bad habits with drug-free willpower support. What's something you've been wanting to change lately?"
         }
       ]
     },
@@ -69,44 +69,44 @@
       "description": "Uncover needs & pain points (ask 3-5)",
       "questions": [
         {
-          "type": "Opening",
-          "question": "How would you describe your typical day and energy levels?"
+          "type": "Opening Question",
+          "question": "Is there a specific habit you've been wanting to break free from — something that's been on your mind for a while?"
         },
         {
-          "type": "Opening",
-          "question": "What does feeling your best look like for you?"
+          "type": "Opening Question",
+          "question": "What does being in control of that habit look like for you — what would life feel like on the other side of it?"
         },
         {
-          "type": "Pain Point",
-          "question": "When do you typically experience challenges with this?"
+          "type": "Pain Point Question",
+          "question": "How long have you been dealing with this habit, and what usually triggers the cravings or the urge to fall back into it?"
         },
         {
-          "type": "Pain Point",
-          "question": "On a scale of 1-10, how much does this impact your daily life?"
+          "type": "Pain Point Question",
+          "question": "Have you tried quitting or cutting back before — what happened, and what made it so hard to stick with it?"
         },
         {
-          "type": "Pain Point",
-          "question": "What frustrates you most about your current situation?"
+          "type": "Pain Point Question",
+          "question": "When the cravings hit, how intense are they — is it something you can push through, or does it feel like it takes over your whole focus?"
         },
         {
-          "type": "Impact",
-          "question": "What activities are you holding back on because of this?"
+          "type": "Impact Question",
+          "question": "How has this habit affected your health, your relationships, or the way you feel about yourself — what's the real cost been?"
         },
         {
-          "type": "Impact",
-          "question": "How does this affect your mood, relationships, or work?"
+          "type": "Impact Question",
+          "question": "If you could finally break this habit for good, what's the first thing that would change in your life — and who would notice the difference?"
         },
         {
-          "type": "Impact",
-          "question": "If this was solved tomorrow, what would you do first?"
+          "type": "Solution Question",
+          "question": "What have you tried in the past to overcome this — willpower alone, patches, gum, apps, cold turkey, anything else?"
         },
         {
-          "type": "Solution",
-          "question": "What have you tried before and what worked or didn't?"
+          "type": "Solution Question",
+          "question": "With everything you've tried, was there anything that helped even a little — and what was missing from those approaches?"
         },
         {
-          "type": "Solution",
-          "question": "What's most important to you - speed, natural, or ease of use?"
+          "type": "Solution Question",
+          "question": "If there was a drug-free way to support your willpower and reduce cravings naturally — just by wearing a patch — would you be open to giving it a shot?"
         }
       ]
     },
@@ -114,9 +114,9 @@
       "title": "\ud83c\udfa4 PRESENT THE SOLUTION",
       "framework": "Problem \u2192 Agitate \u2192 Solve",
       "content": {
-        "problem": "Many people struggle with will power challenges - feeling frustrated by temporary solutions that don't address the root cause.",
-        "agitate": "This isn't just a minor inconvenience - it impacts your productivity, relationships, mood, and overall quality of life. The costs add up over time.",
-        "solve": "That's why Kick It uses Vibrotactile Technology - specialized patterns that work with your body's natural neural responses. Drug-free, non-invasive, effective.",
+        "problem": "You know that feeling when you've told yourself a hundred times you're done with a habit, but the cravings just pull you right back in? It's like being trapped in a loop you can't escape no matter how hard you try. Your willpower feels like it runs out before the day even gets going, and every failed attempt makes the next one feel even harder.",
+        "agitate": "Meanwhile, your health is paying the price — and you know it. The money you're spending on that habit could be going to your family, your goals, your future. Every time you give in, there's that wave of disappointment in yourself, and the people around you can see it too. It starts affecting your confidence, your relationships, and the way you show up for the people who matter most. {{discovery_callback}}",
+        "solve": "That's where Kick It comes in. It uses Vibrotactile Technology — VTT — to work with your body's natural willpower and craving resistance, giving you real support when those urges hit hardest. There's nothing to swallow, no chemicals, no nicotine replacements — just a drug-free patch that helps you stay in control. Kick It gives your willpower the backup it's been missing so you can finally break free for good.",
         "key_benefits": [
           "Willpower support",
           "Habit breaking",
@@ -132,50 +132,50 @@
         {
           "objection": "TOO EXPENSIVE",
           "trigger": "Price concern",
-          "response": "I understand cost is important. What other criteria matter most to you beyond price?",
-          "psychology": "Shift focus to value"
+          "response": "I hear you — let me put it this way: how much are you spending on the habit itself right now? Cigarettes, vaping supplies, or whatever it is — that adds up fast. And if you've tried nicotine gum, patches, or quit programs, those aren't cheap either. Kick It costs less per day than most of those, and it supports your willpower without adding another substance to your body. What would breaking free from that habit be worth to you?",
+          "psychology": "Reframe cost against the ongoing expense of the habit itself plus failed quit aids"
         },
         {
           "objection": "NEED TO THINK",
           "trigger": "Stalling",
-          "response": "Of course! What specific questions would help you make this decision?",
-          "psychology": "Identify real concern"
+          "response": "Of course — this is a big decision, and I respect that. Can I ask what's holding you back? Is it whether Kick It actually supports willpower, or is it more that you've been let down before by quit aids? Most people who hesitate have tried other things that didn't work. Kick It is different because it's not replacing one substance with another — it supports your natural willpower through VTT technology. What would help you feel ready to take this step?",
+          "psychology": "Surface the fear of another failed attempt — the real blocker behind 'needing to think'"
         },
         {
           "objection": "ASK MY SPOUSE",
           "trigger": "Shared decision",
-          "response": "Great idea! What concerns might they have that we could address now?",
-          "psychology": "Surface objections early"
+          "response": "That's great — honestly, your spouse probably wants you to break this habit even more than you do. When you bring it up, they'll likely ask if it's safe and if it really helps with cravings. Kick It is 100% drug-free — no nicotine, no chemicals, nothing going into your body. It supports your willpower naturally so you can stay in control. What concerns do you think they'd have that we can address together right now?",
+          "psychology": "Leverage the spouse as an ally — they likely want the habit gone too, making them a supporter not a blocker"
         },
         {
           "objection": "DOES IT WORK?",
           "trigger": "Skepticism",
-          "response": "I understand the skepticism. What would you need to see or experience to feel confident?",
-          "psychology": "Let them define proof"
+          "response": "I completely understand — there are so many quit-smoking gums, nicotine patches, and willpower apps out there that promise the world and don't deliver. Here's what's different about Kick It: it uses Vibrotactile Technology to support your body's natural willpower response — no nicotine, no drugs, no chemicals entering your system. It's not replacing one dependency with another. What would you need to experience to believe it's actually supporting you?",
+          "psychology": "Validate skepticism from the quit-aid industry, then differentiate VTT from nicotine replacement therapy"
         },
         {
           "objection": "TRIED BEFORE",
           "trigger": "Past failure",
-          "response": "What did you like or dislike about those solutions? What was missing?",
-          "psychology": "Learn what was missing"
+          "response": "I get it — most people trying to kick a habit have been through the cycle: cold turkey, nicotine gum, prescription aids, maybe even hypnosis. What was the hardest part of those attempts? The reason they usually fail is they either replace the substance with another one or rely on pure willpower alone. Kick It takes a completely different approach — it supports your body's natural self-control through VTT technology without putting anything into your system. What was missing from those past methods?",
+          "psychology": "Normalize the cycle of failed attempts and position Kick It as a new category — not another nicotine replacement"
         },
         {
           "objection": "NOT INTERESTED",
           "trigger": "Rejection",
-          "response": "That's fine. What specifically doesn't align with what you're looking for?",
-          "psychology": "Uncover hidden needs"
+          "response": "Totally fair. Can I ask — is it that you're not looking to break the habit right now, or is it more that you've lost faith in products that claim to help? If it's the second one, I completely understand. Kick It isn't a nicotine replacement or another supplement to take — it works with your body's own neural signals to support willpower. What would a real solution for habit-breaking need to look like for you to consider it?",
+          "psychology": "Distinguish between timing ('not ready to quit') and learned helplessness from past failures"
         },
         {
           "objection": "NO TIME",
           "trigger": "Busy excuse",
-          "response": "If you could solve this challenge easily, how would that help your time and energy?",
-          "psychology": "Reframe to benefit"
+          "response": "Actually, that's the beauty of Kick It — there's nothing to schedule, no programs to follow, no appointments to keep. You wear the patch and it supports your willpower all day while you handle everything else. Think about how much time the habit itself steals from your day — the breaks, the cravings, the mental energy fighting it. Kick It could actually give you that time and focus back. How much of your day gets lost to the habit right now?",
+          "psychology": "Flip the time objection — the habit itself is the time thief, and Kick It requires zero additional time"
         },
         {
           "objection": "VS COMPETITOR",
           "trigger": "Comparison",
-          "response": "What appeals to you about that option? (Then explain VTT difference)",
-          "psychology": "Highlight VTT difference"
+          "response": "Good question — what are you comparing it to? Most quit aids fall into two camps: nicotine replacement like gum and patches that keep you dependent on nicotine, or prescription drugs that come with side effects. Kick It is in a completely different category — it uses Vibrotactile Technology to support your natural willpower without putting any substance into your body. You're not trading one dependency for another. Have you found anything else that's truly drug-free and supports habit-breaking from the inside out?",
+          "psychology": "Position VTT as a unique third path — neither nicotine replacement nor pharmaceutical, but natural willpower support"
         }
       ]
     },
@@ -185,32 +185,32 @@
       "techniques": [
         {
           "name": "ASSUMPTIVE",
-          "script": "Great! Kick It is exactly what you need. What's the best shipping address for your order?",
-          "when": "Strong buying signals, nodding, engaged",
+          "script": "I can hear it — you're ready to finally be free from this habit and take back control. Let's get Kick It on its way to you. What's the best shipping address?",
+          "when": "They're emotionally committed to quitting, expressing frustration with the habit's grip on their life",
           "icon": "[A]"
         },
         {
           "name": "ALTERNATIVE",
-          "script": "Would you prefer the 30-day supply, or the 90-day pack for better value?",
-          "when": "Need gentle push, considering options",
+          "script": "Would you like the 30-day supply to start taking control back, or the 90-day pack to really cement the habit break and save some money — money you're already spending on the habit itself?",
+          "when": "They're considering it but unsure on commitment, have mentioned the financial cost of their habit",
           "icon": "[B]"
         },
         {
           "name": "URGENCY",
-          "script": "We have a special promotion ending this week. Want to lock that in today?",
-          "when": "They're hesitating, need reason to act",
+          "script": "We've got a promotion ending this week — and think about it: every day you wait is another day that habit is costing you money and controlling your choices. Let's lock this in and start your freedom today.",
+          "when": "They want to quit but keep pushing the start date, need a reason to commit right now",
           "icon": "[!]"
         },
         {
           "name": "SUMMARY",
-          "script": "So you want [goal], drug-free, easy to use. Kick It does exactly that. Ready?",
-          "when": "Complex conversation, recap benefits",
+          "script": "So you want to finally break free from this habit, take control of your willpower, and stop spending money on something that's holding you back — all drug-free with no replacement chemicals. That's exactly what Kick It delivers. Are you ready to take that first step?",
+          "when": "Detailed conversation about habit struggles, financial costs, and past failed attempts — need to recap the full picture",
           "icon": "[S]"
         },
         {
           "name": "REFERRAL",
-          "script": "Who else do you know dealing with similar challenges who could benefit?",
-          "when": "After close, leverage enthusiasm",
+          "script": "You mentioned you have friends who also want to quit — think about how powerful it would be to do this together. Who else do you know who's been wanting to kick a habit? I'd love to help them out too.",
+          "when": "After the sale, they're feeling empowered about quitting and have mentioned friends or family battling the same habit",
           "icon": "[R]"
         }
       ]

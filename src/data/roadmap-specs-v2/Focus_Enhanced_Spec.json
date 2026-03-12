@@ -40,27 +40,27 @@
         {
           "type": "COLD APPROACH",
           "context": "Stranger at coffee shop",
-          "script": "[See full word track for COLD APPROACH script]"
+          "script": " (Smile and gesture toward their work) \"Hey, sorry to bother you! I can see you're grinding away over there — I totally get it. I'm [Your Name]. I actually work with a product called Focus that helps people stay locked in and clear-headed without caffeine or stimulants. Do you ever struggle with staying dialed in when you really need to concentrate?\" "
         },
         {
           "type": "WARM INTRO",
           "context": "Friend/family member",
-          "script": "[See full word track for WARM INTRO script]"
+          "script": " \"Hey [Friend's Name]! Remember how you were telling me about all the stuff you're juggling right now — the projects, the deadlines, all of it? I started using this thing called Focus, and honestly my concentration has been on another level. It's completely drug-free, just uses vibrotactile technology on a patch. Have you ever tried anything like that for mental clarity?\" "
         },
         {
           "type": "SOCIAL MEDIA DM",
           "context": "Instagram/Facebook",
-          "script": "[See full word track for SOCIAL MEDIA DM script]"
+          "script": " \"Hey [Name]! I saw your post about brain fog and trying to power through long study sessions — I've so been there. I've been using a product called Focus that supports concentration and mental clarity without any pills or caffeine. It's been a game-changer for me. Would you be open to hearing how it works?\" "
         },
         {
           "type": "REFERRAL",
           "context": "Mutual connection",
-          "script": "[See full word track for REFERRAL script]"
+          "script": " \"Hi [Prospect Name], I'm [Your Name]. [Referrer's Name] suggested I reach out — they mentioned you've been looking for ways to sharpen your focus and stay productive without relying on energy drinks or supplements. I work with a product called Focus that does exactly that using drug-free vibrotactile technology. Would you be open to a quick chat about how it could help you?\" "
         },
         {
           "type": "EVENT/PARTY",
           "context": "Casual networking",
-          "script": "[See full word track for EVENT/PARTY script]"
+          "script": " \"Great event, right? So what do you do? (Listen and respond genuinely.) That sounds like it takes serious concentration! I actually help people level up their mental clarity and focus with a product called Focus — it's a drug-free patch that uses vibrotactile technology. Have you ever noticed your focus dropping off when you need it most?\" "
         }
       ]
     },
@@ -114,9 +114,9 @@
       "title": "\ud83c\udfa4 PRESENT THE SOLUTION",
       "framework": "Problem \u2192 Agitate \u2192 Solve",
       "content": {
-        "problem": "Do you ever find yourself struggling to concentrate, feeling that frustrating brain fog, or getting easily sidetracked when you really need to be sharp and productive?",
-        "agitate": "It's incredibly frustrating, isn't it? That feeling when deadlines loom, or you're trying to study for an important exam, and your mind just won't cooperate. You end up wasting precious time, feeling less accomplished, and sometimes even a bit overwhelmed by the sheer volume of things demanding your attention. And often, the solutions out there either involve caffeine jitters and energy crashes, o",
-        "solve": "That's why Focus uses Vibrotactile Technology - specialized patterns that work with your body's natural neural responses. Drug-free, non-invasive, effective.",
+        "problem": "You sit down to work and within minutes your mind is somewhere else — checking your phone, jumping between tabs, struggling to hold a single thought. Brain fog, constant distractions, and mental fatigue have become your daily reality. It feels like no matter how hard you try, you just can't lock in when it matters most.",
+        "agitate": "When you can't focus, it doesn't just slow you down — it chips away at your confidence, your deadlines, and your peace of mind. You end up frustrated, relying on caffeine or sheer willpower, and the cycle just repeats itself day after day. Meanwhile, the mental fatigue piles up and starts bleeding into your relationships and your sense of self-worth. {{discovery_callback}}",
+        "solve": "That's where Focus comes in. It uses Vibrotactile Technology — VTT — to support the neural pathways your brain relies on for concentration and mental clarity, completely drug-free. No pills, no stimulants, nothing entering your bloodstream — just a gentle signal that helps your mind lock in and stay sharp when you need it most.",
         "key_benefits": [
           "Better concentration",
           "Improved attention",
@@ -132,50 +132,50 @@
         {
           "objection": "TOO EXPENSIVE",
           "trigger": "Price concern",
-          "response": "I understand cost is important. What other criteria matter most to you beyond price?",
-          "psychology": "Shift focus to value"
+          "response": "I get it — let me ask you this. How much are you currently spending on nootropics, focus supplements, or even extra coffee to power through brain fog? Most people are spending $60-$150 a month on pills and drinks that still leave them with jitters or crashes. Focus gives you sustained mental clarity for less than that, with zero side effects. What's the cost of another month of lost productivity and scattered thinking?",
+          "psychology": "Reframe cost by comparing to existing nootropic/supplement spend and the hidden cost of poor focus"
         },
         {
           "objection": "NEED TO THINK",
           "trigger": "Stalling",
-          "response": "Of course! What specific questions would help you make this decision?",
-          "psychology": "Identify real concern"
+          "response": "Of course — and honestly, the fact that you're thinking carefully about it tells me you value making smart decisions. What's the main thing on your mind? Is it whether Focus will actually help you concentrate better than what you're doing now, or is it more about understanding how VTT technology works? I want to make sure you feel confident.",
+          "psychology": "Compliment their thoughtfulness while isolating whether the hesitation is about efficacy or mechanism"
         },
         {
           "objection": "ASK MY SPOUSE",
           "trigger": "Shared decision",
-          "response": "Great idea! What concerns might they have that we could address now?",
-          "psychology": "Surface objections early"
+          "response": "That's smart — decisions like this are easier together. What do you think their main question would be? A lot of families find that both partners benefit from Focus — one for work deadlines, the other for managing the household. It's not just one person's productivity that improves. Would it be helpful if I put together a quick overview they can look at?",
+          "psychology": "Position Focus as a shared household benefit that improves productivity for the whole family"
         },
         {
           "objection": "DOES IT WORK?",
           "trigger": "Skepticism",
-          "response": "I understand the skepticism. What would you need to see or experience to feel confident?",
-          "psychology": "Let them define proof"
+          "response": "Totally fair question. Focus uses Vibrotactile Technology — it doesn't put any chemicals in your body. Instead, it works through your nervous system to support your brain's natural ability to concentrate. No pills, no caffeine, nothing entering your bloodstream. What would make you feel confident — would you want to wear it during a work session and see if you notice a difference in how locked-in you feel?",
+          "psychology": "Let them define proof by proposing a real-world concentration test tied to their daily work"
         },
         {
           "objection": "TRIED BEFORE",
           "trigger": "Past failure",
-          "response": "What did you like or dislike about those solutions? What was missing?",
-          "psychology": "Learn what was missing"
+          "response": "I hear that a lot — most people have tried nootropics, Adderall alternatives, caffeine stacking, all sorts of focus hacks. What happened? Usually it's the jitters, the crash, or it just stopped working after a few weeks. Focus is completely different because VTT doesn't introduce any substance into your body — it works with your nervous system directly. What was the biggest letdown with what you tried before?",
+          "psychology": "Differentiate VTT from every supplement and stimulant-based focus product they've already tried and abandoned"
         },
         {
           "objection": "NOT INTERESTED",
           "trigger": "Rejection",
-          "response": "That's fine. What specifically doesn't align with what you're looking for?",
-          "psychology": "Uncover hidden needs"
+          "response": "No worries at all. Just curious — are you genuinely satisfied with your concentration and mental clarity right now, or is it more that you've tried so many things that didn't work that you've stopped looking? If it's the second one, I totally understand — but Focus works through a completely different mechanism than anything else out there. What would it mean for you to have reliable, on-demand mental clarity?",
+          "psychology": "Distinguish between true satisfaction and learned helplessness from past focus product failures"
         },
         {
           "objection": "NO TIME",
           "trigger": "Busy excuse",
-          "response": "If you could solve this challenge easily, how would that help your time and energy?",
-          "psychology": "Reframe to benefit"
+          "response": "That actually makes this more relevant, not less. Focus is a peel-and-stick patch — takes 5 seconds, no pills to remember, no drinks to mix. And here's the thing: if you could get even one extra hour of real, deep concentration per day, what would that be worth? People who are busiest are usually the ones who benefit from Focus the most.",
+          "psychology": "Reframe busyness as the exact reason Focus is valuable — more focused hours means more done in less time"
         },
         {
           "objection": "VS COMPETITOR",
           "trigger": "Comparison",
-          "response": "What appeals to you about that option? (Then explain VTT difference)",
-          "psychology": "Highlight VTT difference"
+          "response": "Great question — what are you comparing it to? Most focus products — whether it's nootropic stacks, caffeine pills, or prescription options — put a substance into your body that can cause jitters, dependency, or a crash. Focus uses VTT to work with your nervous system and support your brain's natural concentration pathways. Nothing enters your bloodstream, no tolerance buildup. Are you looking for a quick spike in alertness, or sustained mental clarity you can count on every day?",
+          "psychology": "Highlight that VTT is a fundamentally different mechanism vs. all chemical-based focus competitors with no tolerance buildup"
         }
       ]
     },
@@ -185,32 +185,32 @@
       "techniques": [
         {
           "name": "ASSUMPTIVE",
-          "script": "Great! Focus is exactly what you need. What's the best shipping address for your order?",
-          "when": "Strong buying signals, nodding, engaged",
+          "script": "Awesome — so you're ready to have laser-sharp concentration and power through your work without the brain fog. Let's get your Focus order on the way — what's the best shipping address?",
+          "when": "They've described struggling with concentration, brain fog, or scattered thinking and are clearly bought in on the solution",
           "icon": "[A]"
         },
         {
           "name": "ALTERNATIVE",
-          "script": "Would you prefer the 30-day supply, or the 90-day pack for better value?",
-          "when": "Need gentle push, considering options",
+          "script": "Would you like to start with a 30-day supply to see how it transforms your work sessions, or grab the 90-day pack so you're locked in through the whole semester or project cycle?",
+          "when": "They're convinced Focus is the answer but deliberating on quantity — tie the options to their work or study timeline",
           "icon": "[B]"
         },
         {
           "name": "URGENCY",
-          "script": "We have a special promotion ending this week. Want to lock that in today?",
-          "when": "They're hesitating, need reason to act",
+          "script": "We have a promotion running right now that's ending soon — and think about it, every day you're fighting brain fog is another day of lost productivity you can't get back. Want to lock this in so you can start powering through your work with real clarity this week?",
+          "when": "They agree Focus sounds perfect but are dragging their feet — remind them that brain fog is costing them output every single day",
           "icon": "[!]"
         },
         {
           "name": "SUMMARY",
-          "script": "So you want [goal], drug-free, easy to use. Focus does exactly that. Ready?",
-          "when": "Complex conversation, recap benefits",
+          "script": "So here's where we landed — you want laser-sharp concentration, no more brain fog, the ability to power through deep work or study sessions, and you want it drug-free with no jitters. That's Focus in a nutshell. Ready to make it happen?",
+          "when": "Complex conversation covering multiple focus and productivity pain points — summarize everything before closing",
           "icon": "[S]"
         },
         {
           "name": "REFERRAL",
-          "script": "Who else do you know dealing with similar challenges who could benefit?",
-          "when": "After close, leverage enthusiasm",
+          "script": "Now that you're about to experience what real mental clarity feels like, who else comes to mind — a classmate, a colleague, maybe someone on your team who's always battling brain fog — who'd benefit from this?",
+          "when": "After they've purchased and are excited — tap into their network of students, professionals, or coworkers who struggle with focus",
           "icon": "[R]"
         }
       ]

@@ -5,11 +5,14 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
 import type { RoadmapV2, SalesStep } from "@/types/roadmap";
 import { SALES_STEPS } from "@/types/roadmap";
 import type { Product } from "@/types";
 import type { Contact } from "@/lib/db/types";
+import { products as allProducts } from "@/data/products";
 import { updateContact } from "@/lib/actions/contacts";
+import { getRoadmapsForProducts } from "@/lib/roadmap-data";
 import { StepAddContact } from "./step-add-contact";
 import { StepOpeningPicker } from "./step-opening-picker";
 import { StepDiscovery } from "./step-discovery";
@@ -18,31 +21,36 @@ import { StepObjections } from "./step-objections";
 import { StepClosing } from "./step-closing";
 import { StepFollowUp } from "./step-followup";
 import { StepSendSamples, type SampleAddress } from "./step-send-samples";
+import { ProductTabs } from "./product-tabs";
+import { CustomerInsight } from "./customer-insight";
 
 export interface DecisionTreeState {
-  openingType: string | null;
-  questionsAsked: string[];
-  objectionsEncountered: string[];
-  closingTechnique: string | null;
+  openingTypes: Record<string, string>;
+  questionsAsked: Record<string, string[]>;
+  objectionsEncountered: Record<string, string[]>;
+  closingTechniques: Record<string, string>;
   sampleAgreed: boolean;
-  sampleProductId: string | null;
+  sampleProducts: string[];
   sampleAddress: SampleAddress | null;
 }
 
 interface DecisionTreeProps {
-  roadmap: RoadmapV2;
-  product: Product;
   initialContact?: Contact;
+}
+
+function asRecord<T>(val: unknown, fallback: T): T {
+  if (val && typeof val === "object" && !Array.isArray(val)) return val as T;
+  return fallback;
 }
 
 function contactToState(contact: Contact): DecisionTreeState {
   return {
-    openingType: contact.opening_type || null,
-    questionsAsked: contact.questions_asked || [],
-    objectionsEncountered: contact.objections_encountered || [],
-    closingTechnique: contact.closing_technique || null,
+    openingTypes: asRecord(contact.opening_types, {}),
+    questionsAsked: asRecord(contact.questions_asked, {}),
+    objectionsEncountered: asRecord(contact.objections_encountered, {}),
+    closingTechniques: asRecord(contact.closing_techniques, {}),
     sampleAgreed: contact.sample_sent,
-    sampleProductId: contact.sample_product || null,
+    sampleProducts: contact.sample_products || [],
     sampleAddress: contact.address_line1
       ? {
           line1: contact.address_line1 || "",
@@ -60,29 +68,32 @@ function stepIdToIndex(stepId: string): number {
   return idx >= 0 ? idx : 0;
 }
 
-export function DecisionTree({ roadmap, product, initialContact }: DecisionTreeProps) {
+export function DecisionTree({ initialContact }: DecisionTreeProps) {
   const [activeContact, setActiveContact] = useState<Contact | null>(initialContact || null);
   const [currentStepIndex, setCurrentStepIndex] = useState(() =>
     initialContact ? Math.max(stepIdToIndex(initialContact.current_step), 1) : 0
   );
   const [state, setState] = useState<DecisionTreeState>(() =>
     initialContact ? contactToState(initialContact) : {
-      openingType: null,
-      questionsAsked: [],
-      objectionsEncountered: [],
-      closingTechnique: null,
+      openingTypes: {},
+      questionsAsked: {},
+      objectionsEncountered: {},
+      closingTechniques: {},
       sampleAgreed: false,
-      sampleProductId: null,
+      sampleProducts: [],
       sampleAddress: null,
     }
   );
+
+  const contactProductIds = activeContact?.product_ids || [];
+  const contactProducts = allProducts.filter(p => contactProductIds.includes(p.id));
+  const roadmaps = getRoadmapsForProducts(contactProductIds);
 
   const isGated = !activeContact;
   const currentStep = SALES_STEPS[currentStepIndex];
   const progress = ((currentStepIndex + 1) / SALES_STEPS.length) * 100;
   const saveInFlight = useRef(false);
 
-  // Auto-save to contact on step change or state change
   useEffect(() => {
     if (!activeContact || currentStepIndex === 0 || saveInFlight.current) return;
 
@@ -91,12 +102,12 @@ export function DecisionTree({ roadmap, product, initialContact }: DecisionTreeP
       try {
         await updateContact(activeContact.id, {
           current_step: currentStep.id,
-          opening_type: state.openingType || null,
+          opening_types: state.openingTypes,
           questions_asked: state.questionsAsked,
           objections_encountered: state.objectionsEncountered,
-          closing_technique: state.closingTechnique || null,
+          closing_techniques: state.closingTechniques,
           sample_sent: state.sampleAgreed,
-          sample_product: state.sampleProductId || null,
+          sample_products: state.sampleProducts,
           address_line1: state.sampleAddress?.line1 || null,
           address_line2: state.sampleAddress?.line2 || null,
           address_city: state.sampleAddress?.city || null,
@@ -126,38 +137,61 @@ export function DecisionTree({ roadmap, product, initialContact }: DecisionTreeP
     setCurrentStepIndex(1);
   }, []);
 
-  const setOpeningType = useCallback((type: string) => {
-    setState(prev => ({ ...prev, openingType: type }));
-  }, []);
-
-  const toggleQuestion = useCallback((question: string) => {
+  const setOpeningType = useCallback((productId: string, type: string) => {
     setState(prev => ({
       ...prev,
-      questionsAsked: prev.questionsAsked.includes(question)
-        ? prev.questionsAsked.filter(q => q !== question)
-        : [...prev.questionsAsked, question],
+      openingTypes: { ...prev.openingTypes, [productId]: type },
     }));
   }, []);
 
-  const toggleObjection = useCallback((objection: string) => {
-    setState(prev => ({
-      ...prev,
-      objectionsEncountered: prev.objectionsEncountered.includes(objection)
-        ? prev.objectionsEncountered.filter(o => o !== objection)
-        : [...prev.objectionsEncountered, objection],
-    }));
+  const toggleQuestion = useCallback((productId: string, question: string) => {
+    setState(prev => {
+      const current = prev.questionsAsked[productId] || [];
+      return {
+        ...prev,
+        questionsAsked: {
+          ...prev.questionsAsked,
+          [productId]: current.includes(question)
+            ? current.filter(q => q !== question)
+            : [...current, question],
+        },
+      };
+    });
   }, []);
 
-  const setClosingTechnique = useCallback((technique: string) => {
-    setState(prev => ({ ...prev, closingTechnique: technique }));
+  const toggleObjection = useCallback((productId: string, objection: string) => {
+    setState(prev => {
+      const current = prev.objectionsEncountered[productId] || [];
+      return {
+        ...prev,
+        objectionsEncountered: {
+          ...prev.objectionsEncountered,
+          [productId]: current.includes(objection)
+            ? current.filter(o => o !== objection)
+            : [...current, objection],
+        },
+      };
+    });
+  }, []);
+
+  const setClosingTechnique = useCallback((productId: string, technique: string) => {
+    setState(prev => ({
+      ...prev,
+      closingTechniques: { ...prev.closingTechniques, [productId]: technique },
+    }));
   }, []);
 
   const setSampleAgreed = useCallback((agreed: boolean) => {
     setState(prev => ({ ...prev, sampleAgreed: agreed }));
   }, []);
 
-  const setSampleProductId = useCallback((productId: string) => {
-    setState(prev => ({ ...prev, sampleProductId: productId }));
+  const toggleSampleProduct = useCallback((productId: string) => {
+    setState(prev => ({
+      ...prev,
+      sampleProducts: prev.sampleProducts.includes(productId)
+        ? prev.sampleProducts.filter(p => p !== productId)
+        : [...prev.sampleProducts, productId],
+    }));
   }, []);
 
   const setSampleAddress = useCallback((address: SampleAddress) => {
@@ -169,75 +203,135 @@ export function DecisionTree({ roadmap, product, initialContact }: DecisionTreeP
       case "add_contact":
         return (
           <StepAddContact
-            customerProfileData={roadmap.sections["1_customer_profile"]}
-            product={product}
             onContactCreated={handleContactCreated}
             existingContact={activeContact}
           />
         );
       case "opening":
         return (
-          <StepOpeningPicker
-            data={roadmap.sections["2_opening_approaches"]}
-            selectedType={state.openingType}
-            onSelect={(type) => { setOpeningType(type); }}
-            onContinue={goNext}
-          />
+          <ProductTabs products={contactProducts}>
+            {(product) => {
+              const roadmap = roadmaps[product.id];
+              if (!roadmap) return null;
+              return (
+                <div className="space-y-4">
+                  <CustomerInsight
+                    data={roadmap.sections["1_customer_profile"]}
+                    productName={product.name}
+                  />
+                  <StepOpeningPicker
+                    data={roadmap.sections["2_opening_approaches"]}
+                    selectedType={state.openingTypes[product.id] || null}
+                    onSelect={(type) => { setOpeningType(product.id, type); }}
+                    onContinue={goNext}
+                  />
+                </div>
+              );
+            }}
+          </ProductTabs>
         );
       case "discovery":
         return (
-          <StepDiscovery
-            data={roadmap.sections["3_discovery_questions"]}
-            questionsAsked={state.questionsAsked}
-            onToggleQuestion={toggleQuestion}
-            onContinue={goNext}
-          />
+          <ProductTabs products={contactProducts}>
+            {(product) => {
+              const roadmap = roadmaps[product.id];
+              if (!roadmap) return null;
+              return (
+                <div className="space-y-4">
+                  <CustomerInsight
+                    data={roadmap.sections["1_customer_profile"]}
+                    productName={product.name}
+                  />
+                  <StepDiscovery
+                    data={roadmap.sections["3_discovery_questions"]}
+                    questionsAsked={state.questionsAsked[product.id] || []}
+                    onToggleQuestion={(q) => toggleQuestion(product.id, q)}
+                    onContinue={goNext}
+                  />
+                </div>
+              );
+            }}
+          </ProductTabs>
         );
       case "presentation":
         return (
-          <StepPresentation
-            data={roadmap.sections["4_presentation"]}
-            product={product}
-            onContinue={goNext}
-          />
+          <ProductTabs products={contactProducts}>
+            {(product) => {
+              const roadmap = roadmaps[product.id];
+              if (!roadmap) return null;
+              return (
+                <StepPresentation
+                  data={roadmap.sections["4_presentation"]}
+                  product={product}
+                  metadata={roadmap.metadata}
+                  questionsAsked={state.questionsAsked[product.id] || []}
+                  onContinue={goNext}
+                />
+              );
+            }}
+          </ProductTabs>
         );
       case "samples":
         return (
           <StepSendSamples
-            product={product}
+            products={contactProducts}
             sampleAgreed={state.sampleAgreed}
-            sampleProductId={state.sampleProductId}
+            sampleProducts={state.sampleProducts}
             sampleAddress={state.sampleAddress}
             onSetSampleAgreed={setSampleAgreed}
-            onSetSampleProductId={setSampleProductId}
+            onToggleSampleProduct={toggleSampleProduct}
             onSetSampleAddress={setSampleAddress}
             onContinue={goNext}
           />
         );
       case "objections":
         return (
-          <StepObjections
-            data={roadmap.sections["5_objection_handling"]}
-            encountered={state.objectionsEncountered}
-            onToggle={toggleObjection}
-            onContinue={goNext}
-          />
+          <ProductTabs products={contactProducts}>
+            {(product) => {
+              const roadmap = roadmaps[product.id];
+              if (!roadmap) return null;
+              return (
+                <StepObjections
+                  data={roadmap.sections["5_objection_handling"]}
+                  encountered={state.objectionsEncountered[product.id] || []}
+                  onToggle={(obj) => toggleObjection(product.id, obj)}
+                  onContinue={goNext}
+                />
+              );
+            }}
+          </ProductTabs>
         );
       case "closing":
         return (
-          <StepClosing
-            data={roadmap.sections["6_closing"]}
-            selectedTechnique={state.closingTechnique}
-            onSelect={setClosingTechnique}
-            onContinue={goNext}
-          />
+          <ProductTabs products={contactProducts}>
+            {(product) => {
+              const roadmap = roadmaps[product.id];
+              if (!roadmap) return null;
+              return (
+                <StepClosing
+                  data={roadmap.sections["6_closing"]}
+                  selectedTechnique={state.closingTechniques[product.id] || null}
+                  onSelect={(t) => setClosingTechnique(product.id, t)}
+                  onContinue={goNext}
+                />
+              );
+            }}
+          </ProductTabs>
         );
       case "followup":
         return (
-          <StepFollowUp
-            data={roadmap.sections["7_followup"]}
-            contactId={activeContact?.id}
-          />
+          <ProductTabs products={contactProducts}>
+            {(product) => {
+              const roadmap = roadmaps[product.id];
+              if (!roadmap) return null;
+              return (
+                <StepFollowUp
+                  data={roadmap.sections["7_followup"]}
+                  contactId={activeContact?.id}
+                />
+              );
+            }}
+          </ProductTabs>
         );
       default:
         return null;
@@ -249,9 +343,15 @@ export function DecisionTree({ roadmap, product, initialContact }: DecisionTreeP
       {/* Active contact indicator */}
       {activeContact && currentStepIndex > 0 && (
         <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
-          <span className="font-medium text-foreground">{activeContact.name}</span>
+          <span className="font-medium text-foreground">{activeContact.first_name} {activeContact.last_name}</span>
           <span>-</span>
-          <span>{product.name}</span>
+          <div className="flex items-center gap-1">
+            {contactProducts.map(p => (
+              <div key={p.id} className="relative size-4 rounded-full overflow-hidden" title={p.name}>
+                <Image src={p.image} alt={p.name} fill className="object-cover" sizes="16px" />
+              </div>
+            ))}
+          </div>
           {activeContact.email && <span>({activeContact.email})</span>}
         </div>
       )}

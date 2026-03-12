@@ -7,19 +7,18 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import {
-  Package,
   Map,
   FlaskConical,
   GraduationCap,
   Star,
   Search,
-  ChevronDown,
   Settings,
   LogOut,
   Shield,
   ChevronsUpDown,
   User,
   Users,
+  MessageSquarePlus,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { UserProfile } from "@/lib/db/types";
@@ -35,16 +34,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -54,7 +45,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { products } from "@/data/products";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user?: SupabaseUser | null;
@@ -95,7 +85,7 @@ export function AppSidebar({
     return 'U';
   };
 
-  const isProductsActive = pathname.startsWith("/products");
+  const isSalesActive = pathname.startsWith("/sales");
   const isRoadmapsActive = pathname.startsWith("/roadmaps");
   const isPracticeActive = pathname.startsWith("/practice");
   const isEvidenceActive = pathname.startsWith("/evidence");
@@ -145,50 +135,19 @@ export function AppSidebar({
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {/* Products with sub-items */}
-              <Collapsible
-                asChild
-                defaultOpen={isProductsActive}
-                className="group/collapsible"
-              >
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton
-                      tooltip="Products"
-                      isActive={isProductsActive}
-                    >
-                      <Package className="h-4 w-4" />
-                      <span>Products</span>
-                      <ChevronDown className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {products.map((product) => (
-                        <SidebarMenuSubItem key={product.id}>
-                          <SidebarMenuSubButton
-                            asChild
-                            isActive={pathname === `/products/${product.id}`}
-                          >
-                            <Link href={`/products/${product.id}`} className="flex items-center gap-2">
-                              <div className="relative size-5 flex-shrink-0 rounded-full overflow-hidden">
-                                <Image
-                                  src={product.image}
-                                  alt={product.name}
-                                  fill
-                                  className="object-cover"
-                                  sizes="20px"
-                                />
-                              </div>
-                              <span>{product.name}</span>
-                            </Link>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </SidebarMenuItem>
-              </Collapsible>
+              {/* Start Conversation */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  tooltip="Start Conversation"
+                  isActive={isSalesActive}
+                >
+                  <Link href="/sales">
+                    <MessageSquarePlus className="h-4 w-4" />
+                    <span>Start Conversation</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
 
               {/* Roadmaps */}
               <SidebarMenuItem>

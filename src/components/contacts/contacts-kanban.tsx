@@ -41,7 +41,7 @@ const kanbanColumns = [
 ];
 
 export function ContactsKanban({ contacts, onEdit }: ContactsKanbanProps) {
-  const getProduct = (productId: string) => products.find((p) => p.id === productId);
+  const getProducts = (productIds: string[]) => products.filter((p) => productIds.includes(p.id));
 
   const contactsByStep: Record<string, Contact[]> = {};
   for (const col of kanbanColumns) {
@@ -76,33 +76,42 @@ export function ContactsKanban({ contacts, onEdit }: ContactsKanbanProps) {
                   </p>
                 )}
                 {items.map((contact) => {
-                  const product = getProduct(contact.product_id);
+                  const contactProducts = getProducts(contact.product_ids);
                   const outcome = outcomeConfig[contact.outcome] || outcomeConfig.pending;
                   return (
                     <Card key={contact.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => onEdit(contact)}>
                       <CardContent className="p-3">
                         <div className="flex items-start gap-2">
-                          {product && (
-                            <div className="relative size-8 flex-shrink-0 rounded-full overflow-hidden bg-muted">
-                              <Image
-                                src={product.image}
-                                alt={product.name}
-                                fill
-                                className="object-cover"
-                                sizes="32px"
-                              />
+                          {contactProducts.length > 0 && (
+                            <div className="flex -space-x-1.5 shrink-0">
+                              {contactProducts.slice(0, 2).map(p => (
+                                <div key={p.id} className="relative size-8 rounded-full overflow-hidden bg-muted ring-2 ring-background" title={p.name}>
+                                  <Image
+                                    src={p.image}
+                                    alt={p.name}
+                                    fill
+                                    className="object-cover"
+                                    sizes="32px"
+                                  />
+                                </div>
+                              ))}
+                              {contactProducts.length > 2 && (
+                                <div className="flex size-8 items-center justify-center rounded-full bg-muted ring-2 ring-background text-[10px] font-medium">
+                                  +{contactProducts.length - 2}
+                                </div>
+                              )}
                             </div>
                           )}
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-1.5 flex-wrap">
-                              <span className="font-medium text-sm truncate">{contact.name}</span>
+                              <span className="font-medium text-sm truncate">{contact.first_name} {contact.last_name}</span>
                               <Badge variant={outcome.variant} className="text-[9px] px-1 py-0 h-4 flex items-center gap-0.5">
                                 {outcome.icon}
                                 {outcome.label}
                               </Badge>
                             </div>
-                            {product && (
-                              <p className="text-[11px] text-muted-foreground truncate">{product.name}</p>
+                            {contactProducts.length > 0 && (
+                              <p className="text-[11px] text-muted-foreground truncate">{contactProducts.map(p => p.name).join(", ")}</p>
                             )}
                             <div className="flex items-center gap-2 mt-1 text-[11px] text-muted-foreground">
                               {contact.email && (
@@ -128,7 +137,7 @@ export function ContactsKanban({ contacts, onEdit }: ContactsKanbanProps) {
                         </div>
                         <div className="mt-2 flex justify-end">
                           <Button variant="ghost" size="sm" className="h-6 text-[11px] px-2" asChild onClick={(e) => e.stopPropagation()}>
-                            <Link href={`/products/${contact.product_id}?contactId=${contact.id}`}>
+                            <Link href={`/sales?contactId=${contact.id}`}>
                               <Play className="size-3 mr-1" />
                               Resume
                             </Link>

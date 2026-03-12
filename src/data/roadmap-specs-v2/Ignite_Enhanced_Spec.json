@@ -69,44 +69,44 @@
       "description": "Uncover needs & pain points (ask 3-5)",
       "questions": [
         {
-          "type": "Opening",
-          "question": "How would you describe your typical day and energy levels?"
+          "type": "Opening Question",
+          "question": "What are your current weight management or body composition goals — is there a specific number or feeling you're working toward?"
         },
         {
-          "type": "Opening",
-          "question": "What does feeling your best look like for you?"
+          "type": "Opening Question",
+          "question": "How would you describe your metabolism right now — do you feel like your body is working with you or against you when it comes to burning calories?"
         },
         {
-          "type": "Pain Point",
-          "question": "When do you typically experience challenges with this?"
+          "type": "Pain Point Question",
+          "question": "Have you noticed your metabolism slowing down over the years — like the things that used to work for weight management just don't anymore?"
         },
         {
-          "type": "Pain Point",
-          "question": "On a scale of 1-10, how much does this impact your daily life?"
+          "type": "Pain Point Question",
+          "question": "Are there stubborn areas where no matter how clean you eat or how much you exercise, the weight just won't budge?"
         },
         {
-          "type": "Pain Point",
-          "question": "What frustrates you most about your current situation?"
+          "type": "Pain Point Question",
+          "question": "When you've tried diets or weight loss programs in the past, what was the hardest part — was it the energy crash, the hunger, or the lack of results?"
         },
         {
-          "type": "Impact",
-          "question": "What activities are you holding back on because of this?"
+          "type": "Impact Question",
+          "question": "If your metabolism was firing on all cylinders and you were burning more calories even at rest, how would that change how you feel about your body and your confidence?"
         },
         {
-          "type": "Impact",
-          "question": "How does this affect your mood, relationships, or work?"
+          "type": "Impact Question",
+          "question": "How does the frustration with weight management affect other areas of your life — your energy, your mood, or even how you show up for your family?"
         },
         {
-          "type": "Impact",
-          "question": "If this was solved tomorrow, what would you do first?"
+          "type": "Solution Question",
+          "question": "What have you tried for metabolism support or weight management — any supplements, fat burners, meal plans, or programs?"
         },
         {
-          "type": "Solution",
-          "question": "What have you tried before and what worked or didn't?"
+          "type": "Solution Question",
+          "question": "With everything you've tried, did you find something that gave you real, lasting results without feeling jittery, depleted, or like you were starving yourself?"
         },
         {
-          "type": "Solution",
-          "question": "What's most important to you - speed, natural, or ease of use?"
+          "type": "Solution Question",
+          "question": "If there was a drug-free way to naturally support your metabolism and calorie burning without adding another pill or restrictive diet, would that be worth a conversation?"
         }
       ]
     },
@@ -114,9 +114,9 @@
       "title": "\ud83c\udfa4 PRESENT THE SOLUTION",
       "framework": "Problem \u2192 Agitate \u2192 Solve",
       "content": {
-        "problem": "Many people struggle with max rmr challenges - feeling frustrated by temporary solutions that don't address the root cause.",
-        "agitate": "This isn't just a minor inconvenience - it impacts your productivity, relationships, mood, and overall quality of life. The costs add up over time.",
-        "solve": "That's why Ignite uses Vibrotactile Technology - specialized patterns that work with your body's natural neural responses. Drug-free, non-invasive, effective.",
+        "problem": "You're doing everything right — watching what you eat, staying active, pushing yourself — but the scale won't budge and those stubborn areas just won't respond. Your metabolism feels like it's working against you, and what used to work five or ten years ago doesn't even make a dent anymore. It's demoralizing to put in the effort and feel like your body isn't holding up its end of the deal.",
+        "agitate": "That frustration doesn't stay on the scale — it follows you everywhere. Your favorite clothes don't fit the way they used to, your confidence takes a hit every time you look in the mirror, and the diet fatigue is real. You've tried the fat burners, the meal plans, the calorie counting, and all you got was jittery, hungry, and right back where you started. {{discovery_callback}}",
+        "solve": "Ignite is a completely different approach. Ignite uses Vibrotactile Technology to support your body's natural metabolic pathways, helping you burn more calories even at rest. There are no stimulants, no caffeine, and no chemicals entering your body — just a drug-free patch that works with your nervous system to fire up the metabolism your body already has. It's the kind of support that works quietly in the background while you get on with your life.",
         "key_benefits": [
           "Boosted metabolism",
           "Calorie burning",
@@ -132,50 +132,50 @@
         {
           "objection": "TOO EXPENSIVE",
           "trigger": "Price concern",
-          "response": "I understand cost is important. What other criteria matter most to you beyond price?",
-          "psychology": "Shift focus to value"
+          "response": "I totally get it — let me ask you this: how much have you already spent on diet programs, gym memberships, or fat-burning supplements that didn't deliver lasting results? Ignite costs less per day than most of those, and it supports your metabolism around the clock with zero stimulants. What would it be worth to finally have something that works with your body naturally?",
+          "psychology": "Reframe cost against what they've already spent on failed weight management solutions"
         },
         {
           "objection": "NEED TO THINK",
           "trigger": "Stalling",
-          "response": "Of course! What specific questions would help you make this decision?",
-          "psychology": "Identify real concern"
+          "response": "Absolutely, take your time. Can I ask — is it the metabolism support itself you're unsure about, or is it more about whether Ignite's approach is right for you? A lot of people feel that way until they realize Ignite doesn't require any diet changes, pills, or shakes — you just wear it. What specific questions can I answer to help you feel confident?",
+          "psychology": "Isolate the real hesitation — usually skepticism about effortless metabolic support"
         },
         {
           "objection": "ASK MY SPOUSE",
           "trigger": "Shared decision",
-          "response": "Great idea! What concerns might they have that we could address now?",
-          "psychology": "Surface objections early"
+          "response": "That's smart — it's great that you make decisions together. When you talk to them, they'll probably ask 'Does it actually help with weight management?' and 'Is it safe?' The answer is yes on both — Ignite is 100% drug-free with no stimulants or chemicals, and it supports calorie burning naturally. What other concerns might they have that I can help you address right now?",
+          "psychology": "Arm them with answers to the spouse's likely questions about safety and effectiveness"
         },
         {
           "objection": "DOES IT WORK?",
           "trigger": "Skepticism",
-          "response": "I understand the skepticism. What would you need to see or experience to feel confident?",
-          "psychology": "Let them define proof"
+          "response": "I respect that — you should be skeptical, especially with how many weight loss products overpromise and underdeliver. Here's what makes Ignite different: it uses Vibrotactile Technology to support your body's natural metabolic response — no stimulants, no caffeine, no thermogenics. It's not a fat burner that spikes your heart rate. What would you need to see or feel to give it a fair shot?",
+          "psychology": "Validate skepticism built from the diet industry, then differentiate VTT from pills and stimulants"
         },
         {
           "objection": "TRIED BEFORE",
           "trigger": "Past failure",
-          "response": "What did you like or dislike about those solutions? What was missing?",
-          "psychology": "Learn what was missing"
+          "response": "I hear you — so many people have tried fat burners, meal replacement shakes, or restrictive diets that left them feeling drained and right back where they started. What was the worst part of those experiences? Ignite is completely different because it doesn't require you to change what you eat or swallow anything — it works with your body's own metabolic signals through VTT technology. What was missing from those past approaches?",
+          "psychology": "Acknowledge diet fatigue and position Ignite as a fundamentally different mechanism than supplements or programs"
         },
         {
           "objection": "NOT INTERESTED",
           "trigger": "Rejection",
-          "response": "That's fine. What specifically doesn't align with what you're looking for?",
-          "psychology": "Uncover hidden needs"
+          "response": "No problem at all. Out of curiosity, is it that you're happy with where your metabolism and weight management are right now, or is it more that you've been burned by products that didn't work before? If it's the latter, I totally understand — Ignite works differently than anything you've tried because it's not a supplement or diet plan. What would a real metabolism solution need to look like for you?",
+          "psychology": "Distinguish between genuine satisfaction and protective skepticism from past failures"
         },
         {
           "objection": "NO TIME",
           "trigger": "Busy excuse",
-          "response": "If you could solve this challenge easily, how would that help your time and energy?",
-          "psychology": "Reframe to benefit"
+          "response": "That's actually one of the best things about Ignite — there's literally nothing to do. No meal prep, no gym schedule, no pills to remember. You wear the patch and it supports your metabolism while you go about your busy day, even while you're resting. How much time are you currently losing to feeling sluggish or frustrated with your weight? Ignite could actually give you that time back.",
+          "psychology": "Flip the time objection — Ignite requires zero time investment and supports calorie burning passively"
         },
         {
           "objection": "VS COMPETITOR",
           "trigger": "Comparison",
-          "response": "What appeals to you about that option? (Then explain VTT difference)",
-          "psychology": "Highlight VTT difference"
+          "response": "Great question — what are you comparing it to? Most weight management products are either stimulant-based fat burners that spike your heart rate, restrictive diet programs, or meal replacement shakes you have to keep buying. Ignite uses Vibrotactile Technology — it's not putting any substance into your body. It works with your natural neural signals to support metabolic function. Have you found anything else that's truly drug-free and requires zero lifestyle changes?",
+          "psychology": "Position VTT as a category of one — no chemicals, no dietary restrictions, no stimulant side effects"
         }
       ]
     },
@@ -185,32 +185,32 @@
       "techniques": [
         {
           "name": "ASSUMPTIVE",
-          "script": "Great! Ignite is exactly what you need. What's the best shipping address for your order?",
-          "when": "Strong buying signals, nodding, engaged",
+          "script": "I can already tell you're ready to break through that plateau and start boosting your metabolism naturally. Let's get Ignite headed your way — what's the best shipping address?",
+          "when": "They're excited about firing up their metabolism, talking about wanting to feel the burn again",
           "icon": "[A]"
         },
         {
           "name": "ALTERNATIVE",
-          "script": "Would you prefer the 30-day supply, or the 90-day pack for better value?",
-          "when": "Need gentle push, considering options",
+          "script": "Would you like to start with the 30-day supply to see those metabolism results, or go with the 90-day pack so you can really power through that plateau and get into your favorite clothes again?",
+          "when": "They're interested but weighing commitment level, mentioned specific weight or clothing goals",
           "icon": "[B]"
         },
         {
           "name": "URGENCY",
-          "script": "We have a special promotion ending this week. Want to lock that in today?",
-          "when": "They're hesitating, need reason to act",
+          "script": "We've got a special promotion ending this week — and every day you wait is another day your metabolism isn't working as hard as it could be. Let's lock this in so you can start burning more calories, even at rest.",
+          "when": "They're hesitating despite clear interest in metabolic support, need a nudge to take action now",
           "icon": "[!]"
         },
         {
           "name": "SUMMARY",
-          "script": "So you want [goal], drug-free, easy to use. Ignite does exactly that. Ready?",
-          "when": "Complex conversation, recap benefits",
+          "script": "So you want to boost your metabolism naturally, break through that weight-loss plateau, and start fitting back into your favorite clothes — all without stimulants or crash diets. That's exactly what Ignite does, drug-free and effortless. Ready to fire it up?",
+          "when": "Long conversation covering multiple metabolic goals, need to tie it all together before the ask",
           "icon": "[S]"
         },
         {
           "name": "REFERRAL",
-          "script": "Who else do you know dealing with similar challenges who could benefit?",
-          "when": "After close, leverage enthusiasm",
+          "script": "You mentioned you have a workout buddy — or friends with similar goals. Who else do you know who's been struggling with a slow metabolism or hitting a plateau? They'd probably love to hear about this too.",
+          "when": "After the sale, they're excited about their metabolism journey and have mentioned gym partners or friends with weight goals",
           "icon": "[R]"
         }
       ]

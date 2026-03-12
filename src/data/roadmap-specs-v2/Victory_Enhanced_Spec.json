@@ -40,27 +40,27 @@
         {
           "type": "COLD APPROACH",
           "context": "Stranger at coffee shop",
-          "script": "[See full word track for COLD APPROACH script]"
+          "script": " (Notice their athletic gear or physique) \"Hey! I can tell you take your training seriously — love to see it. I'm [Your Name]. I work with a product called Victory that helps athletes boost strength, endurance, and agility without any banned substances or drugs. What kind of training are you into?\" "
         },
         {
           "type": "WARM INTRO",
           "context": "Friend/family member",
-          "script": "[See full word track for WARM INTRO script]"
+          "script": " \"Hey [Friend's Name]! How's the training going? You know how you've been saying you feel like you've hit a plateau? I started using this patch called Victory, and my lifts and endurance have been noticeably better. It's completely drug-free — works through vibrotactile technology. Have you ever tried anything like that to break through a training wall?\" "
         },
         {
           "type": "SOCIAL MEDIA DM",
           "context": "Instagram/Facebook",
-          "script": "[See full word track for SOCIAL MEDIA DM script]"
+          "script": " \"Hey [Name]! Saw your workout post — that looked like a killer session! I've been using a product called Victory that supports strength, endurance, and agility naturally. It's a drug-free patch and it's honestly helped me push past my limits. Would you be interested in learning how it could fit into your routine?\" "
         },
         {
           "type": "REFERRAL",
           "context": "Mutual connection",
-          "script": "[See full word track for REFERRAL script]"
+          "script": " \"Hi [Prospect Name], I'm [Your Name]. [Referrer's Name] told me you're serious about your performance and always looking for a competitive edge. I work with a product called Victory that enhances strength, endurance, and agility using drug-free vibrotactile technology — no supplements, no stimulants. Would you be open to hearing how athletes are using it to smash their personal bests?\" "
         },
         {
           "type": "EVENT/PARTY",
           "context": "Casual networking",
-          "script": "[See full word track for EVENT/PARTY script]"
+          "script": " \"Awesome event! So what keeps you busy? (Listen and respond genuinely.) Nice — you seem like someone who stays active! I actually help athletes and fitness enthusiasts take their performance up a notch with a product called Victory. It's a drug-free patch that supports strength and endurance naturally. What does your current training look like?\" "
         }
       ]
     },
@@ -69,44 +69,44 @@
       "description": "Uncover needs & pain points (ask 3-5)",
       "questions": [
         {
-          "type": "Opening",
-          "question": "How would you describe your typical day and energy levels?"
+          "type": "Opening Question",
+          "question": "What does your current training routine look like, and what are you working toward right now?"
         },
         {
-          "type": "Opening",
-          "question": "What does feeling your best look like for you?"
+          "type": "Opening Question",
+          "question": "What would your ideal performance level look like — if you could train at your absolute peak, what would that feel like?"
         },
         {
-          "type": "Pain Point",
-          "question": "When do you typically experience challenges with this?"
+          "type": "Pain Point Question",
+          "question": "Have you hit any plateaus recently where you feel like you're putting in the work but not seeing the gains?"
         },
         {
-          "type": "Pain Point",
-          "question": "On a scale of 1-10, how much does this impact your daily life?"
+          "type": "Pain Point Question",
+          "question": "How's your recovery time between sessions — do you feel like you're bouncing back fast enough, or does soreness hold you back?"
         },
         {
-          "type": "Pain Point",
-          "question": "What frustrates you most about your current situation?"
+          "type": "Pain Point Question",
+          "question": "When it comes to competition or game day, do you ever feel like you're leaving performance on the table despite your preparation?"
         },
         {
-          "type": "Impact",
-          "question": "What activities are you holding back on because of this?"
+          "type": "Impact Question",
+          "question": "If your strength, endurance, and agility were all firing at a higher level, how would that change your results in training or competition?"
         },
         {
-          "type": "Impact",
-          "question": "How does this affect your mood, relationships, or work?"
+          "type": "Impact Question",
+          "question": "How does feeling stuck in your performance affect your motivation and consistency with training?"
         },
         {
-          "type": "Impact",
-          "question": "If this was solved tomorrow, what would you do first?"
+          "type": "Solution Question",
+          "question": "What are you currently doing for pre-workout prep — any supplements, routines, or rituals to get your body ready to perform?"
         },
         {
-          "type": "Solution",
-          "question": "What have you tried before and what worked or didn't?"
+          "type": "Solution Question",
+          "question": "Have you ever tried anything specifically for natural performance enhancement — something that isn't a stimulant or banned substance?"
         },
         {
-          "type": "Solution",
-          "question": "What's most important to you - speed, natural, or ease of use?"
+          "type": "Solution Question",
+          "question": "If there was a way to support your strength, endurance, and recovery naturally without adding another pill or powder to your routine, would that be worth exploring?"
         }
       ]
     },
@@ -114,9 +114,9 @@
       "title": "\ud83c\udfa4 PRESENT THE SOLUTION",
       "framework": "Problem \u2192 Agitate \u2192 Solve",
       "content": {
-        "problem": "Many people struggle with athletic performance challenges - feeling frustrated by temporary solutions that don't address the root cause.",
-        "agitate": "This isn't just a minor inconvenience - it impacts your productivity, relationships, mood, and overall quality of life. The costs add up over time.",
-        "solve": "That's why Victory uses Vibrotactile Technology - specialized patterns that work with your body's natural neural responses. Drug-free, non-invasive, effective.",
+        "problem": "You're putting in the work — the early mornings, the strict training, the discipline — but the results just aren't matching the effort anymore. You've hit a wall where your lifts stall, your times plateau, and recovery takes longer than it should. It's frustrating to train harder than ever and feel like you're spinning your wheels.",
+        "agitate": "That plateau doesn't just affect your numbers — it gets inside your head. You start questioning your program, your genetics, even your commitment. Meanwhile, the competition keeps leveling up, and every session where you don't improve feels like you're falling behind. The supplements, the pre-workouts, the recovery stacks — none of it seems to be enough to break through. {{discovery_callback}}",
+        "solve": "Victory is built for exactly this moment. Victory uses Vibrotactile Technology to support your body's natural performance pathways — strength, endurance, and agility — without putting a single substance into your system. No banned ingredients, no stimulants, no loading phases. Just a patch that works with your nervous system so your body can perform the way your training deserves.",
         "key_benefits": [
           "Enhanced strength",
           "Improved endurance",
@@ -132,50 +132,50 @@
         {
           "objection": "TOO EXPENSIVE",
           "trigger": "Price concern",
-          "response": "I understand cost is important. What other criteria matter most to you beyond price?",
-          "psychology": "Shift focus to value"
+          "response": "I totally understand. Quick question — how much are you spending on pre-workouts, protein supplements, BCAAs, and recovery products each month? Most serious athletes drop $150-$300 without batting an eye. Victory supports your strength, endurance, and agility in one patch for a fraction of that, with zero banned substances. What's it worth to break through your plateau and hit a new PR?",
+          "psychology": "Reframe cost by comparing to their existing supplement stack and the value of performance breakthroughs"
         },
         {
           "objection": "NEED TO THINK",
           "trigger": "Stalling",
-          "response": "Of course! What specific questions would help you make this decision?",
-          "psychology": "Identify real concern"
+          "response": "Absolutely — I'd want to be sure too. What's the main thing you're weighing? Is it whether Victory will actually make a difference in your training, or more about how it works alongside your current routine? A lot of athletes try it during one session and feel the difference in their endurance right away. What would help you decide?",
+          "psychology": "Isolate the real hesitation — efficacy vs. fit — and anchor to an immediate, tangible training test"
         },
         {
           "objection": "ASK MY SPOUSE",
           "trigger": "Shared decision",
-          "response": "Great idea! What concerns might they have that we could address now?",
-          "psychology": "Surface objections early"
+          "response": "Totally makes sense. What do you think their biggest concern would be — the investment or the safety side? One thing that usually puts partners at ease is that Victory is 100% drug-free, has no banned substances, and nothing enters the bloodstream. It's just a patch that supports your body's own performance. Would it help to share the info so they can see exactly what it is?",
+          "psychology": "Proactively address the safety/drug-free angle that typically concerns a partner of an athlete"
         },
         {
           "objection": "DOES IT WORK?",
           "trigger": "Skepticism",
-          "response": "I understand the skepticism. What would you need to see or experience to feel confident?",
-          "psychology": "Let them define proof"
+          "response": "I love that you're asking. Victory uses Vibrotactile Technology — it works through your nervous system to support natural strength, endurance, and agility. No stimulants, no banned substances, nothing entering your bloodstream. What would make you a believer — would you want to wear it during your next training session and compare your numbers to your last workout?",
+          "psychology": "Let them define proof by proposing a measurable, head-to-head training comparison"
         },
         {
           "objection": "TRIED BEFORE",
           "trigger": "Past failure",
-          "response": "What did you like or dislike about those solutions? What was missing?",
-          "psychology": "Learn what was missing"
+          "response": "I get it — most athletes have gone through a cabinet full of pre-workouts, creatine, BCAAs, test boosters, the whole stack. What happened with those? Usually it's diminishing returns, stomach issues, or concerns about what's actually in them. Victory is fundamentally different — VTT works through your nervous system, not your digestive system. No substances at all. What was the biggest issue with the supplements you've tried?",
+          "psychology": "Differentiate VTT from the entire supplement industry by highlighting a completely different mechanism of action"
         },
         {
           "objection": "NOT INTERESTED",
           "trigger": "Rejection",
-          "response": "That's fine. What specifically doesn't align with what you're looking for?",
-          "psychology": "Uncover hidden needs"
+          "response": "No problem at all. I'm just curious — are you content with where your performance is right now, or is it more that you've been burned by products that overpromise? If you've hit a plateau and nothing has broken through it, that's actually the exact scenario where Victory makes the biggest impact because it works through a mechanism your body hasn't adapted to yet.",
+          "psychology": "Distinguish between satisfaction with current performance and frustration from ineffective supplements"
         },
         {
           "objection": "NO TIME",
           "trigger": "Busy excuse",
-          "response": "If you could solve this challenge easily, how would that help your time and energy?",
-          "psychology": "Reframe to benefit"
+          "response": "I hear you — your schedule is packed. But here's the thing: Victory doesn't add anything to your routine. It's a patch — peel and stick before your workout, that's it. No mixing, no timing around meals, no loading phases. If you're already training hard and short on time, wouldn't you want to make sure every session counts? That's exactly what Victory is designed for.",
+          "psychology": "Reframe Victory as a zero-effort performance multiplier for time they're already investing in training"
         },
         {
           "objection": "VS COMPETITOR",
           "trigger": "Comparison",
-          "response": "What appeals to you about that option? (Then explain VTT difference)",
-          "psychology": "Highlight VTT difference"
+          "response": "Great — what are you comparing it to? Most performance products — pre-workouts, creatine, stimulant blends — put substances into your body that can cause crashes, GI distress, or flag in drug testing. Victory uses VTT to work with your nervous system to support your body's natural strength and endurance. Zero banned substances, nothing in your bloodstream, and it works from the very first use with no loading phase. What matters most to you — the ingredients list, the results, or both?",
+          "psychology": "Highlight VTT as a clean, test-safe alternative vs. every substance-based performance product"
         }
       ]
     },
@@ -185,32 +185,32 @@
       "techniques": [
         {
           "name": "ASSUMPTIVE",
-          "script": "Great! Victory is exactly what you need. What's the best shipping address for your order?",
-          "when": "Strong buying signals, nodding, engaged",
+          "script": "Let's go — you're ready to start crushing your workouts and getting that competitive edge. Let's get Victory shipped to you so you can feel the difference at your next session. What's the best address?",
+          "when": "They've talked about hitting a plateau, wanting faster recovery, or needing a performance edge and are clearly fired up to try it",
           "icon": "[A]"
         },
         {
           "name": "ALTERNATIVE",
-          "script": "Would you prefer the 30-day supply, or the 90-day pack for better value?",
-          "when": "Need gentle push, considering options",
+          "script": "Would you want to start with a 30-day supply to test it through a training cycle, or go with the 90-day pack so you're covered through your entire competition season without a gap?",
+          "when": "They're sold on the performance benefits but deciding how much to commit — frame the options around their training or competition calendar",
           "icon": "[B]"
         },
         {
           "name": "URGENCY",
-          "script": "We have a special promotion ending this week. Want to lock that in today?",
-          "when": "They're hesitating, need reason to act",
+          "script": "We've got a limited-time promotion right now — and honestly, every workout without Victory is a session where you're leaving gains on the table. Your next competition or PR attempt isn't going to wait. Want to lock this in today?",
+          "when": "They're excited but stalling — remind them that their training window and competition dates don't pause",
           "icon": "[!]"
         },
         {
           "name": "SUMMARY",
-          "script": "So you want [goal], drug-free, easy to use. Victory does exactly that. Ready?",
-          "when": "Complex conversation, recap benefits",
+          "script": "So let me recap — you want to crush your workouts, recover faster between sessions, and get that competitive edge over everyone else in the gym or on the field, all without banned substances. That's exactly what Victory is built for. Ready to level up?",
+          "when": "Detailed conversation about training goals, plateaus, and recovery — bring it all together before asking for the commitment",
           "icon": "[S]"
         },
         {
           "name": "REFERRAL",
-          "script": "Who else do you know dealing with similar challenges who could benefit?",
-          "when": "After close, leverage enthusiasm",
+          "script": "Now that you're about to take your performance to the next level, who else in your circle — a training partner, a teammate, someone in your gym — would want this same edge?",
+          "when": "After they've purchased and are pumped about the performance gains — athletes love sharing what gives them an edge with their training partners and team",
           "icon": "[R]"
         }
       ]

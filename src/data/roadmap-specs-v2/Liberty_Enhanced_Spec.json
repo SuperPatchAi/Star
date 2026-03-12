@@ -40,27 +40,27 @@
         {
           "type": "COLD APPROACH",
           "context": "Stranger at coffee shop",
-          "script": " \"Hi [Prospect Name], this is [Your Name] from Super Patch. I'm calling because I really enjoyed our conversation on [Date/Topic, e.g., how the Liberty patch could enhance your balance and mobility], and I wanted to see if any new questions have come up for you since we last spoke. I'm here to help ..."
+          "script": "Hey, sorry to bother you — I noticed you mentioned being careful on that step coming in. I work with a product called Liberty from Super Patch that actually helps support balance and mobility, no drugs involved. Is staying steady on your feet something that's been on your mind lately?"
         },
         {
           "type": "WARM INTRO",
           "context": "Friend/family member",
-          "script": " \"Hi [Prospect Name], this is [Your Name] from Super Patch. I'm calling because I really enjoyed our conversation on [Date/Topic, e.g., how the Liberty patch could enhance your balance and mobility], and I wanted to see if any new questions have come up for you since we last spoke. I'm here to help ..."
+          "script": "I've been thinking about what you said about feeling unsteady lately, and it reminded me of something I've been working with. It's called the Liberty patch — it supports balance and mobility without any medication. Would you be open to giving it a try so you can feel more confident on your feet?"
         },
         {
           "type": "SOCIAL MEDIA DM",
           "context": "Instagram/Facebook",
-          "script": " \"Hi [Prospect Name], this is [Your Name] from Super Patch. I'm calling because I really enjoyed our conversation on [Date/Topic, e.g., how the Liberty patch could enhance your balance and mobility], and I wanted to see if any new questions have come up for you since we last spoke. I'm here to help ..."
+          "script": "Hey! Loved seeing your post about getting back into walking — that's awesome. I work with Super Patch and we have a product called Liberty that helps with balance and mobility support, totally drug-free. Have you thought about adding something like that to help you feel more stable?"
         },
         {
           "type": "REFERRAL",
           "context": "Mutual connection",
-          "script": " \"Hi [Prospect Name], this is [Your Name] from Super Patch. I'm calling because I really enjoyed our conversation on [Date/Topic, e.g., how the Liberty patch could enhance your balance and mobility], and I wanted to see if any new questions have come up for you since we last spoke. I'm here to help ..."
+          "script": "Hi! [Mutual friend] told me you've been looking for ways to improve your balance and stay more active. I work with Super Patch and our Liberty patch is designed for exactly that — drug-free balance and mobility support. Would you like to hear more about how it works?"
         },
         {
           "type": "EVENT/PARTY",
           "context": "Casual networking",
-          "script": " \"Hi [Prospect Name], this is [Your Name] from Super Patch. I'm calling because I really enjoyed our conversation on [Date/Topic, e.g., how the Liberty patch could enhance your balance and mobility], and I wanted to see if any new questions have come up for you since we last spoke. I'm here to help ..."
+          "script": "Great to meet you! So I work with a really cool wellness product called Liberty from Super Patch — it helps people with balance and mobility, completely drug-free. Do you know anyone in your life, maybe a parent or friend, who worries about staying steady and active as they get older?"
         }
       ]
     },
@@ -69,44 +69,44 @@
       "description": "Uncover needs & pain points (ask 3-5)",
       "questions": [
         {
-          "type": "Opening",
-          "question": "How would you describe your typical day and energy levels?"
+          "type": "Opening Question",
+          "question": "How confident do you feel on your feet these days — whether it's walking, climbing stairs, or just getting around the house?"
         },
         {
-          "type": "Opening",
-          "question": "What does feeling your best look like for you?"
+          "type": "Opening Question",
+          "question": "Has staying active and mobile been more of a challenge for you recently than it used to be?"
         },
         {
-          "type": "Pain Point",
-          "question": "When do you typically experience challenges with this?"
+          "type": "Pain Point Question",
+          "question": "Are there specific situations — like uneven surfaces, stairs, or getting up from a chair — where you feel unsteady or nervous?"
         },
         {
-          "type": "Pain Point",
-          "question": "On a scale of 1-10, how much does this impact your daily life?"
+          "type": "Pain Point Question",
+          "question": "Have you ever had a fall or a close call that made you more cautious about how you move around?"
         },
         {
-          "type": "Pain Point",
-          "question": "What frustrates you most about your current situation?"
+          "type": "Pain Point Question",
+          "question": "Do you find yourself avoiding certain activities or outings because you're worried about your balance?"
         },
         {
-          "type": "Impact",
-          "question": "What activities are you holding back on because of this?"
+          "type": "Impact Question",
+          "question": "How has this affected your independence — are there things you used to do on your own that you now need help with?"
         },
         {
-          "type": "Impact",
-          "question": "How does this affect your mood, relationships, or work?"
+          "type": "Impact Question",
+          "question": "What would it mean to you and your family if you felt steady and confident moving around again?"
         },
         {
-          "type": "Impact",
-          "question": "If this was solved tomorrow, what would you do first?"
+          "type": "Solution Question",
+          "question": "Have you worked with a physical therapist or tried any exercises specifically for balance, and how did that go?"
         },
         {
-          "type": "Solution",
-          "question": "What have you tried before and what worked or didn't?"
+          "type": "Solution Question",
+          "question": "How do you feel about drug-free options versus relying on medications or devices for mobility support?"
         },
         {
-          "type": "Solution",
-          "question": "What's most important to you - speed, natural, or ease of use?"
+          "type": "Solution Question",
+          "question": "If there was something simple you could wear that supported your balance without any side effects, would that be worth trying?"
         }
       ]
     },
@@ -114,9 +114,9 @@
       "title": "\ud83c\udfa4 PRESENT THE SOLUTION",
       "framework": "Problem \u2192 Agitate \u2192 Solve",
       "content": {
-        "problem": "Many people struggle with mobility challenges - feeling frustrated by temporary solutions that don't address the root cause.",
-        "agitate": "This isn't just a minor inconvenience - it impacts your productivity, relationships, mood, and overall quality of life. The costs add up over time.",
-        "solve": "That's why Liberty uses Vibrotactile Technology - specialized patterns that work with your body's natural neural responses. Drug-free, non-invasive, effective.",
+        "problem": "You used to move through your day without a second thought, but lately every step feels like a question mark. Maybe it's the stairs, maybe it's uneven ground, or maybe it's just standing up too fast — but that unsteadiness is always in the back of your mind. You've started avoiding things you used to love because you're not sure your balance will hold up.",
+        "agitate": "That fear doesn't stay small — it starts stealing your independence piece by piece. Your family worries every time you leave the house, and you find yourself saying no to walks, outings, and activities that used to bring you joy. The longer it goes on, the smaller your world gets, and the harder it becomes to get that confidence back. {{discovery_callback}}",
+        "solve": "That's where Liberty comes in. Liberty uses Vibrotactile Technology to work with your body's own balance and coordination systems, helping you feel steadier and more confident on your feet. There's nothing to swallow, no drugs, and no side effects — just a simple patch that supports the stability your body is already capable of. It's the kind of support that lets you take back your independence, one confident step at a time.",
         "key_benefits": [
           "Improved balance",
           "Better mobility",
@@ -132,50 +132,50 @@
         {
           "objection": "TOO EXPENSIVE",
           "trigger": "Price concern",
-          "response": "I understand cost is important. What other criteria matter most to you beyond price?",
-          "psychology": "Shift focus to value"
+          "response": "I understand. But consider this — how much does a single physical therapy session cost, or a trip to the ER from a fall? Liberty costs a fraction of that and supports your balance every single day, drug-free. What matters most to you beyond price when it comes to staying steady and independent?",
+          "psychology": "Shift focus to the high cost of physical therapy, fall injuries, and lost independence"
         },
         {
           "objection": "NEED TO THINK",
           "trigger": "Stalling",
-          "response": "Of course! What specific questions would help you make this decision?",
-          "psychology": "Identify real concern"
+          "response": "Absolutely, take your time. Is it the concept of a drug-free balance patch that's new, or something else? A lot of people are surprised that something so simple could support stability. What specific questions can I answer to help you feel confident about it?",
+          "psychology": "Identify whether hesitation is about the novelty of the approach or a deeper concern"
         },
         {
           "objection": "ASK MY SPOUSE",
           "trigger": "Shared decision",
-          "response": "Great idea! What concerns might they have that we could address now?",
-          "psychology": "Surface objections early"
+          "response": "That makes perfect sense — your family cares about your safety. And honestly, they probably worry about falls just as much as you do. What concerns do you think they'd have? A lot of families love Liberty because it gives everyone peace of mind knowing balance is being supported daily.",
+          "psychology": "Surface objections early and connect to the family's shared concern about falls and independence"
         },
         {
           "objection": "DOES IT WORK?",
           "trigger": "Skepticism",
-          "response": "I understand the skepticism. What would you need to see or experience to feel confident?",
-          "psychology": "Let them define proof"
+          "response": "I completely understand — balance is serious, and you want something you can trust. Liberty uses Vibrotactile Technology, which works with your body's own nervous system to support stability — no drugs, no bulky devices. What would you need to see or experience to feel confident that a simple patch could help your balance?",
+          "psychology": "Let them define proof while positioning VTT as a credible, science-backed approach to stability"
         },
         {
           "objection": "TRIED BEFORE",
           "trigger": "Past failure",
-          "response": "What did you like or dislike about those solutions? What was missing?",
-          "psychology": "Learn what was missing"
+          "response": "I hear you — canes, walkers, balance exercises, physical therapy — there are a lot of options out there. What specifically didn't work for you? Liberty is different because VTT technology works with your nervous system in a completely new way — no equipment to carry around, no exercises to remember, and zero drugs.",
+          "psychology": "Learn what failed and contrast Liberty's wearable simplicity against cumbersome devices and ongoing PT costs"
         },
         {
           "objection": "NOT INTERESTED",
           "trigger": "Rejection",
-          "response": "That's fine. What specifically doesn't align with what you're looking for?",
-          "psychology": "Uncover hidden needs"
+          "response": "No worries at all. Just out of curiosity — do you feel confident and steady on your feet right now? A lot of people don't realize they've started limiting what they do because of balance worries. If that ever becomes a concern, Liberty is a drug-free way to support your independence. Worth keeping in mind.",
+          "psychology": "Uncover whether they've started self-limiting activities and plant a seed about maintaining independence"
         },
         {
           "objection": "NO TIME",
           "trigger": "Busy excuse",
-          "response": "If you could solve this challenge easily, how would that help your time and energy?",
-          "psychology": "Reframe to benefit"
+          "response": "I totally understand — you're busy. That's actually why Liberty is so easy: you just stick it on and go about your day. No exercises, no appointments, no devices to manage. And think about how much time a fall or injury could cost you. How much would it mean to feel confident and steady without adding anything to your schedule?",
+          "psychology": "Reframe time concern into the devastating time cost of a fall or loss of mobility"
         },
         {
           "objection": "VS COMPETITOR",
           "trigger": "Comparison",
-          "response": "What appeals to you about that option? (Then explain VTT difference)",
-          "psychology": "Highlight VTT difference"
+          "response": "Great that you're exploring your options — what appeals to you about that one? Here's what makes Liberty unique: most balance aids are devices you have to carry or wear visibly, or medications with side effects. Liberty uses Vibrotactile Technology — it's a simple patch that works with your nervous system to support stability, with zero drugs and nothing to carry. How important is discreet, drug-free support for your balance?",
+          "psychology": "Highlight VTT's discreet, device-free, drug-free advantage over canes, walkers, and medications"
         }
       ]
     },
@@ -185,32 +185,32 @@
       "techniques": [
         {
           "name": "ASSUMPTIVE",
-          "script": "Great! Liberty is exactly what you need. What's the best shipping address for your order?",
-          "when": "Strong buying signals, nodding, engaged",
+          "script": "Sounds like you're ready to walk with confidence again and stop worrying about every step — let's get Liberty on the way to you. What's the best shipping address?",
+          "when": "They've expressed a desire to move freely again or frustration with feeling unsteady",
           "icon": "[A]"
         },
         {
           "name": "ALTERNATIVE",
-          "script": "Would you prefer the 30-day supply, or the 90-day pack for better value?",
-          "when": "Need gentle push, considering options",
+          "script": "Would you like the 30-day supply to feel the difference in your balance and confidence, or the 90-day pack so you're covered all season and can stay independent without a second thought?",
+          "when": "They're considering it but need a nudge — tie each option to the independence and confidence they want to maintain",
           "icon": "[B]"
         },
         {
           "name": "URGENCY",
-          "script": "We have a special promotion ending this week. Want to lock that in today?",
-          "when": "They're hesitating, need reason to act",
+          "script": "We've got a promotion ending this week — and every day without support is another day worrying about a fall or needing someone's arm to lean on. Want to lock this in so you can start moving with confidence?",
+          "when": "They've acknowledged balance fears but are delaying — highlight the real risk of waiting when falls are at stake",
           "icon": "[!]"
         },
         {
           "name": "SUMMARY",
-          "script": "So you want [goal], drug-free, easy to use. Liberty does exactly that. Ready?",
-          "when": "Complex conversation, recap benefits",
+          "script": "So let me make sure I've got this — you want to walk without fear of falling, stay independent in your own home, and get back to the outings and activities you've been avoiding. Liberty supports all of that, completely drug-free. Ready to feel steady again?",
+          "when": "Detailed conversation about mobility concerns — recap their specific fears about falling and independence, then connect to Liberty's benefits",
           "icon": "[S]"
         },
         {
           "name": "REFERRAL",
-          "script": "Who else do you know dealing with similar challenges who could benefit?",
-          "when": "After close, leverage enthusiasm",
+          "script": "Now that you're on your way to steadier, more confident days — who else in your life could use this? A parent, a neighbor, a friend at church who's been slowing down? They'd love to feel independent again too.",
+          "when": "After a successful close — balance concerns are common among their peers, so it's natural to think of elderly friends or family who also worry about falls",
           "icon": "[R]"
         }
       ]

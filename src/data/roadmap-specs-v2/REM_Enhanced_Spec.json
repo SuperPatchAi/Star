@@ -40,27 +40,27 @@
         {
           "type": "COLD APPROACH",
           "context": "Stranger at coffee shop",
-          "script": "[See full word track for COLD APPROACH script]"
+          "script": "Looks like you could use an extra shot of espresso today — I've been there. I actually work with a product called REM by Super Patch that helps people get deeper, more restorative sleep without any drugs or melatonin. How would you rate your sleep quality these days?"
         },
         {
           "type": "WARM INTRO",
           "context": "Friend/family member",
-          "script": "[See full word track for WARM INTRO script]"
+          "script": "You know how you're always saying you can never get a good night's sleep? I've been using REM from Super Patch and I'm finally waking up actually feeling rested — no pills, no grogginess. Would you want to try something like that?"
         },
         {
           "type": "SOCIAL MEDIA DM",
           "context": "Instagram/Facebook",
-          "script": "[See full word track for SOCIAL MEDIA DM script]"
+          "script": "Hey! I noticed your late-night post — sounds like sleep hasn't been your friend lately. I've been using REM by Super Patch and it's completely changed how I sleep and how I feel in the morning, all drug-free. Have you ever tried anything natural to improve your sleep?"
         },
         {
           "type": "REFERRAL",
           "context": "Mutual connection",
-          "script": "[See full word track for REFERRAL script]"
+          "script": "Hi! [Mutual friend] mentioned you've been struggling with sleep and thought I could help. I work with REM from Super Patch — it's a drug-free patch designed to support deeper, better-quality sleep so you wake up refreshed. Would you be open to hearing how it works?"
         },
         {
           "type": "EVENT/PARTY",
           "context": "Casual networking",
-          "script": "[See full word track for EVENT/PARTY script]"
+          "script": "Be honest — when's the last time you woke up and actually felt fully rested? Most people can't even remember. I work with REM by Super Patch, a drug-free patch that helps people get the deep sleep their body needs. What's your biggest challenge when it comes to getting a good night's rest?"
         }
       ]
     },
@@ -69,44 +69,44 @@
       "description": "Uncover needs & pain points (ask 3-5)",
       "questions": [
         {
-          "type": "Opening",
-          "question": "How would you describe your typical day and energy levels?"
+          "type": "Opening Question",
+          "question": "When you wake up in the morning, do you actually feel rested — or does it feel like you barely slept?"
         },
         {
-          "type": "Opening",
-          "question": "What does feeling your best look like for you?"
+          "type": "Opening Question",
+          "question": "How would you rate your sleep quality lately on a scale of 1 to 10?"
         },
         {
-          "type": "Pain Point",
-          "question": "When do you typically experience challenges with this?"
+          "type": "Pain Point Question",
+          "question": "Do you have more trouble falling asleep, staying asleep, or both?"
         },
         {
-          "type": "Pain Point",
-          "question": "On a scale of 1-10, how much does this impact your daily life?"
+          "type": "Pain Point Question",
+          "question": "What does your mind tend to do when you're lying in bed trying to fall asleep — does it race or stay calm?"
         },
         {
-          "type": "Pain Point",
-          "question": "What frustrates you most about your current situation?"
+          "type": "Pain Point Question",
+          "question": "How much does screen time or your evening routine play into your sleep struggles?"
         },
         {
-          "type": "Impact",
-          "question": "What activities are you holding back on because of this?"
+          "type": "Impact Question",
+          "question": "How does a bad night's sleep affect your energy, focus, and patience the next day?"
         },
         {
-          "type": "Impact",
-          "question": "How does this affect your mood, relationships, or work?"
+          "type": "Impact Question",
+          "question": "If you could wake up feeling genuinely refreshed every morning, what would you do differently with that energy?"
         },
         {
-          "type": "Impact",
-          "question": "If this was solved tomorrow, what would you do first?"
+          "type": "Solution Question",
+          "question": "What have you tried to improve your sleep — melatonin, sleep apps, medications — and how did those work out?"
         },
         {
-          "type": "Solution",
-          "question": "What have you tried before and what worked or didn't?"
+          "type": "Solution Question",
+          "question": "How do you feel about taking sleep aids that might leave you groggy or dependent over time?"
         },
         {
-          "type": "Solution",
-          "question": "What's most important to you - speed, natural, or ease of use?"
+          "type": "Solution Question",
+          "question": "Would a drug-free option that works with your body's natural sleep cycle be something you'd want to explore?"
         }
       ]
     },
@@ -114,9 +114,9 @@
       "title": "\ud83c\udfa4 PRESENT THE SOLUTION",
       "framework": "Problem \u2192 Agitate \u2192 Solve",
       "content": {
-        "problem": "You know, for too long, we've accepted that waking up tired, feeling groggy, or struggling to fall asleep is just 'part of life.' We try everything \u2013 counting sheep, cutting caffeine, even relying on pills \u2013 but the fundamental problem remains: our bodies aren't getting into that deep, restorative sleep state where true healing and recovery happens.",
-        "agitate": "And when we don't get that deep sleep, it doesn't just make us tired; it impacts everything. Our mood suffers, our focus at work or with family declines, we might feel more stressed, and our immune system can even take a hit. It's a vicious cycle that leaves us feeling constantly drained, compromising our ability to truly live a healthy, vibrant life. You mentioned [recall a specific pain point th",
-        "solve": "That's why REM uses Vibrotactile Technology - specialized patterns that work with your body's natural neural responses. Drug-free, non-invasive, effective.",
+        "problem": "You lie in bed exhausted but your mind won't stop racing, you toss and turn for hours, and when the alarm finally goes off you feel like you barely slept at all. Maybe you've tried melatonin, sleep apps, or even prescription sleep aids, but nothing gives you that deep, restorative rest your body is craving. Waking up exhausted has just become your normal.",
+        "agitate": "The worst part is that poor sleep doesn't stay in the bedroom — it follows you everywhere. Your mood tanks, your focus at work falls apart, your patience with the people you love wears thin, and your immune system takes a hit you can't even see. On top of that, the sleep aids you rely on can leave you groggy, build dependency, and never actually fix the underlying problem. {{discovery_callback}}",
+        "solve": "That's exactly what REM was designed for. It uses Vibrotactile Technology — VTT — to support your body's natural sleep cycle so you can fall asleep easier and reach the deep, restorative stages of rest your body needs. No chemicals, no grogginess the next morning, no dependency — just better sleep, naturally.",
         "key_benefits": [
           "Deeper sleep",
           "Better rest",
@@ -132,50 +132,50 @@
         {
           "objection": "TOO EXPENSIVE",
           "trigger": "Price concern",
-          "response": "I understand cost is important. What other criteria matter most to you beyond price?",
-          "psychology": "Shift focus to value"
+          "response": "I completely understand. Think about it this way — how much have you spent on sleep aids, melatonin, prescriptions, or even that expensive mattress? REM often costs less per night than a single sleeping pill, and there's no grogginess the next morning. What matters most to you beyond the price when it comes to getting better sleep?",
+          "psychology": "Shift focus to cumulative cost of sleep aids and prescriptions vs REM's drug-free value"
         },
         {
           "objection": "NEED TO THINK",
           "trigger": "Stalling",
-          "response": "Of course! What specific questions would help you make this decision?",
-          "psychology": "Identify real concern"
+          "response": "Of course, sleep is personal. Is it the idea of a drug-free sleep patch that's new to you, or is there something else on your mind? A lot of people are hesitant because they've been let down by melatonin or sleep meds before. What questions can I answer to help you feel good about this?",
+          "psychology": "Identify whether hesitation stems from past sleep aid disappointments"
         },
         {
           "objection": "ASK MY SPOUSE",
           "trigger": "Shared decision",
-          "response": "Great idea! What concerns might they have that we could address now?",
-          "psychology": "Surface objections early"
+          "response": "Great idea — and honestly, does your spouse struggle with sleep too? Poor sleep affects the whole household. A lot of couples end up using REM together. What concerns do you think they'd have so I can help you walk them through the drug-free approach?",
+          "psychology": "Surface objections early and highlight that sleep issues often affect both partners"
         },
         {
           "objection": "DOES IT WORK?",
           "trigger": "Skepticism",
-          "response": "I understand the skepticism. What would you need to see or experience to feel confident?",
-          "psychology": "Let them define proof"
+          "response": "I totally get the skepticism — there are so many sleep products making big promises. REM is different because it uses Vibrotactile Technology that works with your body's natural sleep rhythms, not by sedating you with chemicals. No grogginess, no dependency. What would you need to experience to believe a drug-free patch could actually improve your sleep?",
+          "psychology": "Let them define proof while differentiating VTT from chemical sedation"
         },
         {
           "objection": "TRIED BEFORE",
           "trigger": "Past failure",
-          "response": "What did you like or dislike about those solutions? What was missing?",
-          "psychology": "Learn what was missing"
+          "response": "I hear that a lot — melatonin that stopped working, sleep meds that left you groggy, apps that didn't do enough. What specifically let you down about those? The reason REM is different is because VTT technology doesn't sedate you — it supports your body's own ability to reach deep, restorative sleep without any drugs or side effects.",
+          "psychology": "Learn what failed and contrast REM's non-sedative VTT approach against groggy alternatives"
         },
         {
           "objection": "NOT INTERESTED",
           "trigger": "Rejection",
-          "response": "That's fine. What specifically doesn't align with what you're looking for?",
-          "psychology": "Uncover hidden needs"
+          "response": "No pressure at all. Just curious — are you sleeping well enough right now that you're happy with it? A lot of people have just accepted waking up tired as normal. If that ever changes, REM offers deeper sleep without the grogginess or dependency of pills. Worth keeping in mind.",
+          "psychology": "Uncover whether they've normalized poor sleep and plant a seed for future interest"
         },
         {
           "objection": "NO TIME",
           "trigger": "Busy excuse",
-          "response": "If you could solve this challenge easily, how would that help your time and energy?",
-          "psychology": "Reframe to benefit"
+          "response": "I get it — you've got a lot going on. But here's the thing: REM takes two seconds to apply before bed. No routines, no pills to time, no wind-down rituals. And imagine how much more productive your busy days would be if you were actually waking up fully rested. How would better sleep change your day?",
+          "psychology": "Reframe time concern into the productivity and energy lost to poor sleep every day"
         },
         {
           "objection": "VS COMPETITOR",
           "trigger": "Comparison",
-          "response": "What appeals to you about that option? (Then explain VTT difference)",
-          "psychology": "Highlight VTT difference"
+          "response": "Smart to compare — what do you like about that option? Here's what sets REM apart: most sleep aids — pills, gummies, even other patches — use melatonin, antihistamines, or sedatives that can cause grogginess and dependency. REM uses Vibrotactile Technology, meaning zero chemicals enter your body. It supports your natural sleep cycle instead of forcing sedation. How important is waking up clear-headed to you?",
+          "psychology": "Highlight VTT's grogginess-free, non-sedative advantage over chemical sleep aids"
         }
       ]
     },
@@ -185,32 +185,32 @@
       "techniques": [
         {
           "name": "ASSUMPTIVE",
-          "script": "Great! REM is exactly what you need. What's the best shipping address for your order?",
-          "when": "Strong buying signals, nodding, engaged",
+          "script": "Sounds like you're ready to finally wake up refreshed instead of dragging through another morning — let's get REM on the way to you. What's the best shipping address?",
+          "when": "They've expressed frustration with tossing and turning or excitement about waking up with real energy",
           "icon": "[A]"
         },
         {
           "name": "ALTERNATIVE",
-          "script": "Would you prefer the 30-day supply, or the 90-day pack for better value?",
-          "when": "Need gentle push, considering options",
+          "script": "Would you like the 30-day supply to experience what waking up refreshed actually feels like, or the 90-day pack so you can make great sleep your new normal and save in the process?",
+          "when": "They're interested but comparing options — connect each choice to the morning-energy transformation",
           "icon": "[B]"
         },
         {
           "name": "URGENCY",
-          "script": "We have a special promotion ending this week. Want to lock that in today?",
-          "when": "They're hesitating, need reason to act",
+          "script": "We've got a promotion ending this week — and honestly, every night you spend tossing and turning is another morning you lose to brain fog and exhaustion. Want to lock this in so tonight can be different?",
+          "when": "They've acknowledged poor sleep but are stalling — paint the cost of one more bad night",
           "icon": "[!]"
         },
         {
           "name": "SUMMARY",
-          "script": "So you want [goal], drug-free, easy to use. REM does exactly that. Ready?",
-          "when": "Complex conversation, recap benefits",
+          "script": "So let me recap — you're tired of lying awake at night, you want to stop waking up groggy, and you want real energy in the morning without popping pills. REM delivers all of that, completely drug-free. Ready to start sleeping better?",
+          "when": "Long conversation covering multiple sleep struggles — summarize their specific issues and tie REM to the refreshed mornings they want",
           "icon": "[S]"
         },
         {
           "name": "REFERRAL",
-          "script": "Who else do you know dealing with similar challenges who could benefit?",
-          "when": "After close, leverage enthusiasm",
+          "script": "Now that you're on your way to real, restful sleep — who else do you know who's up at 2 a.m. scrolling their phone? Your spouse, a friend, a coworker running on caffeine? They'd love to hear about this.",
+          "when": "After a successful close — sleep struggles are universal, so their excitement naturally leads to thinking about a spouse or friend who also can't sleep",
           "icon": "[R]"
         }
       ]

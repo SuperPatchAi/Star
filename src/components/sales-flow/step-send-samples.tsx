@@ -7,16 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Package, ChevronRight, MapPin, Copy, Check } from "lucide-react";
 import { useState } from "react";
-import { products } from "@/data/products";
+import Image from "next/image";
 import type { Product } from "@/types";
 
 export interface SampleAddress {
@@ -28,12 +21,12 @@ export interface SampleAddress {
 }
 
 interface StepSendSamplesProps {
-  product: Product;
+  products: Product[];
   sampleAgreed: boolean;
-  sampleProductId: string | null;
+  sampleProducts: string[];
   sampleAddress: SampleAddress | null;
   onSetSampleAgreed: (agreed: boolean) => void;
-  onSetSampleProductId: (productId: string) => void;
+  onToggleSampleProduct: (productId: string) => void;
   onSetSampleAddress: (address: SampleAddress) => void;
   onContinue: () => void;
 }
@@ -41,12 +34,12 @@ interface StepSendSamplesProps {
 const SAMPLE_SCRIPT = `Based on what you've shared with me, I think the best next step would be for you to try it yourself. I'd love to send you a sample so you can experience the results firsthand — no commitment, just a chance to see how it works for you. What's the best address to send that to?`;
 
 export function StepSendSamples({
-  product,
+  products,
   sampleAgreed,
-  sampleProductId,
+  sampleProducts,
   sampleAddress,
   onSetSampleAgreed,
-  onSetSampleProductId,
+  onToggleSampleProduct,
   onSetSampleAddress,
   onContinue,
 }: StepSendSamplesProps) {
@@ -70,7 +63,6 @@ export function StepSendSamples({
         After your presentation, transition into offering a sample. This builds commitment and gives the prospect a tangible reason to follow up.
       </p>
 
-      {/* Script card */}
       <Card>
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
@@ -98,7 +90,6 @@ export function StepSendSamples({
 
       <Separator />
 
-      {/* Agreement checkbox */}
       <div className="flex items-center space-x-2">
         <Checkbox
           id="sample-agreed"
@@ -112,29 +103,44 @@ export function StepSendSamples({
 
       {sampleAgreed && (
         <div className="space-y-4 animate-in fade-in-0 slide-in-from-top-2 duration-200">
-          {/* Product selector */}
           <div className="space-y-2">
-            <Label>Which product to send?</Label>
-            <Select value={sampleProductId || ""} onValueChange={onSetSampleProductId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a product" />
-              </SelectTrigger>
-              <SelectContent>
-                {products.map((p) => (
-                  <SelectItem key={p.id} value={p.id}>
-                    {p.emoji} {p.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {!sampleProductId && (
+            <Label>Which products to send?</Label>
+            <div className="grid grid-cols-2 gap-2">
+              {products.map((product) => {
+                const isSelected = sampleProducts.includes(product.id);
+                return (
+                  <button
+                    key={product.id}
+                    type="button"
+                    onClick={() => onToggleSampleProduct(product.id)}
+                    className={`flex items-center gap-2 p-2 rounded-lg border text-left transition-all ${
+                      isSelected
+                        ? "ring-2 ring-primary border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <div className="relative size-7 flex-shrink-0 rounded-full overflow-hidden bg-muted">
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        className="object-cover"
+                        sizes="28px"
+                      />
+                    </div>
+                    <span className="text-sm truncate">{product.name}</span>
+                    {isSelected && <Check className="size-3.5 text-primary shrink-0 ml-auto" />}
+                  </button>
+                );
+              })}
+            </div>
+            {sampleProducts.length > 0 && (
               <p className="text-xs text-muted-foreground">
-                Defaults to {product.emoji} {product.name} if left blank
+                {sampleProducts.length} product{sampleProducts.length !== 1 ? "s" : ""} selected
               </p>
             )}
           </div>
 
-          {/* Shipping address */}
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm flex items-center gap-2">

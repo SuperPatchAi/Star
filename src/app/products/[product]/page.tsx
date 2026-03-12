@@ -1,27 +1,22 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { FlaskConical, Star, Map } from "lucide-react";
+import { FlaskConical, Star, Map, MessageSquarePlus } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { getProductById, products } from "@/data/products";
 import { notFound } from "next/navigation";
 import { getWordTrack } from "@/data/wordtracks";
-import { getRoadmapSpec } from "@/lib/roadmap-data";
-import { ProductDetailClient } from "@/components/sales-flow/product-detail-client";
 import { ReferenceTabsView } from "@/components/sales-flow/reference-tabs-view";
 
 interface ProductDetailPageProps {
   params: Promise<{ product: string }>;
-  searchParams: Promise<{ contactId?: string }>;
 }
 
 export default async function ProductDetailPage({
   params,
-  searchParams,
 }: ProductDetailPageProps) {
   const { product: productId } = await params;
-  const { contactId } = await searchParams;
 
   const product = getProductById(productId);
 
@@ -30,7 +25,6 @@ export default async function ProductDetailPage({
   }
 
   const wordTrack = getWordTrack(productId);
-  const roadmap = getRoadmapSpec(productId);
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
@@ -92,6 +86,12 @@ export default async function ProductDetailPage({
         </div>
 
         <div className="flex gap-2">
+          <Button size="sm" asChild>
+            <Link href="/sales">
+              <MessageSquarePlus className="size-4 mr-1.5" />
+              Start Conversation
+            </Link>
+          </Button>
           <Button variant="outline" size="sm" asChild>
             <Link href="/roadmaps">
               <Map className="size-4 mr-1.5" />
@@ -106,14 +106,7 @@ export default async function ProductDetailPage({
 
       <Separator />
 
-      <ProductDetailClient
-        product={product}
-        roadmap={roadmap}
-        referenceContent={
-          <ReferenceTabsView product={product} wordTrack={wordTrack} />
-        }
-        contactId={contactId}
-      />
+      <ReferenceTabsView product={product} wordTrack={wordTrack} />
     </div>
   );
 }

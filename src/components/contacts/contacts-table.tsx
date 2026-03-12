@@ -95,10 +95,11 @@ export function ContactsTable({ contacts: initialContacts, onEdit }: ContactsTab
   const [filterSample, setFilterSample] = useState<string>("all");
 
   const filtered = contacts.filter((c) => {
-    if (search && !c.name.toLowerCase().includes(search.toLowerCase()) &&
+    const fullName = `${c.first_name} ${c.last_name}`.toLowerCase();
+    if (search && !fullName.includes(search.toLowerCase()) &&
         !c.email?.toLowerCase().includes(search.toLowerCase()) &&
         !c.phone?.includes(search)) return false;
-    if (filterProduct !== "all" && c.product_id !== filterProduct) return false;
+    if (filterProduct !== "all" && !c.product_ids.includes(filterProduct)) return false;
     if (filterOutcome !== "all" && c.outcome !== filterOutcome) return false;
     if (filterSample === "sent" && !c.sample_sent) return false;
     if (filterSample === "not_sent" && c.sample_sent) return false;
@@ -127,7 +128,7 @@ export function ContactsTable({ contacts: initialContacts, onEdit }: ContactsTab
     await deleteContact(id);
   };
 
-  const getProduct = (productId: string) => products.find(p => p.id === productId);
+  const getProducts = (productIds: string[]) => products.filter(p => productIds.includes(p.id));
 
   return (
     <div className="space-y-4">
@@ -192,7 +193,7 @@ export function ContactsTable({ contacts: initialContacts, onEdit }: ContactsTab
       ) : (
         <div className="grid gap-3">
           {filtered.map((contact) => {
-            const product = getProduct(contact.product_id);
+            const contactProducts = getProducts(contact.product_ids);
             const outcome = outcomeConfig[contact.outcome] || outcomeConfig.pending;
 
             return (
@@ -200,22 +201,31 @@ export function ContactsTable({ contacts: initialContacts, onEdit }: ContactsTab
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-start gap-3 min-w-0 flex-1">
-                      {/* Product avatar */}
-                      {product && (
-                        <div className="relative size-10 flex-shrink-0 rounded-full overflow-hidden bg-muted">
-                          <Image
-                            src={product.image}
-                            alt={product.name}
-                            fill
-                            className="object-cover"
-                            sizes="40px"
-                          />
+                      {/* Product avatars */}
+                      {contactProducts.length > 0 && (
+                        <div className="flex -space-x-2 shrink-0">
+                          {contactProducts.slice(0, 3).map(p => (
+                            <div key={p.id} className="relative size-10 rounded-full overflow-hidden bg-muted ring-2 ring-background" title={p.name}>
+                              <Image
+                                src={p.image}
+                                alt={p.name}
+                                fill
+                                className="object-cover"
+                                sizes="40px"
+                              />
+                            </div>
+                          ))}
+                          {contactProducts.length > 3 && (
+                            <div className="flex size-10 items-center justify-center rounded-full bg-muted ring-2 ring-background text-xs font-medium">
+                              +{contactProducts.length - 3}
+                            </div>
+                          )}
                         </div>
                       )}
 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-medium text-sm">{contact.name}</h3>
+                          <h3 className="font-medium text-sm">{contact.first_name} {contact.last_name}</h3>
                           <Badge variant={outcome.variant} className="text-[10px] px-1.5 py-0 h-5 flex items-center gap-1">
                             {outcome.icon}
                             {outcome.label}
@@ -229,7 +239,7 @@ export function ContactsTable({ contacts: initialContacts, onEdit }: ContactsTab
                         </div>
 
                         <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-                          {product && <span>{product.name}</span>}
+                          {contactProducts.length > 0 && <span>{contactProducts.map(p => p.name).join(", ")}</span>}
                           <span>Step: {stepLabels[contact.current_step] || contact.current_step}</span>
                           {contact.email && (
                             <span className="flex items-center gap-1">
@@ -252,30 +262,37 @@ export function ContactsTable({ contacts: initialContacts, onEdit }: ContactsTab
                           </p>
                         )}
 
-                        {(contact.opening_type || (contact.objections_encountered && contact.objections_encountered.length > 0) || contact.closing_technique || (contact.questions_asked && contact.questions_asked.length > 0)) && (
-                          <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
-                            {contact.opening_type && (
-                              <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
-                                Opening: {contact.opening_type}
-                              </Badge>
-                            )}
-                            {contact.questions_asked && contact.questions_asked.length > 0 && (
-                              <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
-                                {contact.questions_asked.length} question{contact.questions_asked.length !== 1 ? "s" : ""} asked
-                              </Badge>
-                            )}
-                            {contact.objections_encountered && contact.objections_encountered.length > 0 && (
-                              <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 border-amber-300 text-amber-700 dark:text-amber-400">
-                                {contact.objections_encountered.length} objection{contact.objections_encountered.length !== 1 ? "s" : ""}
-                              </Badge>
-                            )}
-                            {contact.closing_technique && (
-                              <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
-                                Close: {contact.closing_technique}
-                              </Badge>
-                            )}
-                          </div>
-                        )}
+                        {(() => {
+                          const openingCount = Object.keys(contact.opening_types || {}).length;
+                          const questionCount = Object.values(contact.questions_asked || {}).flat().length;
+                          const objectionCount = Object.values(contact.objections_encountered || {}).flat().length;
+                          const closingCount = Object.keys(contact.closing_techniques || {}).length;
+                          if (!openingCount && !questionCount && !objectionCount && !closingCount) return null;
+                          return (
+                            <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                              {openingCount > 0 && (
+                                <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
+                                  {openingCount} opening{openingCount !== 1 ? "s" : ""} set
+                                </Badge>
+                              )}
+                              {questionCount > 0 && (
+                                <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
+                                  {questionCount} question{questionCount !== 1 ? "s" : ""} asked
+                                </Badge>
+                              )}
+                              {objectionCount > 0 && (
+                                <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 border-amber-300 text-amber-700 dark:text-amber-400">
+                                  {objectionCount} objection{objectionCount !== 1 ? "s" : ""}
+                                </Badge>
+                              )}
+                              {closingCount > 0 && (
+                                <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
+                                  {closingCount} close{closingCount !== 1 ? "s" : ""} set
+                                </Badge>
+                              )}
+                            </div>
+                          );
+                        })()}
 
                         {formatAddress(contact) && (
                           <p className="text-xs text-muted-foreground mt-1.5 line-clamp-1 flex items-start gap-1">
@@ -294,7 +311,7 @@ export function ContactsTable({ contacts: initialContacts, onEdit }: ContactsTab
                         className="h-8 text-xs"
                         asChild
                       >
-                        <Link href={`/products/${contact.product_id}?contactId=${contact.id}`}>
+                        <Link href={`/sales?contactId=${contact.id}`}>
                           <Play className="size-3.5 mr-1" />
                           Resume
                         </Link>
@@ -352,7 +369,7 @@ export function ContactsTable({ contacts: initialContacts, onEdit }: ContactsTab
                               <AlertDialogHeader>
                                 <AlertDialogTitle>Delete contact?</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  This will permanently delete {contact.name} from your contacts.
+                                  This will permanently delete {contact.first_name} {contact.last_name} from your contacts.
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>

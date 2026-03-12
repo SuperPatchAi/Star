@@ -1,8 +1,9 @@
 create table if not exists public.d2c_contacts (
   id uuid default gen_random_uuid() primary key,
   user_id uuid references auth.users(id) on delete cascade not null,
-  product_id text not null,
-  name text not null,
+  product_ids text[] not null default '{}',
+  first_name text not null,
+  last_name text not null,
   email text,
   phone text,
   address_line1 text,
@@ -12,13 +13,13 @@ create table if not exists public.d2c_contacts (
   address_zip text,
   notes text,
   current_step text not null default 'add_contact',
-  opening_type text,
-  objections_encountered jsonb default '[]'::jsonb,
-  closing_technique text,
-  questions_asked jsonb default '[]'::jsonb,
+  opening_types jsonb default '{}'::jsonb,
+  objections_encountered jsonb default '{}'::jsonb,
+  closing_techniques jsonb default '{}'::jsonb,
+  questions_asked jsonb default '{}'::jsonb,
   sample_sent boolean not null default false,
   sample_sent_at timestamptz,
-  sample_product text,
+  sample_products text[] default '{}',
   outcome text default 'pending',
   follow_up_day integer,
   created_at timestamptz default now() not null,
@@ -44,6 +45,6 @@ create policy "Users can delete their own d2c_contacts"
   using (auth.uid() = user_id);
 
 create index idx_d2c_contacts_user_id on public.d2c_contacts(user_id);
-create index idx_d2c_contacts_product_id on public.d2c_contacts(product_id);
+create index idx_d2c_contacts_product_ids on public.d2c_contacts using gin(product_ids);
 create index idx_d2c_contacts_outcome on public.d2c_contacts(outcome);
 create index idx_d2c_contacts_current_step on public.d2c_contacts(current_step);

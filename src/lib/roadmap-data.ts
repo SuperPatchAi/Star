@@ -41,3 +41,16 @@ export function hasRoadmapSpec(productId: string): boolean {
 export function getAllRoadmapProductIds(): string[] {
   return Object.keys(roadmapSpecs);
 }
+
+export function getRoadmapsForProducts(productIds: string[]): Record<string, RoadmapV2> {
+  const result: Record<string, RoadmapV2> = {};
+  for (const id of productIds) {
+    const spec = roadmapSpecs[id];
+    if (spec) result[id] = spec;
+  }
+  return result;
+}
+
+export function getAllRoadmapSpecs(): Record<string, RoadmapV2> {
+  return { ...roadmapSpecs };
+}

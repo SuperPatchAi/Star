@@ -40,27 +40,27 @@
         {
           "type": "COLD APPROACH",
           "context": "Stranger at coffee shop",
-          "script": " \"Hi [Prospect's Name], this is [Your Name] from Super Patch. It was great connecting with you today about the Freedom patch and how it can help with those minor aches and pains. I just wanted to thank you for your time and send over the information we discussed. I'll follow up with an email shortly..."
+          "script": "Hey, I couldn't help but notice you stretching your back — I used to do that all day long. I started using this patch called Freedom from Super Patch and it's been a total game-changer for my aches and pains, completely drug-free. Have you ever looked into something like that for relief?"
         },
         {
           "type": "WARM INTRO",
           "context": "Friend/family member",
-          "script": " \"Hi [Prospect's Name], this is [Your Name] from Super Patch. It was great connecting with you today about the Freedom patch and how it can help with those minor aches and pains. I just wanted to thank you for your time and send over the information we discussed. I'll follow up with an email shortly..."
+          "script": "You know how you've been telling me about those nagging aches slowing you down? I've been using this patch called Freedom — it's drug-free pain relief that you just stick on, and honestly it's made a huge difference for me. Would you be open to trying it and seeing how it feels?"
         },
         {
           "type": "SOCIAL MEDIA DM",
           "context": "Instagram/Facebook",
-          "script": " \"Hi [Prospect's Name], this is [Your Name] from Super Patch. It was great connecting with you today about the Freedom patch and how it can help with those minor aches and pains. I just wanted to thank you for your time and send over the information we discussed. I'll follow up with an email shortly..."
+          "script": "Hey! I saw your post about dealing with back pain after your workouts — I totally relate. I've been using the Freedom patch from Super Patch for drug-free pain relief and it's been awesome. Have you ever tried anything like that instead of popping pills?"
         },
         {
           "type": "REFERRAL",
           "context": "Mutual connection",
-          "script": " \"Hi [Prospect's Name], this is [Your Name] from Super Patch. It was great connecting with you today about the Freedom patch and how it can help with those minor aches and pains. I just wanted to thank you for your time and send over the information we discussed. I'll follow up with an email shortly..."
+          "script": "Hi! [Mutual friend] mentioned you've been dealing with some aches and pains and thought I should reach out. I work with Super Patch and our Freedom patch provides drug-free relief that a lot of people are loving. Would you be interested in hearing how it works?"
         },
         {
           "type": "EVENT/PARTY",
           "context": "Casual networking",
-          "script": " \"Hi [Prospect's Name], this is [Your Name] from Super Patch. It was great connecting with you today about the Freedom patch and how it can help with those minor aches and pains. I just wanted to thank you for your time and send over the information we discussed. I'll follow up with an email shortly..."
+          "script": "So what do you do to stay active? I ask because I work with this product called Freedom from Super Patch — it's a drug-free patch for minor aches and pains, and it's been a lifesaver for people who want to keep moving without relying on medication. Have you ever dealt with anything like that?"
         }
       ]
     },
@@ -69,44 +69,44 @@
       "description": "Uncover needs & pain points (ask 3-5)",
       "questions": [
         {
-          "type": "Opening",
-          "question": "How would you describe your typical day and energy levels?"
+          "type": "Opening Question",
+          "question": "How often do you find yourself dealing with aches or pains throughout your day?"
         },
         {
-          "type": "Opening",
-          "question": "What does feeling your best look like for you?"
+          "type": "Opening Question",
+          "question": "What does a pain-free day look like for you — and how often do you actually get one?"
         },
         {
-          "type": "Pain Point",
-          "question": "When do you typically experience challenges with this?"
+          "type": "Pain Point Question",
+          "question": "Where in your body do you feel the most discomfort, and how long has it been bothering you?"
         },
         {
-          "type": "Pain Point",
-          "question": "On a scale of 1-10, how much does this impact your daily life?"
+          "type": "Pain Point Question",
+          "question": "Are there certain activities — exercise, work, even sleeping — that make your pain noticeably worse?"
         },
         {
-          "type": "Pain Point",
-          "question": "What frustrates you most about your current situation?"
+          "type": "Pain Point Question",
+          "question": "How do you feel about relying on over-the-counter painkillers or medications to get through the day?"
         },
         {
-          "type": "Impact",
-          "question": "What activities are you holding back on because of this?"
+          "type": "Impact Question",
+          "question": "What sports, hobbies, or everyday activities have you had to cut back on because of your pain?"
         },
         {
-          "type": "Impact",
-          "question": "How does this affect your mood, relationships, or work?"
+          "type": "Impact Question",
+          "question": "How does living with this discomfort affect your mood, your sleep, or your ability to be present with family?"
         },
         {
-          "type": "Impact",
-          "question": "If this was solved tomorrow, what would you do first?"
+          "type": "Solution Question",
+          "question": "What have you already tried for pain relief — creams, pills, therapies — and what did or didn't work?"
         },
         {
-          "type": "Solution",
-          "question": "What have you tried before and what worked or didn't?"
+          "type": "Solution Question",
+          "question": "If there was a drug-free, non-invasive option that you could just stick on and go, how appealing would that be to you?"
         },
         {
-          "type": "Solution",
-          "question": "What's most important to you - speed, natural, or ease of use?"
+          "type": "Solution Question",
+          "question": "What would it mean for your daily life if you could manage your pain without worrying about side effects or dependency?"
         }
       ]
     },
@@ -114,9 +114,9 @@
       "title": "\ud83c\udfa4 PRESENT THE SOLUTION",
       "framework": "Problem \u2192 Agitate \u2192 Solve",
       "content": {
-        "problem": "Many people struggle with aches & pains challenges - feeling frustrated by temporary solutions that don't address the root cause.",
-        "agitate": "This isn't just a minor inconvenience - it impacts your productivity, relationships, mood, and overall quality of life. The costs add up over time.",
-        "solve": "That's why Freedom uses Vibrotactile Technology - specialized patterns that work with your body's natural neural responses. Drug-free, non-invasive, effective.",
+        "problem": "You wake up stiff, you reach for the pill bottle before your feet even hit the floor, and by midday the aches are back again. Those persistent pains have started dictating what you can and can't do — skipping the gym, saying no to playing with your kids, dreading simple tasks. It feels like your body is working against you, and the only answer anyone offers is more medication.",
+        "agitate": "But those pills aren't solving anything — they're just masking the discomfort while the side effects quietly stack up. You worry about what all those painkillers are doing to your stomach, your liver, your long-term health, and yet you feel trapped because you can't function without them. Over time, you start pulling back from the activities and people you love, and that's a cost no pill can fix. {{discovery_callback}}",
+        "solve": "That's why Freedom was created. It uses Vibrotactile Technology — VTT — to help your body manage discomfort naturally by working with your own neural pathways. No drugs, no chemicals, nothing entering your bloodstream — just your body's own ability to address pain, supported by a simple patch you wear throughout the day.",
         "key_benefits": [
           "Pain relief",
           "Drug-free solution",
@@ -132,50 +132,50 @@
         {
           "objection": "TOO EXPENSIVE",
           "trigger": "Price concern",
-          "response": "I understand cost is important. What other criteria matter most to you beyond price?",
-          "psychology": "Shift focus to value"
+          "response": "I totally get it. Quick question though — how much are you currently spending on pain meds, creams, or doctor visits every month? Freedom often costs less than a daily pill habit, and it's completely drug-free. What matters most to you beyond the price when it comes to managing your pain?",
+          "psychology": "Shift focus to cumulative cost of pain meds vs one-time patch value"
         },
         {
           "objection": "NEED TO THINK",
           "trigger": "Stalling",
-          "response": "Of course! What specific questions would help you make this decision?",
-          "psychology": "Identify real concern"
+          "response": "Absolutely, take your time. Just curious — is it the drug-free approach you're unsure about, or something else? A lot of people are surprised that Freedom works without any chemicals entering your body. What specific questions can I answer to help you decide?",
+          "psychology": "Identify whether skepticism is about the drug-free method or something deeper"
         },
         {
           "objection": "ASK MY SPOUSE",
           "trigger": "Shared decision",
-          "response": "Great idea! What concerns might they have that we could address now?",
-          "psychology": "Surface objections early"
+          "response": "That's smart — it's great to make health decisions together. Do they deal with any aches and pains too? A lot of couples end up both using Freedom. What concerns do you think they might have so I can help you explain the drug-free pain relief approach?",
+          "psychology": "Surface objections early and expand to a two-person opportunity"
         },
         {
           "objection": "DOES IT WORK?",
           "trigger": "Skepticism",
-          "response": "I understand the skepticism. What would you need to see or experience to feel confident?",
-          "psychology": "Let them define proof"
+          "response": "I get it — with so many pain relief products out there, it's hard to know what's real. Freedom uses Vibrotactile Technology, which works with your body's own neural pathways rather than masking pain with chemicals. What would you need to see or feel to believe a drug-free patch could actually help your pain?",
+          "psychology": "Let them define proof while planting the VTT science differentiator"
         },
         {
           "objection": "TRIED BEFORE",
           "trigger": "Past failure",
-          "response": "What did you like or dislike about those solutions? What was missing?",
-          "psychology": "Learn what was missing"
+          "response": "I hear you — a lot of our best customers tried pills, creams, and other patches before finding Freedom. What specifically didn't work about those? Most people tell me those options either wore off fast, had side effects, or were loaded with drugs. Freedom is completely different because VTT technology doesn't use any chemicals at all.",
+          "psychology": "Learn what failed and contrast Freedom's drug-free VTT approach against prior chemical-based solutions"
         },
         {
           "objection": "NOT INTERESTED",
           "trigger": "Rejection",
-          "response": "That's fine. What specifically doesn't align with what you're looking for?",
-          "psychology": "Uncover hidden needs"
+          "response": "No worries at all. Just out of curiosity — are you managing your pain in a way you're happy with right now? A lot of people tell me they've just accepted living with aches because nothing else worked. If that ever changes, Freedom offers a drug-free option that's worth knowing about.",
+          "psychology": "Uncover whether they've normalized pain and plant a seed for future interest"
         },
         {
           "objection": "NO TIME",
           "trigger": "Busy excuse",
-          "response": "If you could solve this challenge easily, how would that help your time and energy?",
-          "psychology": "Reframe to benefit"
+          "response": "I hear you, you're busy — and honestly, that's exactly who Freedom was made for. You literally peel and stick it, no pills to remember, no appointments. How much more could you get done in a day if those aches and pains weren't slowing you down?",
+          "psychology": "Reframe time concern into the time lost to pain every day"
         },
         {
           "objection": "VS COMPETITOR",
           "trigger": "Comparison",
-          "response": "What appeals to you about that option? (Then explain VTT difference)",
-          "psychology": "Highlight VTT difference"
+          "response": "Good that you're doing your research! What do you like about that option? Here's what makes Freedom unique — most pain patches use menthol, lidocaine, or other drugs that absorb into your skin. Freedom uses Vibrotactile Technology, which means zero chemicals, zero drugs. It works with your body's nervous system instead of numbing or masking the pain. How important is a truly drug-free approach to you?",
+          "psychology": "Highlight VTT's chemical-free advantage over drug-based patches and topicals"
         }
       ]
     },
@@ -185,32 +185,32 @@
       "techniques": [
         {
           "name": "ASSUMPTIVE",
-          "script": "Great! Freedom is exactly what you need. What's the best shipping address for your order?",
-          "when": "Strong buying signals, nodding, engaged",
+          "script": "Sounds like you're ready to start having pain-free days again — let's get Freedom headed your way. What's the best shipping address?",
+          "when": "They've expressed excitement about ditching pills or getting back to activities they love",
           "icon": "[A]"
         },
         {
           "name": "ALTERNATIVE",
-          "script": "Would you prefer the 30-day supply, or the 90-day pack for better value?",
-          "when": "Need gentle push, considering options",
+          "script": "Would you like the 30-day supply to see how many pain-free days you can stack up, or the 90-day pack so you're covered through the season and back to doing everything you enjoy?",
+          "when": "They're interested but weighing commitment — tie each option to pain-free lifestyle outcomes",
           "icon": "[B]"
         },
         {
           "name": "URGENCY",
-          "script": "We have a special promotion ending this week. Want to lock that in today?",
-          "when": "They're hesitating, need reason to act",
+          "script": "We've got a promotion ending this week — and every day you wait is another day reaching for that pill bottle instead of living pain-free. Want to lock this in today?",
+          "when": "They've acknowledged their pain but are stalling — remind them of the daily cost of doing nothing",
           "icon": "[!]"
         },
         {
           "name": "SUMMARY",
-          "script": "So you want [goal], drug-free, easy to use. Freedom does exactly that. Ready?",
-          "when": "Complex conversation, recap benefits",
+          "script": "So let me make sure I've got this — you want to ditch the painkillers, get back to the activities you love, and wake up without dreading how your body feels. Freedom does all of that, drug-free. Ready to get started?",
+          "when": "Long or detailed conversation — recap their specific pain struggles and tie Freedom to the relief they described",
           "icon": "[S]"
         },
         {
           "name": "REFERRAL",
-          "script": "Who else do you know dealing with similar challenges who could benefit?",
-          "when": "After close, leverage enthusiasm",
+          "script": "Now that you're on your way to pain-free days — who else in your life is dealing with aches and pains? A family member, a coworker, a gym buddy? They'd probably love to ditch the pill bottle too.",
+          "when": "After a successful close — their enthusiasm about pain relief makes it natural to think of others who are suffering",
           "icon": "[R]"
         }
       ]

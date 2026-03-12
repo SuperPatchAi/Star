@@ -1,29 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Copy, Check, ChevronRight, CheckCircle } from "lucide-react";
-import type { RoadmapPresentation } from "@/types/roadmap";
+import type { RoadmapPresentation, RoadmapMetadata } from "@/types/roadmap";
 import type { Product } from "@/types";
 
 interface StepPresentationProps {
   data: RoadmapPresentation;
   product: Product;
+  metadata?: RoadmapMetadata;
+  questionsAsked?: string[];
   onContinue: () => void;
 }
 
-export function StepPresentation({ data, product, onContinue }: StepPresentationProps) {
+function buildDiscoveryCallback(questionsAsked: string[]): string {
+  if (questionsAsked.length === 0) return "";
+  const first = questionsAsked[0];
+  const lowerQ = first.charAt(0).toLowerCase() + first.slice(1).replace(/\?$/, "");
+  if (questionsAsked.length === 1) {
+    return `You mentioned ${lowerQ} — that's exactly the kind of challenge this was designed for.`;
+  }
+  const second = questionsAsked[1];
+  const lowerQ2 = second.charAt(0).toLowerCase() + second.slice(1).replace(/\?$/, "");
+  return `You mentioned ${lowerQ}, and also ${lowerQ2} — those are exactly the kinds of challenges this was designed for.`;
+}
+
+function interpolateText(text: string, questionsAsked: string[]): string {
+  if (!text.includes("{{discovery_callback}}")) return text;
+  const callback = buildDiscoveryCallback(questionsAsked);
+  return text.replace("{{discovery_callback}}", callback).trim();
+}
+
+export function StepPresentation({ data, product, metadata, questionsAsked = [], onContinue }: StepPresentationProps) {
   const [copied, setCopied] = useState(false);
   const [currentPhase, setCurrentPhase] = useState(0);
 
-  const phases = [
-    { key: "problem", label: "Problem", color: "text-red-600 border-red-200 bg-red-50 dark:bg-red-950 dark:text-red-400 dark:border-red-800", text: data.content.problem },
-    { key: "agitate", label: "Agitate", color: "text-orange-600 border-orange-200 bg-orange-50 dark:bg-orange-950 dark:text-orange-400 dark:border-orange-800", text: data.content.agitate },
-    { key: "solve", label: "Solve", color: "text-green-600 border-green-200 bg-green-50 dark:bg-green-950 dark:text-green-400 dark:border-green-800", text: data.content.solve },
-  ];
+  const phases = useMemo(() => [
+    { key: "problem", label: "Problem", color: "text-red-600 border-red-200 bg-red-50 dark:bg-red-950 dark:text-red-400 dark:border-red-800", text: interpolateText(data.content.problem, questionsAsked) },
+    { key: "agitate", label: "Agitate", color: "text-orange-600 border-orange-200 bg-orange-50 dark:bg-orange-950 dark:text-orange-400 dark:border-orange-800", text: interpolateText(data.content.agitate, questionsAsked) },
+    { key: "solve", label: "Solve", color: "text-green-600 border-green-200 bg-green-50 dark:bg-green-950 dark:text-green-400 dark:border-green-800", text: interpolateText(data.content.solve, questionsAsked) },
+  ], [data.content.problem, data.content.agitate, data.content.solve, questionsAsked]);
 
   const fullScript = phases.map(p => p.text).join("\n\n");
 
@@ -38,6 +58,17 @@ export function StepPresentation({ data, product, onContinue }: StepPresentation
       <p className="text-sm text-muted-foreground">
         Present {product.name} using the Problem-Agitate-Solve framework. Step through each phase.
       </p>
+
+      {metadata && metadata.benefits.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mr-1">Quick Pitch:</span>
+          {metadata.benefits.map((benefit, i) => (
+            <Badge key={i} variant="outline" className="text-[10px]">
+              {benefit}
+            </Badge>
+          ))}
+        </div>
+      )}
 
       {/* Phase stepper */}
       <div className="flex gap-2">
@@ -132,7 +163,7 @@ export function StepPresentation({ data, product, onContinue }: StepPresentation
           )}
         </Button>
         <Button onClick={onContinue}>
-          Continue to Objections
+          Continue to Send Samples
           <ChevronRight className="size-4 ml-1" />
         </Button>
       </div>

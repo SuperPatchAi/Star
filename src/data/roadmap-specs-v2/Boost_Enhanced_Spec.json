@@ -114,9 +114,9 @@
       "title": "\ud83c\udfa4 PRESENT THE SOLUTION",
       "framework": "Problem \u2192 Agitate \u2192 Solve",
       "content": {
-        "problem": "Many people struggle with energy challenges - feeling frustrated by temporary solutions that don't address the root cause.",
-        "agitate": "This isn't just a minor inconvenience - it impacts your productivity, relationships, mood, and overall quality of life. The costs add up over time.",
-        "solve": "That's why Boost uses Vibrotactile Technology - specialized patterns that work with your body's natural neural responses. Drug-free, non-invasive, effective.",
+        "problem": "You know the feeling — you're dragging by 2 p.m. and reaching for another cup of coffee or an energy drink just to get through the rest of your day. You're tired of the jittery spikes and the crashes that follow, but you don't know what else to do. It feels like your only options are stimulants or just powering through on fumes.",
+        "agitate": "Here's the thing — that cycle doesn't just leave you tired, it takes a real toll over time. Caffeine disrupts your sleep, which makes tomorrow even worse, and before you know it you're dependent on a substance just to feel normal. Your body deserves better than a chemical rollercoaster that never actually solves the problem. {{discovery_callback}}",
+        "solve": "That's exactly why Boost exists. It uses Vibrotactile Technology — or VTT — to work with your body's own natural energy pathways, giving you clean, sustained energy without putting a single chemical into your system. No caffeine, no stimulants, no crash — just your body doing what it was designed to do, with a little signal to get it going.",
         "key_benefits": [
           "Clean energy",
           "No caffeine crash",
@@ -132,50 +132,50 @@
         {
           "objection": "TOO EXPENSIVE",
           "trigger": "Price concern",
-          "response": "I understand cost is important. What other criteria matter most to you beyond price?",
-          "psychology": "Shift focus to value"
+          "response": "I totally get it. Quick question — how much are you spending on coffee, energy drinks, or pre-workout each month? Most people spend $100-$200 without even realizing it. Boost gives you clean, sustained energy for a fraction of that, with zero crash. What would it be worth to cut that cycle entirely?",
+          "psychology": "Reframe cost by comparing to existing daily energy drink and coffee spend"
         },
         {
           "objection": "NEED TO THINK",
           "trigger": "Stalling",
-          "response": "Of course! What specific questions would help you make this decision?",
-          "psychology": "Identify real concern"
+          "response": "Absolutely, take your time. I'm curious — what's the main thing you'd want to feel sure about? Is it whether it'll actually replace your morning coffee, or more about how the clean energy feels compared to caffeine? I want to make sure you have everything you need.",
+          "psychology": "Isolate the real hesitation by anchoring to their specific energy routine"
         },
         {
           "objection": "ASK MY SPOUSE",
           "trigger": "Shared decision",
-          "response": "Great idea! What concerns might they have that we could address now?",
-          "psychology": "Surface objections early"
+          "response": "That makes total sense — health decisions often affect the whole household. What do you think their biggest question would be? A lot of couples actually end up both using Boost once they see how it replaces the daily coffee-and-energy-drink habit and saves money. Would it help if I shared some info they could review too?",
+          "psychology": "Position Boost as a household cost-saving decision, not just a personal purchase"
         },
         {
           "objection": "DOES IT WORK?",
           "trigger": "Skepticism",
-          "response": "I understand the skepticism. What would you need to see or experience to feel confident?",
-          "psychology": "Let them define proof"
+          "response": "Healthy skepticism — I respect that. Boost uses Vibrotactile Technology, which works with your body's own neural pathways to support natural energy production. No caffeine, no stimulants entering your bloodstream. What would convince you — would you want to try it for a day and see how you feel by 2 PM without reaching for that afternoon coffee?",
+          "psychology": "Let them define proof by proposing a tangible, low-risk personal test tied to their daily energy dip"
         },
         {
           "objection": "TRIED BEFORE",
           "trigger": "Past failure",
-          "response": "What did you like or dislike about those solutions? What was missing?",
-          "psychology": "Learn what was missing"
+          "response": "I hear that a lot — most people have tried caffeine pills, energy drinks, B-vitamin shots, you name it. What happened with those? Usually it's the crash, the jitters, or it just stopped working. Boost is fundamentally different because VTT doesn't put any substance into your body — it works through your nervous system. What was the thing you disliked most about what you tried before?",
+          "psychology": "Differentiate VTT from every stimulant-based product they've been burned by"
         },
         {
           "objection": "NOT INTERESTED",
           "trigger": "Rejection",
-          "response": "That's fine. What specifically doesn't align with what you're looking for?",
-          "psychology": "Uncover hidden needs"
+          "response": "No problem at all. Just out of curiosity — are you happy with your current energy levels throughout the day, or is it more that you haven't found something that actually works yet? Sometimes people tell me they're 'not interested' because they've given up on finding a real solution. If that's the case, Boost works completely differently from anything you've tried.",
+          "psychology": "Distinguish between genuine satisfaction and resignation from past disappointments"
         },
         {
           "objection": "NO TIME",
           "trigger": "Busy excuse",
-          "response": "If you could solve this challenge easily, how would that help your time and energy?",
-          "psychology": "Reframe to benefit"
+          "response": "I hear you — you're busy, and that's exactly why this matters. Boost is literally peel-and-stick, takes 5 seconds. No mixing powders, no brewing coffee, no stopping at the drive-through. How much time and energy would you get back if you weren't chasing your next caffeine fix every few hours?",
+          "psychology": "Reframe Boost as the time-saving alternative to their current energy routine"
         },
         {
           "objection": "VS COMPETITOR",
           "trigger": "Comparison",
-          "response": "What appeals to you about that option? (Then explain VTT difference)",
-          "psychology": "Highlight VTT difference"
+          "response": "Good question — what are you comparing it to? Most energy products — whether it's coffee, Red Bull, or caffeine supplements — put a stimulant into your body that gives you a spike and then a crash. Boost uses VTT to work with your nervous system to support your body's own energy production. Nothing enters your bloodstream. That's a completely different approach. What matters most to you — the initial kick, or sustained energy without a crash?",
+          "psychology": "Highlight that VTT is a fundamentally different mechanism vs. all stimulant-based competitors"
         }
       ]
     },
@@ -185,32 +185,32 @@
       "techniques": [
         {
           "name": "ASSUMPTIVE",
-          "script": "Great! Boost is exactly what you need. What's the best shipping address for your order?",
-          "when": "Strong buying signals, nodding, engaged",
+          "script": "Love it — so you're ready to ditch the energy drinks and finally have sustained energy all day without the crash. Let's get your Boost order shipped out — what's the best address?",
+          "when": "They've expressed frustration with caffeine, energy drinks, or afternoon crashes and are clearly excited about a clean alternative",
           "icon": "[A]"
         },
         {
           "name": "ALTERNATIVE",
-          "script": "Would you prefer the 30-day supply, or the 90-day pack for better value?",
-          "when": "Need gentle push, considering options",
+          "script": "Would you like to start with a 30-day supply to feel the difference, or go with the 90-day pack so you're covered through the whole season without worrying about running out mid-month?",
+          "when": "They're sold on ditching caffeine but weighing how much to commit to upfront",
           "icon": "[B]"
         },
         {
           "name": "URGENCY",
-          "script": "We have a special promotion ending this week. Want to lock that in today?",
-          "when": "They're hesitating, need reason to act",
+          "script": "We've got a promotion running right now that won't last — and honestly, every day you're still relying on coffee and energy drinks is another day of crashes and jitters. Want to lock this in so you can start feeling sustained energy this week?",
+          "when": "They agree Boost sounds great but keep saying 'maybe later' — remind them the afternoon crash isn't waiting either",
           "icon": "[!]"
         },
         {
           "name": "SUMMARY",
-          "script": "So you want [goal], drug-free, easy to use. Boost does exactly that. Ready?",
-          "when": "Complex conversation, recap benefits",
+          "script": "So let me make sure I've got this right — you're tired of the caffeine rollercoaster, you want clean energy that lasts all day with no crash, and you want something drug-free that actually works. That's exactly what Boost delivers. Ready to get started?",
+          "when": "Long conversation covering multiple energy pain points — tie it all together before the ask",
           "icon": "[S]"
         },
         {
           "name": "REFERRAL",
-          "script": "Who else do you know dealing with similar challenges who could benefit?",
-          "when": "After close, leverage enthusiasm",
+          "script": "Now that you're getting off the energy drink cycle, who else do you know — a coworker, a friend, maybe someone who's always running to the coffee machine — who'd love to hear about this?",
+          "when": "After they've purchased and are excited about ditching caffeine — channel that energy into sharing with coworkers and friends who rely on stimulants",
           "icon": "[R]"
         }
       ]

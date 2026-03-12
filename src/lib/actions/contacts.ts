@@ -49,6 +49,7 @@ export async function createContact(contact: Omit<ContactInsert, "user_id">) {
 
   if (!error) {
     revalidatePath("/contacts");
+    revalidatePath("/sales");
   }
 
   return { data: data as Contact | null, error: error?.message || null };
@@ -69,6 +70,7 @@ export async function updateContact(id: string, updates: ContactUpdate) {
 
   if (!error) {
     revalidatePath("/contacts");
+    revalidatePath("/sales");
   }
 
   return { data: data as Contact | null, error: error?.message || null };
@@ -87,6 +89,7 @@ export async function deleteContact(id: string) {
 
   if (!error) {
     revalidatePath("/contacts");
+    revalidatePath("/sales");
   }
 
   return { error: error?.message || null };

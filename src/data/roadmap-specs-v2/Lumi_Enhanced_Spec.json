@@ -40,27 +40,27 @@
         {
           "type": "COLD APPROACH",
           "context": "Stranger at coffee shop",
-          "script": "[See full word track for COLD APPROACH script]"
+          "script": " (Warm smile, genuine compliment) \"Hi! I hope this isn't too random, but you have gorgeous skin — whatever you're doing is working! I'm [Your Name]. I actually work with a product called Lumi that supports skin appearance and a radiant complexion from the inside out, completely drug-free. What's your current approach to taking care of your skin?\" "
         },
         {
           "type": "WARM INTRO",
           "context": "Friend/family member",
-          "script": "[See full word track for WARM INTRO script]"
+          "script": " \"Hey [Friend's Name]! Okay so you know how we've talked about wanting that natural glow without piling on a million products? I started using this patch called Lumi, and people have been asking me what I changed in my routine. It supports skin appearance and radiance using vibrotactile technology — no creams, no pills. Have you ever tried an inside-out approach to beauty like that?\" "
         },
         {
           "type": "SOCIAL MEDIA DM",
           "context": "Instagram/Facebook",
-          "script": "[See full word track for SOCIAL MEDIA DM script]"
+          "script": " \"Hey [Name]! I love your skincare content — you clearly take such great care of yourself. I've been using a product called Lumi that supports a radiant complexion and healthy skin appearance from within, totally drug-free. It's been an amazing addition to my routine. Would you be open to hearing more about how it works?\" "
         },
         {
           "type": "REFERRAL",
           "context": "Mutual connection",
-          "script": "[See full word track for REFERRAL script]"
+          "script": " \"Hi [Prospect Name], I'm [Your Name]. [Referrer's Name] mentioned you're really into natural beauty and taking care of your skin the right way. I work with a product called Lumi that supports skin appearance and a radiant complexion using drug-free vibrotactile technology — it works from the inside out. Would you be interested in learning how it complements a healthy skincare routine?\" "
         },
         {
           "type": "EVENT/PARTY",
           "context": "Casual networking",
-          "script": "[See full word track for EVENT/PARTY script]"
+          "script": " \"Love this event! Can I just say, your skin looks amazing. (Listen and respond genuinely.) I actually help people support their natural glow with a product called Lumi — it's a drug-free patch that promotes radiant skin from the inside out. Have you ever explored beauty solutions that go beyond topical products?\" "
         }
       ]
     },
@@ -69,44 +69,44 @@
       "description": "Uncover needs & pain points (ask 3-5)",
       "questions": [
         {
-          "type": "Opening",
-          "question": "How would you describe your typical day and energy levels?"
+          "type": "Opening Question",
+          "question": "What's your biggest frustration when it comes to your skin right now — is there something specific you wish you could change?"
         },
         {
-          "type": "Opening",
-          "question": "What does feeling your best look like for you?"
+          "type": "Opening Question",
+          "question": "What does your ideal skincare result look like — that 'wow, my skin looks amazing' moment?"
         },
         {
-          "type": "Pain Point",
-          "question": "When do you typically experience challenges with this?"
+          "type": "Pain Point Question",
+          "question": "How much time and money would you say you're spending on skincare products that aren't really delivering the results you want?"
         },
         {
-          "type": "Pain Point",
-          "question": "On a scale of 1-10, how much does this impact your daily life?"
+          "type": "Pain Point Question",
+          "question": "Have you noticed your skin changing as you've gotten older — dullness, uneven tone, loss of that natural glow?"
         },
         {
-          "type": "Pain Point",
-          "question": "What frustrates you most about your current situation?"
+          "type": "Pain Point Question",
+          "question": "How does the way your skin looks affect your confidence, like when you're getting ready in the morning or heading out without makeup?"
         },
         {
-          "type": "Impact",
-          "question": "What activities are you holding back on because of this?"
+          "type": "Impact Question",
+          "question": "If you woke up tomorrow with visibly healthier, more radiant skin, how would that change the way you feel about yourself?"
         },
         {
-          "type": "Impact",
-          "question": "How does this affect your mood, relationships, or work?"
+          "type": "Impact Question",
+          "question": "Do you ever skip social events or feel self-conscious because of how your skin looks on a given day?"
         },
         {
-          "type": "Impact",
-          "question": "If this was solved tomorrow, what would you do first?"
+          "type": "Solution Question",
+          "question": "What have you tried so far — serums, facials, supplements, collagen — and what's actually made a noticeable difference?"
         },
         {
-          "type": "Solution",
-          "question": "What have you tried before and what worked or didn't?"
+          "type": "Solution Question",
+          "question": "Have you ever explored an inside-out approach to beauty, where you support your skin from within rather than just applying things on top?"
         },
         {
-          "type": "Solution",
-          "question": "What's most important to you - speed, natural, or ease of use?"
+          "type": "Solution Question",
+          "question": "How important is it to you that a beauty solution is natural, drug-free, and works alongside what you're already doing for your skin?"
         }
       ]
     },
@@ -114,9 +114,9 @@
       "title": "\ud83c\udfa4 PRESENT THE SOLUTION",
       "framework": "Problem \u2192 Agitate \u2192 Solve",
       "content": {
-        "problem": "Many people struggle with beauty challenges - feeling frustrated by temporary solutions that don't address the root cause.",
-        "agitate": "This isn't just a minor inconvenience - it impacts your productivity, relationships, mood, and overall quality of life. The costs add up over time.",
-        "solve": "That's why Lumi uses Vibrotactile Technology - specialized patterns that work with your body's natural neural responses. Drug-free, non-invasive, effective.",
+        "problem": "You look in the mirror and your skin just doesn't have that glow it used to. You've tried the serums, the creams, the routines — but nothing seems to deliver the results the labels promise. It's frustrating to invest so much time and money into your skin and still feel like something's missing.",
+        "agitate": "And it adds up fast — hundreds of dollars on products that sit half-used in your bathroom drawer. You start feeling self-conscious going out without makeup, noticing every fine line and dull spot more than anyone else does. The signs of aging feel like they're accelerating, and no matter how many layers you apply on the outside, that radiant complexion you're chasing stays just out of reach. {{discovery_callback}}",
+        "solve": "That's what makes Lumi different. It uses Vibrotactile Technology — VTT — to support your body's natural beauty from the inside out, promoting a healthier, more radiant complexion at the source. There's nothing to apply, no pills to take, no chemicals — just a drug-free patch that works with your body to bring out that natural glow. Lumi complements your routine by doing what topical products simply can't.",
         "key_benefits": [
           "Skin appearance",
           "Radiant complexion",
@@ -132,50 +132,50 @@
         {
           "objection": "TOO EXPENSIVE",
           "trigger": "Price concern",
-          "response": "I understand cost is important. What other criteria matter most to you beyond price?",
-          "psychology": "Shift focus to value"
+          "response": "I totally get it. Let me ask — how much are you currently spending on skincare? Between serums, facials, collagen supplements, and dermatologist visits, most women spend hundreds a month on their skin. Lumi costs less per day than a single serum and supports radiance from the inside out — something topical products can't do. What would it be worth to simplify your routine and actually see a glow that starts from within?",
+          "psychology": "Reframe cost against the stacked expense of serums, facials, and skincare subscriptions"
         },
         {
           "objection": "NEED TO THINK",
           "trigger": "Stalling",
-          "response": "Of course! What specific questions would help you make this decision?",
-          "psychology": "Identify real concern"
+          "response": "Absolutely — take your time. Can I ask what's making you hesitate? Is it whether an inside-out approach to beauty actually works, or is it more about adding something new to your routine? Lumi is actually the opposite of 'one more thing' — it simplifies your approach by supporting skin radiance naturally while you go about your day. No extra steps, no creams, no pills. What would help you feel confident about trying it?",
+          "psychology": "Address skincare fatigue — the overwhelm of too many products — and position Lumi as simplification"
         },
         {
           "objection": "ASK MY SPOUSE",
           "trigger": "Shared decision",
-          "response": "Great idea! What concerns might they have that we could address now?",
-          "psychology": "Surface objections early"
+          "response": "That makes sense! When you mention it, they'll probably notice the difference before you even explain what it is. Lumi is 100% drug-free and supports your skin's natural radiance from within — no chemicals, no injections, nothing harsh. It's actually a lot safer and simpler than many skincare treatments. What do you think their biggest question would be?",
+          "psychology": "Frame the conversation around visible results the spouse will see, making them a future advocate"
         },
         {
           "objection": "DOES IT WORK?",
           "trigger": "Skepticism",
-          "response": "I understand the skepticism. What would you need to see or experience to feel confident?",
-          "psychology": "Let them define proof"
+          "response": "I completely understand — the beauty industry is full of products that promise glowing skin and don't deliver. Here's what sets Lumi apart: instead of applying something on top of your skin, it uses Vibrotactile Technology to support your body's natural radiance from the inside out — no chemicals, no collagen pills, no topical treatments. It works with your body, not on it. What would you need to see to feel like it's making a real difference for your skin?",
+          "psychology": "Validate skepticism from an oversaturated beauty market, then differentiate the inside-out VTT approach from topical products"
         },
         {
           "objection": "TRIED BEFORE",
           "trigger": "Past failure",
-          "response": "What did you like or dislike about those solutions? What was missing?",
-          "psychology": "Learn what was missing"
+          "response": "I hear that — most people have a drawer full of serums, creams, and supplements that promised radiant skin but didn't deliver. What frustrated you most about those products? The reason they often fall short is they only work on the surface. Lumi takes a completely different approach — VTT technology supports your skin's appearance from within, complementing whatever you're already doing topically. What was missing from those past skincare solutions?",
+          "psychology": "Tap into the 'skincare graveyard' frustration and position Lumi as the missing inside-out piece"
         },
         {
           "objection": "NOT INTERESTED",
           "trigger": "Rejection",
-          "response": "That's fine. What specifically doesn't align with what you're looking for?",
-          "psychology": "Uncover hidden needs"
+          "response": "No problem at all. Just curious — is it that you're happy with how your skin looks right now, or is it more that you're skeptical about beauty products in general after being let down before? If it's the latter, I get it — the beauty industry can feel exhausting. Lumi is different because it's not another cream or supplement. It supports radiance from within using drug-free VTT technology. What would a real beauty solution need to look like for you to consider it?",
+          "psychology": "Separate genuine satisfaction from beauty-product fatigue and cynicism"
         },
         {
           "objection": "NO TIME",
           "trigger": "Busy excuse",
-          "response": "If you could solve this challenge easily, how would that help your time and energy?",
-          "psychology": "Reframe to benefit"
+          "response": "That's actually what makes Lumi so perfect for busy people — there's nothing to apply, no extra steps in your routine, no pills to take with food. You wear the patch and it supports your skin's natural radiance all day while you handle everything else. Think about how much time you'd save if you could simplify your skincare routine and still get better results. How much time does your current routine take every morning?",
+          "psychology": "Flip the time objection — Lumi replaces steps rather than adding them, appealing to routine simplification"
         },
         {
           "objection": "VS COMPETITOR",
           "trigger": "Comparison",
-          "response": "What appeals to you about that option? (Then explain VTT difference)",
-          "psychology": "Highlight VTT difference"
+          "response": "Great question — what are you comparing it to? Most beauty products work from the outside in: serums, creams, facials, even injectable treatments. Collagen supplements go internal but require digestion and consistent daily dosing. Lumi uses Vibrotactile Technology to support your skin's radiance from within — nothing goes into your body, no topical application needed. It's the only beauty approach that works with your body's natural neural signals. Have you seen anything else that supports beauty truly from the inside out without any substances?",
+          "psychology": "Position VTT as a unique inside-out approach that no topical or ingestible product can replicate"
         }
       ]
     },
@@ -185,32 +185,32 @@
       "techniques": [
         {
           "name": "ASSUMPTIVE",
-          "script": "Great! Lumi is exactly what you need. What's the best shipping address for your order?",
-          "when": "Strong buying signals, nodding, engaged",
+          "script": "You're going to love glowing from the inside out — imagine simplifying your whole skincare routine down to this. Let's get Lumi on its way to you. What's the best shipping address?",
+          "when": "They're visibly excited about the inside-out beauty concept, already imagining the results",
           "icon": "[A]"
         },
         {
           "name": "ALTERNATIVE",
-          "script": "Would you prefer the 30-day supply, or the 90-day pack for better value?",
-          "when": "Need gentle push, considering options",
+          "script": "Would you like the 30-day supply to start seeing that natural glow, or the 90-day pack so you can really simplify your skincare routine and feel confident going out without makeup?",
+          "when": "They're interested but deciding on commitment, have talked about wanting to cut down on products or go more natural",
           "icon": "[B]"
         },
         {
           "name": "URGENCY",
-          "script": "We have a special promotion ending this week. Want to lock that in today?",
-          "when": "They're hesitating, need reason to act",
+          "script": "We've got a promotion ending this week — and every day without Lumi is another morning layering on products trying to create a glow that could be happening naturally from within. Let's lock this in and start your glow-up today.",
+          "when": "They want radiant skin but keep hesitating, frustrated with their current multi-step routine",
           "icon": "[!]"
         },
         {
           "name": "SUMMARY",
-          "script": "So you want [goal], drug-free, easy to use. Lumi does exactly that. Ready?",
-          "when": "Complex conversation, recap benefits",
+          "script": "So you want to glow from the inside out, simplify your skincare routine, and feel confident even without makeup — all drug-free with nothing to apply or swallow. That's exactly what Lumi does. Ready to start your glow-up?",
+          "when": "Long conversation about skincare frustrations, product overload, and confidence — need to tie it all together",
           "icon": "[S]"
         },
         {
           "name": "REFERRAL",
-          "script": "Who else do you know dealing with similar challenges who could benefit?",
-          "when": "After close, leverage enthusiasm",
+          "script": "You mentioned friends who are really into skincare — they're going to want to know your secret. Who else do you know who'd love to simplify their routine and glow from within? I'd love to help them out too.",
+          "when": "After the sale, they're excited about their skin transformation and have mentioned skincare-obsessed friends or beauty-focused circles",
           "icon": "[R]"
         }
       ]

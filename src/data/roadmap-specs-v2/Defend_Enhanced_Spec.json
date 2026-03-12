@@ -40,27 +40,27 @@
         {
           "type": "COLD APPROACH",
           "context": "Stranger at coffee shop",
-          "script": " \"Hi [Name], it's [Your Name] from Super Patch. I really enjoyed our conversation today about Defend and how it can help you with [reiterate their specific need, e.g., consistent immune support]. I've sent over an email with a quick recap and the details we discussed. Please let me know if you have ..."
+          "script": "Hey, with everything going around these days everyone's trying to stay healthy, right? I work with this product called Defend from Super Patch — it's a drug-free patch that supports your immune system just by wearing it. What do you currently do to keep your immunity up?"
         },
         {
           "type": "WARM INTRO",
           "context": "Friend/family member",
-          "script": " \"Hi [Name], it's [Your Name] from Super Patch. I really enjoyed our conversation today about Defend and how it can help you with [reiterate their specific need, e.g., consistent immune support]. I've sent over an email with a quick recap and the details we discussed. Please let me know if you have ..."
+          "script": "Remember how you were saying you keep getting run down and can't seem to stay ahead of it? I've been using the Defend patch from Super Patch — it's drug-free immune support and I've honestly felt a real difference. Would you want to try one and see how it works for you?"
         },
         {
           "type": "SOCIAL MEDIA DM",
           "context": "Instagram/Facebook",
-          "script": " \"Hi [Name], it's [Your Name] from Super Patch. I really enjoyed our conversation today about Defend and how it can help you with [reiterate their specific need, e.g., consistent immune support]. I've sent over an email with a quick recap and the details we discussed. Please let me know if you have ..."
+          "script": "Hey! I saw your story about being under the weather again — that's the worst. I've been using the Defend patch from Super Patch for immune support and it's totally drug-free, just a patch you wear. Have you ever tried anything like that to help keep your immune system strong?"
         },
         {
           "type": "REFERRAL",
           "context": "Mutual connection",
-          "script": " \"Hi [Name], it's [Your Name] from Super Patch. I really enjoyed our conversation today about Defend and how it can help you with [reiterate their specific need, e.g., consistent immune support]. I've sent over an email with a quick recap and the details we discussed. Please let me know if you have ..."
+          "script": "Hi! [Mutual friend] mentioned you're really into natural wellness and thought you'd love this. I work with Super Patch and our Defend patch provides drug-free immune support using vibrotactile technology. Would you be interested in learning more about how it works?"
         },
         {
           "type": "EVENT/PARTY",
           "context": "Casual networking",
-          "script": " \"Hi [Name], it's [Your Name] from Super Patch. I really enjoyed our conversation today about Defend and how it can help you with [reiterate their specific need, e.g., consistent immune support]. I've sent over an email with a quick recap and the details we discussed. Please let me know if you have ..."
+          "script": "Nice to meet you! Quick question — are you the type who's always looking for ways to stay healthy naturally? I work with Super Patch and we have this awesome product called Defend that gives you drug-free immune support. What does your wellness routine look like right now?"
         }
       ]
     },
@@ -69,44 +69,44 @@
       "description": "Uncover needs & pain points (ask 3-5)",
       "questions": [
         {
-          "type": "Opening",
-          "question": "How would you describe your typical day and energy levels?"
+          "type": "Opening Question",
+          "question": "How would you describe your overall health and wellness routine right now — do you feel like your body's defenses are where you want them?"
         },
         {
-          "type": "Opening",
-          "question": "What does feeling your best look like for you?"
+          "type": "Opening Question",
+          "question": "When you think about staying healthy year-round, what's your biggest concern — is it more about prevention or dealing with things after they hit?"
         },
         {
-          "type": "Pain Point",
-          "question": "When do you typically experience challenges with this?"
+          "type": "Pain Point Question",
+          "question": "How often do you find yourself getting knocked down by colds, flu, or just feeling run down — is it a seasonal thing or does it happen throughout the year?"
         },
         {
-          "type": "Pain Point",
-          "question": "On a scale of 1-10, how much does this impact your daily life?"
+          "type": "Pain Point Question",
+          "question": "Are there certain times of year where you feel especially vulnerable — like back-to-school season, winter, or when stress is high?"
         },
         {
-          "type": "Pain Point",
-          "question": "What frustrates you most about your current situation?"
+          "type": "Pain Point Question",
+          "question": "When you do get sick, how long does it typically knock you out, and how much does that disrupt your work, family, or daily life?"
         },
         {
-          "type": "Impact",
-          "question": "What activities are you holding back on because of this?"
+          "type": "Impact Question",
+          "question": "If you could go through an entire season without getting sick, how would that change things for your productivity and the people who depend on you?"
         },
         {
-          "type": "Impact",
-          "question": "How does this affect your mood, relationships, or work?"
+          "type": "Impact Question",
+          "question": "Have you ever had to cancel important plans, miss work, or let your family down because you were feeling under the weather — how did that feel?"
         },
         {
-          "type": "Impact",
-          "question": "If this was solved tomorrow, what would you do first?"
+          "type": "Solution Question",
+          "question": "What are you currently taking or doing for immune support — vitamins, supplements, elderberry, anything like that?"
         },
         {
-          "type": "Solution",
-          "question": "What have you tried before and what worked or didn't?"
+          "type": "Solution Question",
+          "question": "With everything you've tried for immune support, have you found something that truly makes a noticeable difference, or does it still feel like guesswork?"
         },
         {
-          "type": "Solution",
-          "question": "What's most important to you - speed, natural, or ease of use?"
+          "type": "Solution Question",
+          "question": "If there was a simple, drug-free way to support your immune system every day without adding more pills or powders, would that be something you'd want to know about?"
         }
       ]
     },
@@ -114,9 +114,9 @@
       "title": "\ud83c\udfa4 PRESENT THE SOLUTION",
       "framework": "Problem \u2192 Agitate \u2192 Solve",
       "content": {
-        "problem": "Many people struggle with immune support challenges - feeling frustrated by temporary solutions that don't address the root cause.",
-        "agitate": "This isn't just a minor inconvenience - it impacts your productivity, relationships, mood, and overall quality of life. The costs add up over time.",
-        "solve": "That's why Defend uses Vibrotactile Technology - specialized patterns that work with your body's natural neural responses. Drug-free, non-invasive, effective.",
+        "problem": "You feel like you're always the first one to catch whatever's going around — every cold, every bug, every seasonal wave hits you harder than everyone else. You take your vitamins, you try to eat well, but your body never seems to have the defense it needs when it matters most. It's exhausting living in reactive mode, always waiting for the next thing to knock you down.",
+        "agitate": "Every time you get sick, it's not just a few bad days — it's missed work, canceled plans, and the guilt of knowing you might spread it to your family. Your kids, your partner, your aging parents — they're all at risk when your immune system can't keep up. You end up playing catch-up with your health instead of living your life, and the cycle just keeps repeating every season. {{discovery_callback}}",
+        "solve": "Defend is designed to break that cycle. Defend uses Vibrotactile Technology to support your body's natural immune response, helping your defenses stay strong proactively instead of scrambling after the fact. It's completely drug-free — no pills, no powders, no substances entering your body. Just a simple patch that works with your nervous system to keep your immune function supported day after day.",
         "key_benefits": [
           "Immune support",
           "Wellness boost",
@@ -132,50 +132,50 @@
         {
           "objection": "TOO EXPENSIVE",
           "trigger": "Price concern",
-          "response": "I understand cost is important. What other criteria matter most to you beyond price?",
-          "psychology": "Shift focus to value"
+          "response": "I hear you. But think about this — what does getting sick actually cost you? Between doctor visits, medications, missed work, and lost productivity, one bad cold or flu can easily cost $500-$1,000 or more. Defend is daily immune support for a fraction of that. Would you rather invest a little in prevention or pay a lot more when you're already down?",
+          "psychology": "Reframe cost by comparing to the much higher financial and personal cost of getting sick"
         },
         {
           "objection": "NEED TO THINK",
           "trigger": "Stalling",
-          "response": "Of course! What specific questions would help you make this decision?",
-          "psychology": "Identify real concern"
+          "response": "Of course — it's a smart move to consider things carefully. What's the main thing you'd want to be sure about? Is it whether Defend actually strengthens your immune response, or more about how VTT technology compares to the vitamins and supplements you're already taking? I want to make sure you have what you need to feel good about this.",
+          "psychology": "Isolate hesitation between efficacy concerns and comparison to their existing immune routine"
         },
         {
           "objection": "ASK MY SPOUSE",
           "trigger": "Shared decision",
-          "response": "Great idea! What concerns might they have that we could address now?",
-          "psychology": "Surface objections early"
+          "response": "That makes perfect sense — especially with health decisions that affect the whole family. What do you think their main concern would be? A lot of families actually start using Defend together, especially during cold and flu season, because when one person gets sick it usually spreads. Would it help if I shared some info they could look at too?",
+          "psychology": "Position Defend as a whole-family health investment — when one person gets sick, everyone's at risk"
         },
         {
           "objection": "DOES IT WORK?",
           "trigger": "Skepticism",
-          "response": "I understand the skepticism. What would you need to see or experience to feel confident?",
-          "psychology": "Let them define proof"
+          "response": "That's a fair question — there are a lot of immune products out there making big claims. Defend uses Vibrotactile Technology, which works through your nervous system to support your body's natural immune function. It doesn't put any substances into your body — no vitamins, no zinc, nothing to swallow. Would you want to try wearing it daily for a few weeks and see how you feel compared to your usual routine, especially if you're normally the first one to catch whatever's going around?",
+          "psychology": "Let them define proof by proposing a personal wellness comparison during a timeframe they'd normally get sick"
         },
         {
           "objection": "TRIED BEFORE",
           "trigger": "Past failure",
-          "response": "What did you like or dislike about those solutions? What was missing?",
-          "psychology": "Learn what was missing"
+          "response": "I completely understand — most people have tried vitamin C, zinc, elderberry, echinacea, immunity shots, the whole medicine cabinet. What was your experience? Usually people tell me those things helped a little or they couldn't tell if they were actually working. Defend is fundamentally different because VTT doesn't add any substance to your body — it works through your nervous system to support your immune response naturally. What was the main letdown with what you've tried before?",
+          "psychology": "Differentiate VTT from every supplement-based immune product they've used without clear results"
         },
         {
           "objection": "NOT INTERESTED",
           "trigger": "Rejection",
-          "response": "That's fine. What specifically doesn't align with what you're looking for?",
-          "psychology": "Uncover hidden needs"
+          "response": "Totally fair. Just curious — is it because you feel like your immune system is in a great place right now, or more that you've tried immune products before and never felt like they made a real difference? If it's the second one, I get it. Defend works through a completely different mechanism than vitamins or supplements. When was the last time you got knocked down by a cold or felt run down?",
+          "psychology": "Distinguish between genuine immune confidence and learned skepticism from ineffective supplements"
         },
         {
           "objection": "NO TIME",
           "trigger": "Busy excuse",
-          "response": "If you could solve this challenge easily, how would that help your time and energy?",
-          "psychology": "Reframe to benefit"
+          "response": "I totally get it — you're busy. But here's the irony: busy people are the ones who can least afford to get sick. Defend takes 5 seconds — peel, stick, and go. No pills to remember, no morning routine to add to. And think about it — how much time did you lose the last time you were under the weather? A few days in bed costs you way more than 5 seconds of prevention.",
+          "psychology": "Reframe busyness as the exact reason immune support matters — busy people pay the highest price for getting sick"
         },
         {
           "objection": "VS COMPETITOR",
           "trigger": "Comparison",
-          "response": "What appeals to you about that option? (Then explain VTT difference)",
-          "psychology": "Highlight VTT difference"
+          "response": "Good question — what are you comparing it to? Most immune products — whether it's vitamin C, zinc, elderberry, or immunity drinks — work by adding a substance to your body that you have to absorb and metabolize. Defend uses VTT to work with your nervous system to support your body's own immune function directly. Nothing enters your bloodstream, no interactions with medications, and no pills to remember. Are you looking for something reactive when you feel a cold coming, or proactive daily immune support?",
+          "psychology": "Highlight VTT as a fundamentally different approach vs. all ingestible immune supplements with no drug interactions"
         }
       ]
     },
@@ -185,32 +185,32 @@
       "techniques": [
         {
           "name": "ASSUMPTIVE",
-          "script": "Great! Defend is exactly what you need. What's the best shipping address for your order?",
-          "when": "Strong buying signals, nodding, engaged",
+          "script": "Perfect — so you're ready to stop worrying about getting sick and start staying healthy year-round. Let's get your Defend order shipped out — what's the best address for you?",
+          "when": "They've shared frustration about constantly catching colds, missing work, or being the one in the family who always gets sick — and they're clearly ready for a proactive solution",
           "icon": "[A]"
         },
         {
           "name": "ALTERNATIVE",
-          "script": "Would you prefer the 30-day supply, or the 90-day pack for better value?",
-          "when": "Need gentle push, considering options",
+          "script": "Would you like to start with a 30-day supply to see how you feel, or grab the 90-day pack so you're protected straight through cold and flu season without any gaps?",
+          "when": "They're convinced Defend is what they need but weighing how much to get — tie the options to seasonal protection",
           "icon": "[B]"
         },
         {
           "name": "URGENCY",
-          "script": "We have a special promotion ending this week. Want to lock that in today?",
-          "when": "They're hesitating, need reason to act",
+          "script": "We have a promotion running right now that's ending soon — and with everything going around, every day without proactive immune support is another day you're rolling the dice. Want to lock this in so you're protected starting this week?",
+          "when": "They agree Defend sounds great but keep delaying — remind them that getting sick doesn't wait for a convenient time",
           "icon": "[!]"
         },
         {
           "name": "SUMMARY",
-          "script": "So you want [goal], drug-free, easy to use. Defend does exactly that. Ready?",
-          "when": "Complex conversation, recap benefits",
+          "script": "So here's where we are — you want to stay healthy year-round, stop missing work and important events because you're under the weather, and you want proactive protection that's drug-free and effortless. That's exactly what Defend does. Ready to get started?",
+          "when": "Long conversation covering missed days, seasonal illness, and wellness frustrations — pull it all together before the close",
           "icon": "[S]"
         },
         {
           "name": "REFERRAL",
-          "script": "Who else do you know dealing with similar challenges who could benefit?",
-          "when": "After close, leverage enthusiasm",
+          "script": "Now that you're getting proactive about your immune health, who else in your family gets knocked down every season — a spouse, a parent, a sibling who's always catching something — who would love to hear about this?",
+          "when": "After they've purchased and feel empowered about their health — family members who get sick often are the most natural referral for Defend",
           "icon": "[R]"
         }
       ]

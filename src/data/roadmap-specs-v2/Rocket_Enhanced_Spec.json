@@ -40,27 +40,27 @@
         {
           "type": "COLD APPROACH",
           "context": "Stranger at coffee shop",
-          "script": " \"Hi [Name], this is [Your Name] from Super Patch. Just wanted to say thank you again for your interest/order in Rocket! I'm really excited for you to experience the benefits. I've sent you a quick email with some helpful tips to get started. If you have any questions at all, please don't hesitate t..."
+          "script": "Hey man, quick question — do you ever feel like your energy and drive just aren't what they used to be? I work with a product called Rocket by Super Patch that helps men naturally boost their vitality and energy, completely drug-free. What do you currently do to keep your energy levels up?"
         },
         {
           "type": "WARM INTRO",
           "context": "Friend/family member",
-          "script": " \"Hi [Name], this is [Your Name] from Super Patch. Just wanted to say thank you again for your interest/order in Rocket! I'm really excited for you to experience the benefits. I've sent you a quick email with some helpful tips to get started. If you have any questions at all, please don't hesitate t..."
+          "script": "Hey, remember when you were saying you've been feeling more run down lately? I started using Rocket from Super Patch and honestly the difference in my energy and overall vitality has been night and day — and it's totally drug-free. Want me to tell you more about how it works?"
         },
         {
           "type": "SOCIAL MEDIA DM",
           "context": "Instagram/Facebook",
-          "script": " \"Hi [Name], this is [Your Name] from Super Patch. Just wanted to say thank you again for your interest/order in Rocket! I'm really excited for you to experience the benefits. I've sent you a quick email with some helpful tips to get started. If you have any questions at all, please don't hesitate t..."
+          "script": "Hey! I saw you've been grinding hard lately — respect. I've been using something called Rocket by Super Patch that's been helping me stay energized and feeling like myself again, no supplements or prescriptions needed. Have you ever looked into natural options for boosting your vitality?"
         },
         {
           "type": "REFERRAL",
           "context": "Mutual connection",
-          "script": " \"Hi [Name], this is [Your Name] from Super Patch. Just wanted to say thank you again for your interest/order in Rocket! I'm really excited for you to experience the benefits. I've sent you a quick email with some helpful tips to get started. If you have any questions at all, please don't hesitate t..."
+          "script": "Hey, [mutual friend] thought we should connect — he mentioned you've been looking for a natural way to get your energy back. I work with Rocket from Super Patch, which is designed specifically for men's vitality and energy enhancement, completely drug-free. Would you be up for a quick conversation about it?"
         },
         {
           "type": "EVENT/PARTY",
           "context": "Casual networking",
-          "script": " \"Hi [Name], this is [Your Name] from Super Patch. Just wanted to say thank you again for your interest/order in Rocket! I'm really excited for you to experience the benefits. I've sent you a quick email with some helpful tips to get started. If you have any questions at all, please don't hesitate t..."
+          "script": "So what keeps you busy these days? I ask because a lot of guys I talk to say they wish they had more energy to keep up with everything. I work with Rocket by Super Patch — it's a drug-free patch that helps men reclaim their vitality and drive. What does staying on top of your game look like for you?"
         }
       ]
     },
@@ -69,44 +69,44 @@
       "description": "Uncover needs & pain points (ask 3-5)",
       "questions": [
         {
-          "type": "Opening",
-          "question": "How would you describe your typical day and energy levels?"
+          "type": "Opening Question",
+          "question": "How would you say your energy and drive compare now to how you felt five or ten years ago?"
         },
         {
-          "type": "Opening",
-          "question": "What does feeling your best look like for you?"
+          "type": "Opening Question",
+          "question": "What does feeling like your best self look like for you — physically, mentally, and in terms of confidence?"
         },
         {
-          "type": "Pain Point",
-          "question": "When do you typically experience challenges with this?"
+          "type": "Pain Point Question",
+          "question": "At what point in the day do you notice your energy and motivation really start to drop off?"
         },
         {
-          "type": "Pain Point",
-          "question": "On a scale of 1-10, how much does this impact your daily life?"
+          "type": "Pain Point Question",
+          "question": "Has the dip in vitality started affecting your confidence or how you show up in your relationship?"
         },
         {
-          "type": "Pain Point",
-          "question": "What frustrates you most about your current situation?"
+          "type": "Pain Point Question",
+          "question": "Do you find yourself avoiding things you used to enjoy — the gym, being active, staying out — because you just don't have the energy anymore?"
         },
         {
-          "type": "Impact",
-          "question": "What activities are you holding back on because of this?"
+          "type": "Impact Question",
+          "question": "If you could feel ten years younger with the energy and drive to match, what would you do differently starting tomorrow?"
         },
         {
-          "type": "Impact",
-          "question": "How does this affect your mood, relationships, or work?"
+          "type": "Impact Question",
+          "question": "How much do you think getting your vitality back would change the way you feel about yourself and your day-to-day life?"
         },
         {
-          "type": "Impact",
-          "question": "If this was solved tomorrow, what would you do first?"
+          "type": "Solution Question",
+          "question": "What have you tried so far to get your edge back — testosterone supplements, energy drinks, prescriptions, anything like that?"
         },
         {
-          "type": "Solution",
-          "question": "What have you tried before and what worked or didn't?"
+          "type": "Solution Question",
+          "question": "How do you feel about the idea of a natural, drug-free approach versus going the pharmaceutical route for something like this?"
         },
         {
-          "type": "Solution",
-          "question": "What's most important to you - speed, natural, or ease of use?"
+          "type": "Solution Question",
+          "question": "If there was something simple you could wear every day that supported your vitality and energy without any pills or side effects, would that interest you?"
         }
       ]
     },
@@ -114,9 +114,9 @@
       "title": "\ud83c\udfa4 PRESENT THE SOLUTION",
       "framework": "Problem \u2192 Agitate \u2192 Solve",
       "content": {
-        "problem": "Many people struggle with men's health challenges - feeling frustrated by temporary solutions that don't address the root cause.",
-        "agitate": "This isn't just a minor inconvenience - it impacts your productivity, relationships, mood, and overall quality of life. The costs add up over time.",
-        "solve": "That's why Rocket uses Vibrotactile Technology - specialized patterns that work with your body's natural neural responses. Drug-free, non-invasive, effective.",
+        "problem": "You used to have that drive — the energy, the confidence, the feeling that you could take on anything. But lately, something's shifted. You're moving slower, feeling less motivated, and you know deep down you're not showing up the way you used to.",
+        "agitate": "It starts affecting everything — your confidence takes a hit, your relationships feel the strain, and you find yourself avoiding the things you used to enjoy. Maybe you've skipped the gym, pulled back socially, or just accepted that this is what getting older feels like. And talking about it? Most guys won't, which means they suffer in silence while things keep sliding. {{discovery_callback}}",
+        "solve": "That's why Rocket exists. It uses Vibrotactile Technology — VTT — to support your body's natural vitality pathways, helping you reclaim that energy, drive, and confidence without prescriptions, hormones, or side effects. You just wear the patch and it works with your body's own signals to reignite what's been fading. Rocket is a drug-free way to feel like the man you know you still are.",
         "key_benefits": [
           "Male vitality",
           "Energy enhancement",
@@ -132,50 +132,50 @@
         {
           "objection": "TOO EXPENSIVE",
           "trigger": "Price concern",
-          "response": "I understand cost is important. What other criteria matter most to you beyond price?",
-          "psychology": "Shift focus to value"
+          "response": "I get it — let's put it in perspective. Testosterone therapy runs hundreds a month with doctor visits, bloodwork, and prescriptions. Vitality supplements stack up fast too. Rocket costs less per day than most of those and supports your energy and confidence naturally without any prescriptions or needles. What would feeling like your best self again be worth to you and the people who depend on you?",
+          "psychology": "Reframe cost against testosterone therapy, clinic visits, and stacking expensive vitality supplements"
         },
         {
           "objection": "NEED TO THINK",
           "trigger": "Stalling",
-          "response": "Of course! What specific questions would help you make this decision?",
-          "psychology": "Identify real concern"
+          "response": "No rush at all, man. Can I ask — is it the idea of natural vitality support you're unsure about, or is it more that you're wondering if Rocket can really deliver without prescriptions or hormones? A lot of guys feel that way because they've been told the only real option is testosterone therapy. Rocket uses VTT technology to support your body's own energy and vitality response — nothing synthetic. What's the main thing holding you back?",
+          "psychology": "Surface the real concern — usually doubt that anything non-pharmaceutical can restore masculine vitality"
         },
         {
           "objection": "ASK MY SPOUSE",
           "trigger": "Shared decision",
-          "response": "Great idea! What concerns might they have that we could address now?",
-          "psychology": "Surface objections early"
+          "response": "Smart move — and honestly, your partner is probably going to be your biggest supporter on this one. When you bring it up, they'll want to know it's safe: Rocket is 100% drug-free, no testosterone, no hormones, no prescriptions needed. It supports your natural vitality and energy. The benefits show up in how you feel, your energy, your confidence — things they'll notice too. What questions do you think they'd want answered?",
+          "psychology": "Position the spouse as an ally who benefits directly from his improved energy and confidence"
         },
         {
           "objection": "DOES IT WORK?",
           "trigger": "Skepticism",
-          "response": "I understand the skepticism. What would you need to see or experience to feel confident?",
-          "psychology": "Let them define proof"
+          "response": "I respect that — the men's vitality space is full of 'miracle pills' and questionable supplements that overpromise. Here's what makes Rocket different: it uses Vibrotactile Technology to support your body's natural vitality response — no testosterone, no hormones, no stimulants entering your body. It's not a pill you swallow hoping for the best. It works with your own neural signals. What would you need to feel or experience to know it's making a difference?",
+          "psychology": "Validate skepticism from the male enhancement supplement industry, then differentiate VTT from hormone treatments and pills"
         },
         {
           "objection": "TRIED BEFORE",
           "trigger": "Past failure",
-          "response": "What did you like or dislike about those solutions? What was missing?",
-          "psychology": "Learn what was missing"
+          "response": "I hear you — a lot of guys have tried testosterone boosters, energy supplements, or even looked into TRT and either didn't see results or didn't like the side effects. What was the worst part of those experiences? Rocket is a completely different approach — it doesn't put any substance into your body. VTT technology works with your natural neural signals to support vitality and energy from within. No hormones, no cycling on and off. What was missing from what you tried before?",
+          "psychology": "Normalize the cycle of failed vitality products and position Rocket as a non-hormonal, side-effect-free alternative"
         },
         {
           "objection": "NOT INTERESTED",
           "trigger": "Rejection",
-          "response": "That's fine. What specifically doesn't align with what you're looking for?",
-          "psychology": "Uncover hidden needs"
+          "response": "No worries, brother. Just out of curiosity — is it that you're feeling great with your energy and vitality right now, or is it more that you've written off products in this space because of past experiences? If it's the second one, I totally get it. Rocket isn't another testosterone booster or energy pill — it works with your body's own signals through drug-free VTT technology. What would a real vitality solution need to look like for you to give it a shot?",
+          "psychology": "Distinguish between genuine satisfaction and protective cynicism built from the male supplement industry"
         },
         {
           "objection": "NO TIME",
           "trigger": "Busy excuse",
-          "response": "If you could solve this challenge easily, how would that help your time and energy?",
-          "psychology": "Reframe to benefit"
+          "response": "That's the thing — Rocket is literally zero effort. No clinic appointments, no pills to time around meals, no injection schedule. You wear the patch and it supports your vitality and energy while you handle your day. Think about it: how much time and energy are you losing because you're running on empty? Rocket could help you show up with more drive for the things that actually matter. How's your energy holding up right now with everything on your plate?",
+          "psychology": "Flip the time objection — low vitality is the real time thief, and Rocket requires no appointments or routines"
         },
         {
           "objection": "VS COMPETITOR",
           "trigger": "Comparison",
-          "response": "What appeals to you about that option? (Then explain VTT difference)",
-          "psychology": "Highlight VTT difference"
+          "response": "Good question — what are you looking at? Most men's vitality options are either testosterone replacement therapy with doctor visits, bloodwork, and potential side effects, or supplement stacks with questionable ingredients. Rocket uses Vibrotactile Technology — nothing enters your body. No hormones, no prescriptions, no cycling. It supports your natural energy and vitality through your body's own neural responses. Have you found anything else that's truly drug-free and doesn't require a prescription or doctor supervision?",
+          "psychology": "Position VTT as the only approach that delivers vitality support without hormones, prescriptions, or medical oversight"
         }
       ]
     },
@@ -185,32 +185,32 @@
       "techniques": [
         {
           "name": "ASSUMPTIVE",
-          "script": "Great! Rocket is exactly what you need. What's the best shipping address for your order?",
-          "when": "Strong buying signals, nodding, engaged",
+          "script": "Brother, I can tell you're ready to feel like you're in your prime again. Let's get Rocket headed your way so you can get that energy and confidence back. What's the best shipping address?",
+          "when": "They've opened up about missing their peak energy and drive, clearly motivated to make a change",
           "icon": "[A]"
         },
         {
           "name": "ALTERNATIVE",
-          "script": "Would you prefer the 30-day supply, or the 90-day pack for better value?",
-          "when": "Need gentle push, considering options",
+          "script": "Would you like the 30-day supply to start feeling that renewed energy and drive, or the 90-day pack to really get back in your prime and lock in that confidence boost long-term?",
+          "when": "They're interested but weighing options, have talked about wanting sustained vitality not just a quick fix",
           "icon": "[B]"
         },
         {
           "name": "URGENCY",
-          "script": "We have a special promotion ending this week. Want to lock that in today?",
-          "when": "They're hesitating, need reason to act",
+          "script": "We've got a promotion ending this week — and every day you wait is another day you're not feeling like the man you know you can be. Let's lock this in and get that energy and drive back starting now.",
+          "when": "They want their vitality back but keep putting off the decision, need a push to commit today",
           "icon": "[!]"
         },
         {
           "name": "SUMMARY",
-          "script": "So you want [goal], drug-free, easy to use. Rocket does exactly that. Ready?",
-          "when": "Complex conversation, recap benefits",
+          "script": "So you want to feel like you're in your prime again — renewed energy, more drive, and that confidence boost — all drug-free with no prescriptions, no hormones, no side effects. That's exactly what Rocket delivers. Ready to get back in the game?",
+          "when": "In-depth conversation about declining energy, lost confidence, and past failed supplements — need to bring it all together",
           "icon": "[S]"
         },
         {
           "name": "REFERRAL",
-          "script": "Who else do you know dealing with similar challenges who could benefit?",
-          "when": "After close, leverage enthusiasm",
+          "script": "You mentioned some buddies who've been dealing with the same kind of slowdown. Who else do you know who'd want to feel like they're in their prime again? I'd be happy to connect with them too.",
+          "when": "After the sale, they're fired up about reclaiming their vitality and have mentioned friends or buddies with similar energy and confidence concerns",
           "icon": "[R]"
         }
       ]
