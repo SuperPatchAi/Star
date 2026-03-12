@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { Contact, ContactInsert, ContactUpdate } from "@/lib/db/types";
+import { updateChecklistItem } from "@/lib/actions/onboarding";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SupabaseAny = any;
@@ -50,6 +51,7 @@ export async function createContact(contact: Omit<ContactInsert, "user_id">) {
   if (!error) {
     revalidatePath("/contacts");
     revalidatePath("/dashboard");
+    updateChecklistItem("add_first_contact").catch(() => {});
   }
 
   return { data: data as Contact | null, error: error?.message || null };
@@ -77,9 +79,28 @@ export async function updateContact(id: string, updates: ContactUpdate) {
     .select()
     .single();
 
-  if (!error) {
+  if (!error && data) {
     revalidatePath("/contacts");
     revalidatePath("/dashboard");
+
+    const updated = data as Contact;
+
+    if (updated.current_step && updated.current_step !== "add_contact") {
+      updateChecklistItem("start_first_conversation").catch(() => {});
+    }
+
+    const advancedSteps = ["presentation", "samples", "objections", "closing", "followup", "closed"];
+    if (updated.current_step && advancedSteps.includes(updated.current_step)) {
+      updateChecklistItem("complete_sales_step").catch(() => {});
+    }
+
+    if (updated.sample_sent) {
+      updateChecklistItem("send_first_sample").catch(() => {});
+    }
+
+    if (updated.follow_up_day !== null && updated.follow_up_day !== undefined && updated.follow_up_day >= 0) {
+      updateChecklistItem("setup_followup").catch(() => {});
+    }
   }
 
   return { data: data as Contact | null, error: error?.message || null };
