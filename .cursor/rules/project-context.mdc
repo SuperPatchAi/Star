@@ -1,0 +1,91 @@
+---
+description: SuperPatch D2C project architecture, conventions, and file map — loaded on every session
+alwaysApply: true
+---
+
+# SuperPatch D2C Project Context
+
+## What This App Is
+
+A Next.js 16 sales enablement platform for SuperPatch D2C reps. Guided 8-step sales conversations with multi-product support, contact tracking, auto-save, and product-specific scripts.
+
+## Tech Stack
+
+- **Next.js 16** (App Router, Turbopack), **React 19**, **TypeScript** (strict)
+- **shadcn/ui** (New York style) + **Tailwind CSS 4**
+- **Supabase** (Auth, PostgreSQL, RLS, server/client/admin clients)
+- **Server Actions** for all CRUD (no API routes for data)
+- **Vercel** deployment, **GitHub** at `SuperPatchAi/Star`
+
+## Critical Architecture Rules
+
+1. **No external state library** — all state is React useState/useCallback/useEffect
+2. **Server Actions** in `src/lib/actions/` for Supabase operations, never direct DB calls from components
+3. **RLS enforced** — all queries scoped to `auth.uid() = user_id`
+4. **Products are reference-only** — the main entry point is `/sales`, NOT `/products`
+5. **Roadmap specs** in `src/data/roadmap-specs-v2/*.json` drive all sales content
+6. **Per-product state** stored as JSONB keyed by product ID (e.g., `opening_types: { "freedom": "COLD" }`)
+7. **Auto-save** via 500ms debounced `useEffect` in `DecisionTree`
+8. **Always update README.md** before committing to keep documentation fresh
+
+## File Map (Key Files)
+
+### Pages (`src/app/`)
+- `page.tsx` — Root redirect to `/sales`
+- `sales/page.tsx` — Main sales flow (reads `?contactId` for resume)
+- `contacts/page.tsx` — Contact list + Kanban toggle
+- `products/[product]/page.tsx` — Product detail (reference only)
+- `(auth)/login/page.tsx` — Login form
+- `(auth)/signup/page.tsx` — Invite-only signup
+
+### Sales Flow (`src/components/sales-flow/`)
+- `decision-tree.tsx` — Central orchestrator (8 steps, auto-save, contact gating)
+- `step-add-contact.tsx` — Step 0: create contact + select products (gate)
+- `step-opening-picker.tsx` — Step 1: choose opening approach
+- `step-discovery.tsx` — Step 2: check off discovery questions
+- `step-presentation.tsx` — Step 3: P-A-S framework with `{{discovery_callback}}`
+- `step-send-samples.tsx` — Step 4: sample offer + address
+- `step-objections.tsx` — Step 5: handle objections
+- `step-closing.tsx` — Step 6: closing technique
+- `step-followup.tsx` — Step 7: follow-up sequence
+- `product-tabs.tsx` — Multi-product tabbed content
+- `customer-insight.tsx` — Customer profile from roadmap
+
+### Data (`src/data/`)
+- `products.ts` — 13 products with id, name, tagline, category, color, image
+- `roadmap-specs-v2/*.json` — Product-specific sales scripts (RoadmapV2 type)
+- `wordtracks/` — Legacy word track scripts per product
+
+### Lib (`src/lib/`)
+- `actions/contacts.ts` — Server actions: getContacts, getContact, createContact, updateContact, deleteContact
+- `roadmap-data.ts` — getRoadmapSpec, getRoadmapsForProducts, getAllRoadmapSpecs
+- `auth.ts` — getAuthUser, requireAdmin
+- `supabase/server.ts` — createClient (server), createAdminClient
+- `supabase/client.ts` — createClient (browser)
+- `supabase/middleware.ts` — updateSession (auth guard)
+- `db/types.ts` — Database/Contact/UserProfile TypeScript types
+
+### Types (`src/types/`)
+- `roadmap.ts` — RoadmapV2, SalesStep, SALES_STEPS (8 steps)
+- `index.ts` — Product, WordTrack, NavItem
+
+## Sales Step IDs (in order)
+
+`add_contact` → `opening` → `discovery` → `presentation` → `samples` → `objections` → `closing` → `followup`
+
+## Database Table: `d2c_contacts`
+
+Key columns: `user_id`, `product_ids text[]`, `first_name`, `last_name`, `email`, `phone`, address fields, `current_step`, `opening_types jsonb`, `questions_asked jsonb`, `objections_encountered jsonb`, `closing_techniques jsonb`, `sample_sent`, `sample_products text[]`, `outcome`, `follow_up_day`
+
+## Environment Variables
+
+`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+
+## Conventions
+
+- Use **shadcn/ui** components for all UI
+- Use **Server Actions** (not API routes) for data mutations
+- All files go in `src/` — never create files at project root
+- Product pages are reference-only; sales flow lives at `/sales`
+- Roadmap JSON files are the single source of truth for sales scripts
+- Update `README.md` before every commit
