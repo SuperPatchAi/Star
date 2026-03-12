@@ -12,7 +12,10 @@ export function TourSpotlight({ targetSelector }: TourSpotlightProps) {
   const updateRect = useCallback(() => {
     const el = document.querySelector(targetSelector);
     if (el) {
-      setRect(el.getBoundingClientRect());
+      const r = el.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) {
+        setRect(r);
+      }
     }
   }, [targetSelector]);
 

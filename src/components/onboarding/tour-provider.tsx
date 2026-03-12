@@ -21,13 +21,6 @@ interface TourStep {
 
 const TOUR_STEPS: TourStep[] = [
   {
-    target: "contacts-nav",
-    title: "Your Contacts",
-    message:
-      "Your contacts and pipeline live here. Tap to see where each prospect stands.",
-    placement: "right",
-  },
-  {
     target: "new-contact",
     title: "Start Here",
     message:
@@ -42,6 +35,13 @@ const TOUR_STEPS: TourStep[] = [
     placement: "bottom",
   },
   {
+    target: "contacts-nav",
+    title: "Your Contacts",
+    message:
+      "Your contacts and pipeline live here. Tap to see where each prospect stands.",
+    placement: "right",
+  },
+  {
     target: "practice-nav",
     title: "Practice & Prepare",
     message:
@@ -49,6 +49,13 @@ const TOUR_STEPS: TourStep[] = [
     placement: "right",
   },
 ];
+
+function isElementVisible(selector: string): boolean {
+  const el = document.querySelector(selector);
+  if (!el) return false;
+  const rect = el.getBoundingClientRect();
+  return rect.width > 0 && rect.height > 0 && rect.top < window.innerHeight && rect.bottom > 0;
+}
 
 interface TourContextType {
   isActive: boolean;
@@ -75,27 +82,40 @@ interface TourProviderProps {
 
 export function TourProvider({ children, onboardingStep }: TourProviderProps) {
   const [isActive, setIsActive] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
+  const [visibleSteps, setVisibleSteps] = useState<TourStep[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const startTour = useCallback(() => {
-    setCurrentStep(0);
-    setIsActive(true);
+  const buildVisibleSteps = useCallback(() => {
+    return TOUR_STEPS.filter((step) =>
+      isElementVisible(`[data-tour-step="${step.target}"]`)
+    );
   }, []);
 
+  const startTour = useCallback(() => {
+    const visible = buildVisibleSteps();
+    if (visible.length === 0) {
+      completeTour();
+      return;
+    }
+    setVisibleSteps(visible);
+    setCurrentIndex(0);
+    setIsActive(true);
+  }, [buildVisibleSteps]);
+
   const handleNext = useCallback(async () => {
-    if (currentStep < TOUR_STEPS.length - 1) {
-      setCurrentStep((prev) => prev + 1);
+    if (currentIndex < visibleSteps.length - 1) {
+      setCurrentIndex((prev) => prev + 1);
     } else {
       setIsActive(false);
       await completeTour();
     }
-  }, [currentStep]);
+  }, [currentIndex, visibleSteps.length]);
 
   const handlePrev = useCallback(() => {
-    if (currentStep > 0) {
-      setCurrentStep((prev) => prev - 1);
+    if (currentIndex > 0) {
+      setCurrentIndex((prev) => prev - 1);
     }
-  }, [currentStep]);
+  }, [currentIndex]);
 
   const handleSkip = useCallback(async () => {
     setIsActive(false);
@@ -109,14 +129,14 @@ export function TourProvider({ children, onboardingStep }: TourProviderProps) {
     }
   }, [onboardingStep, startTour]);
 
-  const step = TOUR_STEPS[currentStep];
+  const step = visibleSteps[currentIndex];
 
   return (
     <TourContext.Provider
       value={{
         isActive,
-        currentStep,
-        totalSteps: TOUR_STEPS.length,
+        currentStep: currentIndex,
+        totalSteps: visibleSteps.length,
         startTour,
       }}
     >
@@ -131,8 +151,8 @@ export function TourProvider({ children, onboardingStep }: TourProviderProps) {
             title={step.title}
             message={step.message}
             placement={step.placement}
-            currentStep={currentStep}
-            totalSteps={TOUR_STEPS.length}
+            currentStep={currentIndex}
+            totalSteps={visibleSteps.length}
             onNext={handleNext}
             onPrev={handlePrev}
             onSkip={handleSkip}
