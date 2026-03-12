@@ -10,6 +10,7 @@ import {
   Map,
   Shield,
   Trophy,
+  Download,
 } from "lucide-react";
 import { completeCarousel } from "@/lib/actions/onboarding";
 import { CarouselSlide } from "./carousel-slide";
@@ -51,6 +52,12 @@ const SLIDES = [
     headline: "Close more deals",
     subtitle: "Multiple closing techniques for every personality. Send samples, set follow-ups, and win.",
     gradient: "bg-gradient-to-br from-sky-600 to-cyan-800",
+  },
+  {
+    icon: Download,
+    headline: "Install the app",
+    subtitle: "Add SuperPatch to your home screen for instant access, push notifications, and offline use.",
+    gradient: "bg-gradient-to-br from-gray-700 to-zinc-900",
   },
 ];
 
