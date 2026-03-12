@@ -42,10 +42,10 @@ const TOUR_STEPS: TourStep[] = [
     placement: "bottom",
   },
   {
-    target: "roadmaps-nav",
-    title: "Product Scripts",
+    target: "practice-nav",
+    title: "Practice & Prepare",
     message:
-      "Browse product scripts anytime. Each product has a complete sales playbook.",
+      "Sharpen your skills with objection flashcards and rehearse your pitch before every call.",
     placement: "right",
   },
 ];
