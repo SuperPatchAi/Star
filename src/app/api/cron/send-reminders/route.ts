@@ -47,21 +47,33 @@ export async function GET(request: Request) {
 
     const supabase = await createAdminClient();
 
-    const { data: contacts, error: contactsError } = await supabase
+    const { data: contactRows, error: contactsError } = await supabase
       .from("d2c_contacts")
       .select(
         "id, user_id, first_name, last_name, current_step, stage_entered_at, follow_up_day, outcome"
       )
       .neq("current_step", "closed")
-      .not("outcome", "in", '("won","lost")')
+      .neq("outcome", "won")
+      .neq("outcome", "lost")
       .order("stage_entered_at", { ascending: true });
 
-    if (contactsError || !contacts) {
+    if (contactsError || !contactRows) {
       return NextResponse.json(
         { error: contactsError?.message || "No contacts" },
         { status: 500 }
       );
     }
+
+    const contacts = contactRows as {
+      id: string;
+      user_id: string;
+      first_name: string;
+      last_name: string;
+      current_step: string;
+      stage_entered_at: string;
+      follow_up_day: number | null;
+      outcome: string | null;
+    }[];
 
     const now = new Date();
     const userReminders = new Map<
@@ -109,12 +121,18 @@ export async function GET(request: Request) {
     let failedCount = 0;
 
     for (const [userId, reminders] of userReminders) {
-      const { data: subscriptions } = await supabase
+      const { data: subRows } = await supabase
         .from("d2c_push_subscriptions")
         .select("endpoint, p256dh, auth")
         .eq("user_id", userId);
 
-      if (!subscriptions || subscriptions.length === 0) continue;
+      const subscriptions = (subRows ?? []) as {
+        endpoint: string;
+        p256dh: string;
+        auth: string;
+      }[];
+
+      if (subscriptions.length === 0) continue;
 
       for (const reminder of reminders) {
         const payload = JSON.stringify({
