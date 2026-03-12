@@ -7,6 +7,10 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import {
+  Map,
+  FlaskConical,
+  GraduationCap,
+  Star,
   Search,
   Settings,
   LogOut,
@@ -83,6 +87,10 @@ export function AppSidebar({
   };
 
   const isDashboardActive = pathname.startsWith("/dashboard");
+  const isRoadmapsActive = pathname.startsWith("/roadmaps");
+  const isPracticeActive = pathname.startsWith("/practice");
+  const isEvidenceActive = pathname.startsWith("/evidence");
+  const isFavoritesActive = pathname.startsWith("/favorites");
   const isContactsActive = pathname.startsWith("/contacts");
 
   return (
@@ -128,6 +136,7 @@ export function AppSidebar({
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              {/* Dashboard */}
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
@@ -141,19 +150,77 @@ export function AppSidebar({
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
+              {/* Start Conversation */}
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
                   tooltip="Start Conversation"
                   isActive={isContactsActive}
                 >
-                  <Link href="/contacts">
+                  <Link href="/contacts" data-tour-step="contacts-nav">
                     <MessageSquarePlus className="h-4 w-4" />
                     <span>Start Conversation</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
+              {/* Roadmaps */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  tooltip="Roadmaps"
+                  isActive={isRoadmapsActive}
+                >
+                  <Link href="/roadmaps" data-tour-step="roadmaps-nav">
+                    <Map className="h-4 w-4" />
+                    <span>Roadmaps</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              {/* Practice */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  tooltip="Practice"
+                  isActive={isPracticeActive}
+                >
+                  <Link href="/practice">
+                    <GraduationCap className="h-4 w-4" />
+                    <span>Practice</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              {/* Evidence */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  tooltip="Evidence"
+                  isActive={isEvidenceActive}
+                >
+                  <Link href="/evidence">
+                    <FlaskConical className="h-4 w-4" />
+                    <span>Clinical Evidence</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              {/* Favorites */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  tooltip="Favorites"
+                  isActive={isFavoritesActive}
+                >
+                  <Link href="/favorites">
+                    <Star className="h-4 w-4" />
+                    <span>Favorites</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              {/* Contacts */}
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild

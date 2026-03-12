@@ -110,12 +110,14 @@ export default function DashboardPage() {
           <h1 className="text-xl font-semibold tracking-tight">Dashboard</h1>
           <p className="text-sm text-muted-foreground">Your sales pipeline at a glance.</p>
         </div>
-        <Button asChild size="sm">
-          <Link href="/contacts">
-            <Plus className="size-4 mr-1.5" />
-            New Contact
-          </Link>
-        </Button>
+        <div data-tour-step="new-contact">
+          <Button asChild size="sm">
+            <Link href="/contacts">
+              <Plus className="size-4 mr-1.5" />
+              New Contact
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Stat cards */}

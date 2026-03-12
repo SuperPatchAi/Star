@@ -99,7 +99,7 @@ export function AppShell({ children, user, profile }: AppShellProps) {
                 ))}
               </BreadcrumbList>
             </Breadcrumb>
-            {user && <NotificationBell />}
+            {user && <div data-tour-step="notification-bell"><NotificationBell /></div>}
           </header>
           <main className="flex-1 overflow-y-auto overflow-x-hidden pb-16 md:pb-0">
             {children}

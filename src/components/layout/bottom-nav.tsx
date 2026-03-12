@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, MessageSquarePlus, Users, Menu } from "lucide-react";
+import { LayoutDashboard, MessageSquarePlus, Users, Bell, Menu } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +10,7 @@ const tabs = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/contacts", label: "Start Conversation", icon: MessageSquarePlus },
   { href: "/contacts?view=list", label: "Contacts", icon: Users },
+  { href: "/activity", label: "Activity", icon: Bell },
 ] as const;
 
 export function BottomNav() {
