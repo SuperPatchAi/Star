@@ -22,6 +22,7 @@ import { SALES_STEPS } from "@/types/roadmap";
 import type { FollowUpReminder } from "@/types/reminders";
 import { cn } from "@/lib/utils";
 import { GettingStartedChecklist } from "@/components/onboarding/getting-started-checklist";
+import { PushPermissionBanner } from "@/components/follow-ups/push-permission-banner";
 
 const STEP_LABELS: Record<string, string> = {};
 for (const s of SALES_STEPS) {
@@ -123,6 +124,8 @@ export default function DashboardPage() {
 
       {/* Getting Started checklist */}
       <GettingStartedChecklist />
+
+      <PushPermissionBanner />
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
