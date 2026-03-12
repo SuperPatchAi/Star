@@ -22,6 +22,7 @@ import { BottomNav } from "./bottom-nav";
 import { NotificationBell } from "@/components/follow-ups/notification-bell";
 import { AuthProvider } from "@/contexts/auth-context";
 import { TourProvider } from "@/components/onboarding/tour-provider";
+import { InstallPrompt } from "@/components/pwa/install-prompt";
 import { products } from "@/data/products";
 import type { UserProfile } from "@/lib/db/types";
 
@@ -108,6 +109,7 @@ export function AppShell({ children, user, profile }: AppShellProps) {
           </main>
         </SidebarInset>
         <BottomNav />
+        <InstallPrompt />
         </TourProvider>
       </SidebarProvider>
     </AuthProvider>
