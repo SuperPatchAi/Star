@@ -13,6 +13,7 @@ import {
   Clock,
   Plus,
   Bell,
+  ChevronRight,
 } from "lucide-react";
 import { getDashboardStats, type DashboardStats } from "@/lib/actions/contacts";
 import { getFollowUpReminders } from "@/lib/actions/reminders";
@@ -37,14 +38,18 @@ function getTimeAgo(dateStr: string): string {
   return `${days}d ago`;
 }
 
-function StatCard({ label, value, icon: Icon, color }: {
+function StatCard({ label, value, icon: Icon, color, href }: {
   label: string;
   value: string | number;
   icon: React.ElementType;
   color: string;
+  href?: string;
 }) {
-  return (
-    <div className="rounded-lg border p-4 space-y-1">
+  const inner = (
+    <div className={cn(
+      "rounded-lg border p-4 space-y-1 transition-colors",
+      href && "hover:bg-muted/50 active:bg-muted cursor-pointer"
+    )}>
       <div className="flex items-center justify-between">
         <span className="text-xs text-muted-foreground uppercase tracking-wide font-medium">{label}</span>
         <Icon className={cn("size-4", color)} />
@@ -52,6 +57,11 @@ function StatCard({ label, value, icon: Icon, color }: {
       <p className="text-2xl font-bold tabular-nums">{value}</p>
     </div>
   );
+
+  if (href) {
+    return <Link href={href}>{inner}</Link>;
+  }
+  return inner;
 }
 
 export default function DashboardPage() {
@@ -110,27 +120,37 @@ export default function DashboardPage() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatCard label="Active" value={stats.totalActive} icon={Users} color="text-primary" />
-        <StatCard label="Won" value={stats.wonCount} icon={Trophy} color="text-green-600 dark:text-green-400" />
-        <StatCard label="Lost" value={stats.lostCount} icon={XCircle} color="text-red-600 dark:text-red-400" />
-        <StatCard label="Win Rate" value={`${stats.winRate}%`} icon={TrendingUp} color="text-primary" />
+        <StatCard label="Active" value={stats.totalActive} icon={Users} color="text-primary" href="/contacts" />
+        <StatCard label="Won" value={stats.wonCount} icon={Trophy} color="text-green-600 dark:text-green-400" href="/contacts" />
+        <StatCard label="Lost" value={stats.lostCount} icon={XCircle} color="text-red-600 dark:text-red-400" href="/contacts" />
+        <StatCard label="Win Rate" value={`${stats.winRate}%`} icon={TrendingUp} color="text-primary" href="/contacts" />
       </div>
 
       {/* Pipeline breakdown */}
       <div className="rounded-lg border p-4 space-y-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Pipeline</h2>
-        <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Pipeline</h2>
+          <Button variant="ghost" size="sm" className="text-xs h-7" asChild>
+            <Link href="/contacts">View all</Link>
+          </Button>
+        </div>
+        <div className="space-y-1">
           {stageOrder.map((stepId) => {
             const count = stats.pipelineCounts[stepId] || 0;
             const pct = (count / maxStageCount) * 100;
             return (
-              <div key={stepId} className="flex items-center gap-3">
+              <Link
+                key={stepId}
+                href="/contacts"
+                className="flex items-center gap-3 rounded-md px-2 py-1.5 -mx-2 transition-colors hover:bg-muted/50 active:bg-muted"
+              >
                 <span className="text-xs text-muted-foreground w-24 truncate">{STEP_LABELS[stepId] || stepId}</span>
                 <div className="flex-1">
                   <Progress value={pct} className="h-2" />
                 </div>
                 <span className="text-xs font-semibold tabular-nums w-6 text-right">{count}</span>
-              </div>
+                <ChevronRight className="size-3.5 text-muted-foreground/50 shrink-0" />
+              </Link>
             );
           })}
         </div>
@@ -160,14 +180,23 @@ export default function DashboardPage() {
 
       {/* Recent activity */}
       <div className="rounded-lg border p-4 space-y-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-1.5">
-          <Clock className="size-3.5" />
-          Recent Activity
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-1.5">
+            <Clock className="size-3.5" />
+            Recent Activity
+          </h2>
+          <Button variant="ghost" size="sm" className="text-xs h-7" asChild>
+            <Link href="/contacts">View all</Link>
+          </Button>
+        </div>
         {stats.recentActivity.length > 0 ? (
           <div className="rounded-lg border divide-y divide-border">
             {stats.recentActivity.map((entry) => (
-              <div key={entry.id} className="px-3 py-2.5 flex items-center justify-between">
+              <Link
+                key={entry.id}
+                href={`/contacts?openContact=${entry.id}`}
+                className="px-3 py-2.5 flex items-center justify-between transition-colors hover:bg-muted/50 active:bg-muted"
+              >
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium truncate">{entry.name}</p>
                   <p className="text-xs text-muted-foreground">
@@ -183,8 +212,11 @@ export default function DashboardPage() {
                     )}
                   </p>
                 </div>
-                <span className="text-xs text-muted-foreground shrink-0 ml-2">{getTimeAgo(entry.updatedAt)}</span>
-              </div>
+                <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                  <span className="text-xs text-muted-foreground">{getTimeAgo(entry.updatedAt)}</span>
+                  <ChevronRight className="size-3.5 text-muted-foreground/50" />
+                </div>
+              </Link>
             ))}
           </div>
         ) : (
@@ -194,8 +226,8 @@ export default function DashboardPage() {
 
       {/* Performance */}
       <div className="grid grid-cols-2 gap-3">
-        <StatCard label="This Week" value={stats.contactsThisWeek} icon={CalendarCheck} color="text-primary" />
-        <StatCard label="Active Conversations" value={stats.totalActive} icon={Users} color="text-primary" />
+        <StatCard label="This Week" value={stats.contactsThisWeek} icon={CalendarCheck} color="text-primary" href="/contacts" />
+        <StatCard label="Active Conversations" value={stats.totalActive} icon={Users} color="text-primary" href="/contacts" />
       </div>
     </div>
   );

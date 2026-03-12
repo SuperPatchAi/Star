@@ -54,15 +54,6 @@ function getStepIndex(step: string): number {
   return idx >= 0 ? idx : -1;
 }
 
-function FieldRow({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="flat-list-row">
-      <p className="text-[11px] text-muted-foreground/70 uppercase tracking-wide mb-0.5">{label}</p>
-      <div className="text-sm">{children}</div>
-    </div>
-  );
-}
-
 function ViewMode({
   contact,
   onEdit,
@@ -98,8 +89,6 @@ function ViewMode({
     }
   }, [localContact.id, onSaved]);
 
-  const hasAddress = localContact.address_line1 || localContact.address_city;
-
   return (
     <div className="flex flex-col h-full">
       {/* Sticky header bar */}
@@ -130,11 +119,11 @@ function ViewMode({
 
       {/* Scrollable stacked content */}
       <div className="flex-1 overflow-y-auto">
-        {/* Contact summary */}
+        {/* Contact summary with inline contact info */}
         <div className="px-4 pt-4 pb-3">
-          <div className="flex items-center gap-3">
+          <div className="flex items-start gap-3">
             {contactProducts.length > 0 && (
-              <div className="flex -space-x-1.5">
+              <div className="flex -space-x-1.5 mt-0.5">
                 {contactProducts.slice(0, 3).map((p) => (
                   <div key={p.id} className="relative size-8 rounded-full overflow-hidden border-2 border-background">
                     <Image src={p.image} alt={p.name} fill className="object-cover" sizes="32px" />
@@ -142,113 +131,75 @@ function ViewMode({
                 ))}
               </div>
             )}
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <h2 className="text-lg font-semibold truncate">{fullName}</h2>
               <p className="text-sm text-muted-foreground truncate">
                 {contactProducts.map((p) => p.name).join(", ")}
               </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Stage display (read-only) + outcome */}
-        <div className="px-4 pb-3">
-          <div className="flex items-center justify-center py-2">
-            <div className="text-center">
-              <p className="text-sm font-semibold">{stepLabel}</p>
-              <p className="text-[11px] text-muted-foreground">Sales Pipeline</p>
-            </div>
-          </div>
-          <Progress value={progress} className="h-1.5" />
-
-          {localContact.outcome === "pending" || localContact.outcome === "follow_up" ? (
-            <div className="grid grid-cols-2 gap-2 mt-3">
-              <Button
-                variant="outline"
-                className="border-green-300 text-green-700 hover:bg-green-50 dark:border-green-800 dark:text-green-400 dark:hover:bg-green-950"
-                onClick={() => handleOutcome("won")}
-                disabled={acting}
-              >
-                <CheckCircle className="size-4 mr-1.5" />
-                Won
-              </Button>
-              <Button
-                variant="outline"
-                className="border-red-300 text-red-700 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950"
-                onClick={() => handleOutcome("lost")}
-                disabled={acting}
-              >
-                <XCircle className="size-4 mr-1.5" />
-                Lost
-              </Button>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 mt-3 text-sm font-medium">
-              {localContact.outcome === "won" ? (
-                <>
-                  <CheckCircle className="size-4 text-green-600 dark:text-green-400" />
-                  <span className="text-green-700 dark:text-green-400">Won</span>
-                </>
-              ) : (
-                <>
-                  <XCircle className="size-4 text-red-600 dark:text-red-400" />
-                  <span className="text-red-700 dark:text-red-400">Lost</span>
-                </>
+              {(localContact.email || localContact.phone) && (
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1">
+                  {localContact.email && (
+                    <a href={`mailto:${localContact.email}`} className="text-xs text-primary hover:underline flex items-center gap-1">
+                      <Mail className="size-3" />
+                      {localContact.email}
+                    </a>
+                  )}
+                  {localContact.phone && (
+                    <a href={`tel:${localContact.phone}`} className="text-xs text-primary hover:underline flex items-center gap-1">
+                      <Phone className="size-3" />
+                      {localContact.phone}
+                    </a>
+                  )}
+                </div>
               )}
             </div>
-          )}
-        </div>
+          </div>
 
-        {/* Contact details */}
-        <div className="px-4">
-          {localContact.email && (
-            <FieldRow label="Email">
-              <a href={`mailto:${localContact.email}`} className="text-primary hover:underline">
-                {localContact.email}
-              </a>
-            </FieldRow>
-          )}
-          {localContact.phone && (
-            <FieldRow label="Phone">
-              <a href={`tel:${localContact.phone}`} className="text-primary hover:underline">
-                {localContact.phone}
-              </a>
-            </FieldRow>
-          )}
-          {localContact.notes && (
-            <FieldRow label="Notes">
-              <p className="text-sm whitespace-pre-wrap">{localContact.notes}</p>
-            </FieldRow>
-          )}
-          {localContact.sample_sent && (
-            <FieldRow label="Sample">
-              <div className="flex items-center gap-1.5">
-                <span className="size-2 rounded-full bg-success shrink-0" />
-                <span className="text-sm">Sample sent</span>
+          {/* Inline stage + outcome */}
+          <div className="mt-3">
+            <div className="flex items-center justify-between mb-1">
+              <p className="text-xs font-medium">{stepLabel}</p>
+              {(localContact.outcome === "won" || localContact.outcome === "lost") && (
+                <span className={cn(
+                  "text-xs font-medium flex items-center gap-1",
+                  localContact.outcome === "won" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
+                )}>
+                  {localContact.outcome === "won" ? <CheckCircle className="size-3" /> : <XCircle className="size-3" />}
+                  {localContact.outcome === "won" ? "Won" : "Lost"}
+                </span>
+              )}
+            </div>
+            <Progress value={progress} className="h-1.5" />
+
+            {(localContact.outcome === "pending" || localContact.outcome === "follow_up") && (
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 border-green-300 text-green-700 hover:bg-green-50 dark:border-green-800 dark:text-green-400 dark:hover:bg-green-950"
+                  onClick={() => handleOutcome("won")}
+                  disabled={acting}
+                >
+                  <CheckCircle className="size-3.5 mr-1" />
+                  Won
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 border-red-300 text-red-700 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950"
+                  onClick={() => handleOutcome("lost")}
+                  disabled={acting}
+                >
+                  <XCircle className="size-3.5 mr-1" />
+                  Lost
+                </Button>
               </div>
-              {localContact.sample_products.length > 0 && (
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {localContact.sample_products.join(", ")}
-                </p>
-              )}
-            </FieldRow>
-          )}
-          {hasAddress && (
-            <FieldRow label="Address">
-              <p className="text-sm">
-                {[localContact.address_line1, localContact.address_line2].filter(Boolean).join(", ")}
-              </p>
-              <p className="text-sm">
-                {[localContact.address_city, localContact.address_state, localContact.address_zip]
-                  .filter(Boolean)
-                  .join(", ")}
-              </p>
-            </FieldRow>
-          )}
+            )}
+          </div>
         </div>
 
-        {/* Divider */}
-        <div className="border-t mx-4 my-4" />
+        {/* Divider before sales flow */}
+        <div className="border-t mx-4 mb-4" />
 
         {/* Full DecisionTree */}
         <div className="px-4 pb-6">
