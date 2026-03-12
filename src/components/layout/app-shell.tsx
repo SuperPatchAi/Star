@@ -21,6 +21,7 @@ import { AppSidebar } from "./app-sidebar";
 import { BottomNav } from "./bottom-nav";
 import { NotificationBell } from "@/components/follow-ups/notification-bell";
 import { AuthProvider } from "@/contexts/auth-context";
+import { TourProvider } from "@/components/onboarding/tour-provider";
 import { products } from "@/data/products";
 import type { UserProfile } from "@/lib/db/types";
 
@@ -73,6 +74,7 @@ export function AppShell({ children, user, profile }: AppShellProps) {
   return (
     <AuthProvider initialUser={user} initialProfile={profile}>
       <SidebarProvider>
+        <TourProvider onboardingStep={profile?.onboarding_step}>
         <AppSidebar user={user} profile={profile} />
         <SidebarInset>
           <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4 overflow-hidden">
@@ -99,13 +101,14 @@ export function AppShell({ children, user, profile }: AppShellProps) {
                 ))}
               </BreadcrumbList>
             </Breadcrumb>
-            {user && <NotificationBell />}
+            {user && <div data-tour-step="notification-bell"><NotificationBell /></div>}
           </header>
           <main className="flex-1 overflow-y-auto overflow-x-hidden pb-16 md:pb-0">
             {children}
           </main>
         </SidebarInset>
         <BottomNav />
+        </TourProvider>
       </SidebarProvider>
     </AuthProvider>
   );

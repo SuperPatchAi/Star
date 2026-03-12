@@ -5,6 +5,15 @@ export type UserRole = 'admin' | 'user';
 export type ContactStep = 'add_contact' | 'opening' | 'discovery' | 'presentation' | 'samples' | 'objections' | 'closing' | 'followup' | 'closed';
 export type ContactOutcome = 'pending' | 'won' | 'lost' | 'follow_up';
 
+export type OnboardingStep = 'carousel' | 'tour' | 'checklist' | 'completed';
+export type OnboardingChecklist = {
+  add_first_contact: boolean;
+  start_first_conversation: boolean;
+  complete_sales_step: boolean;
+  send_first_sample: boolean;
+  setup_followup: boolean;
+};
+
 export interface Database {
   public: {
     Tables: {
@@ -19,6 +28,8 @@ export interface Database {
           invited_by: string | null;
           created_at: string;
           updated_at: string;
+          onboarding_step: OnboardingStep;
+          onboarding_checklist: OnboardingChecklist;
         };
         Insert: {
           id: string;
@@ -30,6 +41,8 @@ export interface Database {
           invited_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          onboarding_step?: OnboardingStep;
+          onboarding_checklist?: OnboardingChecklist;
         };
         Update: {
           id?: string;
@@ -40,6 +53,8 @@ export interface Database {
           is_active?: boolean;
           invited_by?: string | null;
           updated_at?: string;
+          onboarding_step?: OnboardingStep;
+          onboarding_checklist?: OnboardingChecklist;
         };
       };
       d2c_contacts: {

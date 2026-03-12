@@ -20,7 +20,10 @@ import {
   Users,
   MessageSquarePlus,
   LayoutDashboard,
+  RotateCcw,
+  HelpCircle,
 } from "lucide-react";
+import { resetOnboarding } from "@/lib/actions/onboarding";
 import { Badge } from "@/components/ui/badge";
 import type { UserProfile } from "@/lib/db/types";
 
@@ -157,7 +160,7 @@ export function AppSidebar({
                   tooltip="Start Conversation"
                   isActive={isContactsActive}
                 >
-                  <Link href="/contacts">
+                  <Link href="/contacts" data-tour-step="contacts-nav">
                     <MessageSquarePlus className="h-4 w-4" />
                     <span>Start Conversation</span>
                   </Link>
@@ -171,7 +174,7 @@ export function AppSidebar({
                   tooltip="Roadmaps"
                   isActive={isRoadmapsActive}
                 >
-                  <Link href="/roadmaps">
+                  <Link href="/roadmaps" data-tour-step="roadmaps-nav">
                     <Map className="h-4 w-4" />
                     <span>Roadmaps</span>
                   </Link>
@@ -304,6 +307,27 @@ export function AppSidebar({
                       <Settings className="mr-2 h-4 w-4" />
                       Settings
                     </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={async () => {
+                      await resetOnboarding("carousel");
+                      window.location.href = "/onboarding";
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <RotateCcw className="mr-2 h-4 w-4" />
+                    Replay Welcome
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={async () => {
+                      await resetOnboarding("tour");
+                      window.location.href = "/dashboard";
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <HelpCircle className="mr-2 h-4 w-4" />
+                    Replay Tour
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut} className="text-destructive cursor-pointer">
