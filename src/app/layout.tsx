@@ -26,18 +26,24 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "SuperPatch D2C Sales",
-    template: "%s | SuperPatch D2C",
+    default: "SuperPatch S.T.A.R.",
+    template: "%s | SuperPatch S.T.A.R.",
   },
-  description: "Direct-to-consumer sales reference app for SuperPatch word tracks, roadmaps, and clinical evidence",
-  keywords: ["SuperPatch", "Sales", "Word Tracks", "Objection Handling", "VTT", "D2C"],
+  description: "Sample. Track. Align. Recruit. — The SuperPatch sales enablement app.",
+  keywords: ["SuperPatch", "STAR", "Sales", "D2C", "Word Tracks", "Objection Handling"],
   authors: [{ name: "SuperPatch" }],
   creator: "SuperPatch",
   manifest: "/manifest.json",
+  openGraph: {
+    title: "SuperPatch S.T.A.R.",
+    description: "Sample. Track. Align. Recruit. — The SuperPatch sales enablement app.",
+    siteName: "SuperPatch S.T.A.R.",
+    type: "website",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "SP D2C",
+    title: "SuperPatch S.T.A.R.",
   },
   formatDetection: {
     telephone: false,

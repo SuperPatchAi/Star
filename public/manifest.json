@@ -1,7 +1,7 @@
 {
-  "name": "SuperPatch D2C Sales",
-  "short_name": "SuperPatch",
-  "description": "Direct-to-consumer sales reference app for SuperPatch word tracks, roadmaps, and clinical evidence",
+  "name": "SuperPatch S.T.A.R.",
+  "short_name": "S.T.A.R.",
+  "description": "Sample. Track. Align. Recruit. — The SuperPatch sales enablement app.",
   "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#101010",
