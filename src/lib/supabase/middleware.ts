@@ -35,16 +35,10 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Define public routes that don't require authentication
-  // Note: /signup is only accessible with an invite token
-  const publicRoutes = ['/login', '/auth']
+  const publicRoutes = ['/login', '/signup', '/auth']
   const isPublicRoute = publicRoutes.some(route => 
     request.nextUrl.pathname.startsWith(route)
   )
-  
-  // Signup page requires an invite token
-  const isSignupWithToken = request.nextUrl.pathname === '/signup' && 
-    (request.nextUrl.searchParams.has('token') || request.nextUrl.searchParams.has('token_hash'))
 
   // Allow webhook routes without authentication
   const isWebhookRoute = request.nextUrl.pathname.startsWith('/api/webhooks')
@@ -55,21 +49,12 @@ export async function updateSession(request: NextRequest) {
   if (
     !user &&
     !isPublicRoute &&
-    !isSignupWithToken &&
     !isWebhookRoute &&
     !isPublicApiRoute &&
     !request.nextUrl.pathname.startsWith('/_next') &&
     !request.nextUrl.pathname.startsWith('/favicon') &&
     !request.nextUrl.pathname.match(/\.(svg|png|jpg|jpeg|gif|webp|ico)$/)
   ) {
-    // No user, redirect to login page
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
-  }
-  
-  // Block direct access to /signup without invite token
-  if (!user && request.nextUrl.pathname === '/signup' && !isSignupWithToken) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
