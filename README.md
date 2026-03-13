@@ -1,6 +1,6 @@
-# SuperPatch D2C Sales Enablement Platform
+# SuperPatch S.T.A.R.
 
-A Next.js 16 web application for SuperPatch direct-to-consumer sales representatives. Provides a guided, multi-product sales conversation flow with contact tracking, auto-save, and product-specific scripts powered by roadmap spec data.
+**Sample. Track. Align. Recruit.** — A Next.js 16 sales enablement app for SuperPatch direct-to-consumer reps. Guided 9-step sales conversations with multi-product support, contact tracking, auto-save, and product-specific scripts powered by roadmap spec data.
 
 ## Tech Stack
 
@@ -11,7 +11,7 @@ A Next.js 16 web application for SuperPatch direct-to-consumer sales representat
 | UI | React 19, shadcn/ui (New York style), Tailwind CSS 4, @dnd-kit/react |
 | Auth & DB | Supabase (Auth, PostgreSQL, RLS, Server Actions) |
 | State | React useState/useCallback/useEffect (no external state library) |
-| Deployment | Vercel |
+| Deployment | Vercel (`star-seven-sigma.vercel.app`) |
 | Repository | [github.com/SuperPatchAi/Star](https://github.com/SuperPatchAi/Star) |
 
 ## Architecture Overview
@@ -216,7 +216,11 @@ create table public.d2c_contacts (
 
 ### `user_profiles` Table
 
-Referenced in code but migration lives outside this repo. Fields: `id`, `email`, `full_name`, `avatar_url`, `role` (admin/user), `is_active`, `invited_by`, `store_subdomain` (MLM store subdomain for purchase URLs), `created_at`, `updated_at`.
+Fields: `id`, `email`, `full_name`, `avatar_url`, `role` (admin/user), `is_active`, `invited_by`, `onboarding_step`, `onboarding_checklist` (JSONB), `store_subdomain` (MLM store subdomain for purchase URLs), `created_at`, `updated_at`. Auto-created on signup via the `handle_new_user()` trigger on `auth.users`.
+
+### `d2c_push_subscriptions` Table
+
+Stores web push subscriptions per user. Fields: `id`, `user_id`, `endpoint`, `p256dh`, `auth`, `created_at`. RLS scoped to `auth.uid() = user_id`.
 
 ## Roadmap Spec Structure (V2)
 
@@ -519,12 +523,15 @@ The app is installable as a PWA on both Android and iOS devices.
 ### Install Experience
 - **Chrome/Edge**: `beforeinstallprompt` event triggers a bottom banner with an "Install" button
 - **iOS Safari**: Banner shows instructions to tap Share > "Add to Home Screen"
-- **Onboarding slide**: The final carousel slide encourages new users to install the app
+- **Onboarding gate**: The install prompt only appears **after** the onboarding tour is completed (checks `onboardingStep` prop for `checklist` or `completed`)
+- **Onboarding slide**: The final carousel slide also encourages new users to install the app
 - **Dismissal**: Banner hides for 7 days after dismissal (stored in localStorage)
 - **Auto-hide**: Banner does not show if the app is already installed (standalone mode)
 
 ### Manifest & Icons
-- `public/manifest.json` — PWA manifest with `display: standalone`, `start_url: /dashboard`
+- `public/manifest.json` — PWA manifest (`SuperPatch S.T.A.R.`) with `display: standalone`, `start_url: /dashboard`
+- `public/favicon.ico` — Browser tab favicon (SuperPatch logo, white on black)
+- `public/favicon-16x16.png` / `public/favicon-32x32.png` — PNG favicons
 - `public/icon-192x192.png` — Home screen icon (192x192)
 - `public/icon-512x512.png` — Splash screen icon (512x512, also maskable)
 - `public/apple-touch-icon.png` — iOS home screen icon (180x180)

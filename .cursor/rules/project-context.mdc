@@ -1,13 +1,13 @@
 ---
-description: SuperPatch D2C project architecture, conventions, and file map — loaded on every session
+description: SuperPatch S.T.A.R. project architecture, conventions, and file map — loaded on every session
 alwaysApply: true
 ---
 
-# SuperPatch D2C Project Context
+# SuperPatch S.T.A.R. Project Context
 
 ## What This App Is
 
-A Next.js 16 sales enablement platform for SuperPatch D2C reps. Guided 9-step sales conversations with multi-product support, contact tracking, auto-save, product-specific scripts, and personalized MLM purchase links.
+**S.T.A.R. = Sample. Track. Align. Recruit.** A Next.js 16 sales enablement platform for SuperPatch D2C reps. Guided 9-step sales conversations with multi-product support, contact tracking, auto-save, product-specific scripts, and personalized MLM purchase links. Deployed at `star-seven-sigma.vercel.app`.
 
 ## Tech Stack
 
