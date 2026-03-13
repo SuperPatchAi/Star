@@ -5,7 +5,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, UserPlus, MessageSquare, HelpCircle, Presentation, Package, ShieldAlert, Handshake, CalendarCheck, ArrowLeft } from "lucide-react";
+import { ChevronLeft, ChevronRight, UserPlus, MessageSquare, HelpCircle, Presentation, Package, ShieldAlert, Handshake, ShoppingCart, CalendarCheck, ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import type { RoadmapV2, SalesStep } from "@/types/roadmap";
 import { SALES_STEPS } from "@/types/roadmap";
@@ -13,6 +13,7 @@ import type { Product } from "@/types";
 import type { Contact } from "@/lib/db/types";
 import { products as allProducts } from "@/data/products";
 import { updateContact, advanceFollowUpDay } from "@/lib/actions/contacts";
+import { getStoreSubdomain } from "@/lib/actions/profile";
 import { getRoadmapsForProducts } from "@/lib/roadmap-data";
 import { StepAddContact } from "./step-add-contact";
 import { StepOpeningPicker } from "./step-opening-picker";
@@ -21,6 +22,7 @@ import { StepPresentation } from "./step-presentation";
 import { StepObjections } from "./step-objections";
 import { StepClosing } from "./step-closing";
 import { StepFollowUp } from "./step-followup";
+import { StepPurchaseLinks } from "./step-purchase-links";
 import { StepSendSamples, type SampleAddress } from "./step-send-samples";
 import { ProductTabs } from "./product-tabs";
 import { CustomerInsight } from "./customer-insight";
@@ -79,6 +81,7 @@ const STEP_ICONS: Record<string, React.ElementType> = {
   samples: Package,
   objections: ShieldAlert,
   closing: Handshake,
+  purchase_links: ShoppingCart,
   followup: CalendarCheck,
 };
 
@@ -100,6 +103,12 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
       sampleAddress: null,
     }
   );
+
+  const [storeSubdomain, setStoreSubdomain] = useState<string | null>(null);
+
+  useEffect(() => {
+    getStoreSubdomain().then(setStoreSubdomain);
+  }, []);
 
   const contactProductIds = activeContact?.product_ids || [];
   const contactProducts = allProducts.filter(p => contactProductIds.includes(p.id));
@@ -387,6 +396,21 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                 />
               );
             }}
+          </ProductTabs>
+        );
+      case "purchase_links":
+        return (
+          <ProductTabs products={contactProducts}>
+            {(product) => (
+              <StepPurchaseLinks
+                product={product}
+                storeSubdomain={storeSubdomain}
+                contactFirstName={contactFirstName}
+                allProducts={contactProducts}
+                onContinue={goNext}
+                onSubdomainSaved={setStoreSubdomain}
+              />
+            )}
           </ProductTabs>
         );
       case "followup":

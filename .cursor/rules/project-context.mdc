@@ -7,7 +7,7 @@ alwaysApply: true
 
 ## What This App Is
 
-A Next.js 16 sales enablement platform for SuperPatch D2C reps. Guided 8-step sales conversations with multi-product support, contact tracking, auto-save, and product-specific scripts.
+A Next.js 16 sales enablement platform for SuperPatch D2C reps. Guided 9-step sales conversations with multi-product support, contact tracking, auto-save, product-specific scripts, and personalized MLM purchase links.
 
 ## Tech Stack
 
@@ -43,15 +43,16 @@ A Next.js 16 sales enablement platform for SuperPatch D2C reps. Guided 8-step sa
 - `(auth)/signup/page.tsx` — Invite-only signup
 
 ### Sales Flow (`src/components/sales-flow/`)
-- `decision-tree.tsx` — Central orchestrator (8 steps, auto-save, contact gating, `variant="drawer"` for embedded use)
+- `decision-tree.tsx` — Central orchestrator (9 steps, auto-save, contact gating, `variant="drawer"` for embedded use, fetches `storeSubdomain` on mount)
 - `step-add-contact.tsx` — Step 0: create contact + select products (gate)
 - `step-opening-picker.tsx` — Step 1: choose opening approach
 - `step-discovery.tsx` — Step 2: check off discovery questions
 - `step-presentation.tsx` — Step 3: P-A-S framework with `{{discovery_callback}}`
-- `step-send-samples.tsx` — Step 4: sample offer + address
+- `step-send-samples.tsx` — Step 4: 3-script sample flow (offer, commitment, experience) + product picker + address + 2-day follow-up reminder
 - `step-objections.tsx` — Step 5: handle objections
 - `step-closing.tsx` — Step 6: closing technique
-- `step-followup.tsx` — Step 7: follow-up sequence with Mark Done & Advance + current-day highlighting
+- `step-purchase-links.tsx` — Step 7: per-product purchase URLs with shareable scripts (single + multi-product)
+- `step-followup.tsx` — Step 8: follow-up sequence with Mark Done & Advance + current-day highlighting
 - `product-tabs.tsx` — Multi-product tabbed content
 - `customer-insight.tsx` — Customer profile from roadmap
 
@@ -64,7 +65,7 @@ A Next.js 16 sales enablement platform for SuperPatch D2C reps. Guided 8-step sa
 - `install-prompt.tsx` — PWA install banner (Chrome beforeinstallprompt + iOS Safari instructions)
 
 ### Onboarding (`src/components/onboarding/`)
-- `onboarding-carousel.tsx` — 7-slide swipeable feature carousel (Phase 1, includes install app slide)
+- `onboarding-carousel.tsx` — 8-slide swipeable feature carousel (Phase 1, includes store subdomain input + install app slide)
 - `carousel-slide.tsx` — Individual slide with gradient, icon, headline
 - `carousel-dots.tsx` — Dot navigation indicators
 - `tour-provider.tsx` — Context provider for interactive tour (Phase 2), auto-starts on `tour` step
@@ -84,6 +85,7 @@ A Next.js 16 sales enablement platform for SuperPatch D2C reps. Guided 8-step sa
 ### Lib (`src/lib/`)
 - `actions/contacts.ts` — Server actions: getContacts, getContact, createContact, updateContact, deleteContact, advanceFollowUpDay, dismissReminder, getDashboardStats
 - `actions/onboarding.ts` — getOnboardingState, completeCarousel, completeTour, updateChecklistItem, resetOnboarding, dismissOnboarding
+- `actions/profile.ts` — getMyProfile, getStoreSubdomain, updateStoreSubdomain
 - `actions/reminders.ts` — getFollowUpReminders, getFollowUpReminderCount (staleness + DAY sequence)
 - `actions/push-subscriptions.ts` — subscribePush, unsubscribePush
 - `roadmap-data.ts` — getRoadmapSpec, getRoadmapsForProducts, getAllRoadmapSpecs
@@ -94,21 +96,21 @@ A Next.js 16 sales enablement platform for SuperPatch D2C reps. Guided 8-step sa
 - `db/types.ts` — Database/Contact/UserProfile TypeScript types
 
 ### Types (`src/types/`)
-- `roadmap.ts` — RoadmapV2, SalesStep, SALES_STEPS (8 steps)
+- `roadmap.ts` — RoadmapV2, SalesStep, SALES_STEPS (9 steps)
 - `reminders.ts` — FollowUpReminder, STALENESS_THRESHOLDS, FOLLOWUP_DAY_OFFSETS
 - `index.ts` — Product, WordTrack, NavItem
 
 ## Sales Step IDs (in order)
 
-`add_contact` → `opening` → `discovery` → `presentation` → `samples` → `objections` → `closing` → `followup`
+`add_contact` → `opening` → `discovery` → `presentation` → `samples` → `objections` → `closing` → `purchase_links` → `followup`
 
 ## Database Table: `d2c_contacts`
 
-Key columns: `user_id`, `product_ids text[]`, `first_name`, `last_name`, `email`, `phone`, address fields, `current_step`, `stage_entered_at`, `opening_types jsonb`, `questions_asked jsonb`, `objections_encountered jsonb`, `closing_techniques jsonb`, `sample_sent`, `sample_products text[]`, `outcome`, `follow_up_day`
+Key columns: `user_id`, `product_ids text[]`, `first_name`, `last_name`, `email`, `phone`, address fields, `current_step`, `stage_entered_at`, `opening_types jsonb`, `questions_asked jsonb`, `objections_encountered jsonb`, `closing_techniques jsonb`, `sample_sent`, `sample_sent_at`, `sample_products text[]`, `sample_followup_done`, `outcome`, `follow_up_day`
 
 ## Database Table: `user_profiles` (onboarding columns)
 
-Key additions: `onboarding_step text` (carousel | tour | checklist | completed), `onboarding_checklist jsonb` (5 boolean milestone flags)
+Key additions: `onboarding_step text` (carousel | tour | checklist | completed), `onboarding_checklist jsonb` (5 boolean milestone flags), `store_subdomain text` (MLM store subdomain for purchase URLs)
 
 ## Database Table: `d2c_push_subscriptions`
 

@@ -7,6 +7,10 @@ import type { Contact, ContactStep } from "@/lib/db/types";
 import type { FollowUpReminder, ReminderUrgency } from "@/types/reminders";
 import { STALENESS_THRESHOLDS, FOLLOWUP_DAY_OFFSETS } from "@/types/reminders";
 
+const SAMPLE_CHECKIN_SCRIPT = "Did you get it?";
+const SAMPLE_EXPERIENCE_SCRIPT = "Before we open it, I want you to understand. This isn't about hype. It's about experience. I want you to pay attention to what you notice, not what you expect.";
+const SAMPLE_FOLLOWUP_THRESHOLD_DAYS = 2;
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SupabaseAny = any;
 
@@ -54,6 +58,32 @@ export async function getFollowUpReminders(): Promise<{
     const enteredAt = new Date(contact.stage_entered_at);
     const daysSinceEntry = daysBetween(enteredAt, now);
     const step = contact.current_step;
+
+    if (
+      contact.sample_sent &&
+      contact.sample_sent_at &&
+      !contact.sample_followup_done
+    ) {
+      const sentAt = new Date(contact.sample_sent_at);
+      const daysSinceSent = daysBetween(sentAt, now);
+      if (daysSinceSent >= SAMPLE_FOLLOWUP_THRESHOLD_DAYS - 1) {
+        const urgency: ReminderUrgency =
+          daysSinceSent > SAMPLE_FOLLOWUP_THRESHOLD_DAYS
+            ? "overdue"
+            : daysSinceSent === SAMPLE_FOLLOWUP_THRESHOLD_DAYS
+              ? "due_today"
+              : "upcoming";
+
+        reminders.push({
+          contact,
+          type: "sample_followup",
+          urgency,
+          stageName: "Sample Follow-Up",
+          daysSinceEntry: daysSinceSent,
+          sampleScript: `${SAMPLE_CHECKIN_SCRIPT}\n\n${SAMPLE_EXPERIENCE_SCRIPT}`,
+        });
+      }
+    }
 
     if (step === "followup") {
       const dayIndex = contact.follow_up_day ?? 0;

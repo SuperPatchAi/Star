@@ -2,7 +2,7 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 
 export type UserRole = 'admin' | 'user';
 
-export type ContactStep = 'add_contact' | 'opening' | 'discovery' | 'presentation' | 'samples' | 'objections' | 'closing' | 'followup' | 'closed';
+export type ContactStep = 'add_contact' | 'opening' | 'discovery' | 'presentation' | 'samples' | 'objections' | 'closing' | 'purchase_links' | 'followup' | 'closed';
 export type ContactOutcome = 'pending' | 'won' | 'lost' | 'follow_up';
 
 export type OnboardingStep = 'carousel' | 'tour' | 'checklist' | 'completed';
@@ -30,6 +30,7 @@ export interface Database {
           updated_at: string;
           onboarding_step: OnboardingStep;
           onboarding_checklist: OnboardingChecklist;
+          store_subdomain: string | null;
         };
         Insert: {
           id: string;
@@ -43,6 +44,7 @@ export interface Database {
           updated_at?: string;
           onboarding_step?: OnboardingStep;
           onboarding_checklist?: OnboardingChecklist;
+          store_subdomain?: string | null;
         };
         Update: {
           id?: string;
@@ -55,6 +57,7 @@ export interface Database {
           updated_at?: string;
           onboarding_step?: OnboardingStep;
           onboarding_checklist?: OnboardingChecklist;
+          store_subdomain?: string | null;
         };
       };
       d2c_contacts: {
@@ -80,6 +83,7 @@ export interface Database {
           sample_sent: boolean;
           sample_sent_at: string | null;
           sample_products: string[];
+          sample_followup_done: boolean;
           outcome: ContactOutcome;
           follow_up_day: number | null;
           peak_step: string | null;
@@ -109,6 +113,7 @@ export interface Database {
           sample_sent?: boolean;
           sample_sent_at?: string | null;
           sample_products?: string[];
+          sample_followup_done?: boolean;
           outcome?: ContactOutcome;
           follow_up_day?: number | null;
           peak_step?: string | null;
@@ -136,6 +141,7 @@ export interface Database {
           sample_sent?: boolean;
           sample_sent_at?: string | null;
           sample_products?: string[];
+          sample_followup_done?: boolean;
           outcome?: ContactOutcome;
           follow_up_day?: number | null;
           peak_step?: string | null;

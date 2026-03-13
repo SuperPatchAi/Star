@@ -77,7 +77,7 @@ export function StepClosing({ data, selectedTechnique, onSelect, onContinue, con
 
       {selectedTechnique && (
         <Button onClick={onContinue} className="w-full">
-          Continue to Follow-Up
+          Continue to Purchase Links
           <ChevronRight className="size-4 ml-1" />
         </Button>
       )}

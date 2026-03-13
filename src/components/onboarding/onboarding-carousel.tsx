@@ -3,6 +3,7 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   MessageSquarePlus,
   Users,
@@ -11,10 +12,14 @@ import {
   Shield,
   Trophy,
   Download,
+  Store,
 } from "lucide-react";
 import { completeCarousel } from "@/lib/actions/onboarding";
+import { updateStoreSubdomain } from "@/lib/actions/profile";
 import { CarouselSlide } from "./carousel-slide";
 import { CarouselDots } from "./carousel-dots";
+
+const SUBDOMAIN_SLIDE_INDEX = 1;
 
 const SLIDES = [
   {
@@ -22,6 +27,13 @@ const SLIDES = [
     headline: "Your guided sales conversations",
     subtitle: "Follow an 8-step scripted flow from opening to close. Every word track at your fingertips.",
     gradient: "bg-gradient-to-br from-blue-600 to-indigo-800",
+  },
+  {
+    icon: Store,
+    headline: "Set up your store link",
+    subtitle: "Enter your Super Patch subdomain so customers can purchase through your personal link.",
+    gradient: "bg-gradient-to-br from-teal-600 to-emerald-800",
+    isSubdomainSlide: true,
   },
   {
     icon: Users,
@@ -66,13 +78,26 @@ export function OnboardingCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isNavigating, setIsNavigating] = useState(false);
+  const [subdomain, setSubdomain] = useState("");
+  const [subdomainSaving, setSubdomainSaving] = useState(false);
+
+  const saveSubdomainIfNeeded = useCallback(async () => {
+    const cleaned = subdomain.trim().toLowerCase().replace(/[^a-z0-9-]/g, "");
+    if (!cleaned) return;
+    setSubdomainSaving(true);
+    await updateStoreSubdomain(cleaned);
+    setSubdomainSaving(false);
+  }, [subdomain]);
 
   const handleComplete = useCallback(async () => {
     if (isNavigating) return;
     setIsNavigating(true);
+    if (currentSlide === SUBDOMAIN_SLIDE_INDEX) {
+      await saveSubdomainIfNeeded();
+    }
     await completeCarousel();
     router.push("/dashboard");
-  }, [router, isNavigating]);
+  }, [router, isNavigating, currentSlide, saveSubdomainIfNeeded]);
 
   const scrollToSlide = useCallback((index: number) => {
     scrollRef.current?.scrollTo({
@@ -81,13 +106,16 @@ export function OnboardingCarousel() {
     });
   }, []);
 
-  const handleNext = useCallback(() => {
+  const handleNext = useCallback(async () => {
+    if (currentSlide === SUBDOMAIN_SLIDE_INDEX) {
+      await saveSubdomainIfNeeded();
+    }
     if (currentSlide < SLIDES.length - 1) {
       scrollToSlide(currentSlide + 1);
     } else {
       handleComplete();
     }
-  }, [currentSlide, scrollToSlide, handleComplete]);
+  }, [currentSlide, scrollToSlide, handleComplete, saveSubdomainIfNeeded]);
 
   useEffect(() => {
     const container = scrollRef.current;
@@ -128,9 +156,46 @@ export function OnboardingCarousel() {
         className="flex h-full w-full snap-x snap-mandatory overflow-x-auto scrollbar-hide"
         style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
       >
-        {SLIDES.map((slide, i) => (
-          <CarouselSlide key={i} {...slide} />
-        ))}
+        {SLIDES.map((slide, i) => {
+          if ("isSubdomainSlide" in slide && slide.isSubdomainSlide) {
+            const Icon = slide.icon;
+            return (
+              <div
+                key={i}
+                className={`flex h-dvh w-full shrink-0 snap-start flex-col items-center justify-center px-8 text-center ${slide.gradient}`}
+              >
+                <div className="mb-8 rounded-3xl bg-white/20 p-6 backdrop-blur-sm">
+                  <Icon className="size-16 text-white" strokeWidth={1.5} />
+                </div>
+                <h2 className="mb-3 text-2xl font-bold text-white md:text-3xl">
+                  {slide.headline}
+                </h2>
+                <p className="mb-6 max-w-sm text-base text-white/80 md:text-lg">
+                  {slide.subtitle}
+                </p>
+                <div className="flex w-full max-w-sm items-center rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 overflow-hidden">
+                  <Input
+                    type="text"
+                    placeholder="yourname"
+                    value={subdomain}
+                    onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
+                    disabled={subdomainSaving}
+                    className="flex-1 border-0 bg-transparent text-right text-white text-lg placeholder:text-white/40 focus-visible:ring-0 focus-visible:ring-offset-0 pr-0"
+                  />
+                  <span className="shrink-0 px-3 text-lg font-medium text-white/70">
+                    .superpatch.com
+                  </span>
+                </div>
+                {subdomain && (
+                  <p className="mt-3 text-sm text-white/60">
+                    Your store: {subdomain}.superpatch.com
+                  </p>
+                )}
+              </div>
+            );
+          }
+          return <CarouselSlide key={i} {...slide} />;
+        })}
       </div>
 
       <div className="absolute bottom-8 left-0 right-0 z-10 flex flex-col items-center gap-6">
@@ -141,7 +206,7 @@ export function OnboardingCarousel() {
         />
         <Button
           onClick={handleNext}
-          disabled={isNavigating}
+          disabled={isNavigating || subdomainSaving}
           size="lg"
           className="rounded-full bg-white px-8 text-base font-semibold text-gray-900 shadow-lg hover:bg-white/90"
         >

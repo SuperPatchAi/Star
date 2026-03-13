@@ -43,7 +43,7 @@ src/
 ├── lib/
 │   ├── auth.ts             # Auth helpers (getAuthUser, requireAdmin)
 │   ├── security.ts         # Redirect/input sanitization
-│   ├── utils.ts            # cn(), copyToClipboard(), shareOrCopy()
+│   ├── utils.ts            # cn(), copyToClipboard(), shareOrCopy(), getProductPurchaseUrl()
 │   ├── interpolate-script.ts # {{FirstName}}/[Name] replacement in scripts
 │   ├── roadmap-data.ts     # Roadmap spec loading functions
 │   ├── supabase/           # Supabase clients (server, client, middleware)
@@ -65,19 +65,20 @@ src/
 
 ## Sales Conversation Flow
 
-The core feature is an 8-step guided sales conversation. Each step renders product-specific content from roadmap spec JSON files.
+The core feature is a 9-step guided sales conversation. Each step renders product-specific content from roadmap spec JSON files.
 
 ### Step Sequence
 
 ```
-1. Add Contact     → Create contact with first/last name, select products
-2. Opening         → Choose approach type (Cold, Warm, DM, Referral, Event)
-3. Discovery       → Check off discovery questions asked (3-5 required)
-4. Presentation    → Problem-Agitate-Solve framework with contextual callbacks
-5. Send Samples    → Offer samples, select products, capture address
-6. Objections      → Handle objections with scripted responses
-7. Close           → Select closing technique
-8. Follow-Up       → Follow-up sequence and outcome tracking
+1. Add Contact      → Create contact with first/last name, select products
+2. Opening          → Choose approach type (Cold, Warm, DM, Referral, Event)
+3. Discovery        → Check off discovery questions asked (3-5 required)
+4. Presentation     → Problem-Agitate-Solve framework with contextual callbacks
+5. Send Samples     → 3-script sequence (offer, commitment, experience), product picker, address
+6. Objections       → Handle objections with scripted responses
+7. Close            → Select closing technique
+8. Purchase Links   → Share personalized product purchase URLs with scripts
+9. Follow-Up        → Follow-up sequence and outcome tracking
 ```
 
 ### Data Flow Diagram
@@ -96,7 +97,7 @@ User lands on /dashboard
          │
          ▼
 ┌─────────────────────────────────────────┐
-│  Steps 1-7: Product-specific content    │
+│  Steps 1-8: Product-specific content    │
 │  ┌─────────────┐  ┌──────────────────┐  │
 │  │ ProductTabs  │──│ Step Component   │  │
 │  │ (per product)│  │ (roadmap data)   │  │
@@ -200,6 +201,7 @@ create table public.d2c_contacts (
   sample_sent     boolean not null default false,
   sample_sent_at  timestamptz,
   sample_products text[] default '{}',
+  sample_followup_done boolean not null default false,
   outcome         text default 'pending',
   follow_up_day   integer,
   stage_entered_at timestamptz default now(),
@@ -214,7 +216,7 @@ create table public.d2c_contacts (
 
 ### `user_profiles` Table
 
-Referenced in code but migration lives outside this repo. Fields: `id`, `email`, `full_name`, `avatar_url`, `role` (admin/user), `is_active`, `invited_by`, `created_at`, `updated_at`.
+Referenced in code but migration lives outside this repo. Fields: `id`, `email`, `full_name`, `avatar_url`, `role` (admin/user), `is_active`, `invited_by`, `store_subdomain` (MLM store subdomain for purchase URLs), `created_at`, `updated_at`.
 
 ## Roadmap Spec Structure (V2)
 
@@ -259,8 +261,9 @@ All 13 products have fully customized, product-specific content across all secti
 ### DecisionTree (`src/components/sales-flow/decision-tree.tsx`)
 The central orchestrator. Manages:
 - `activeContact` state (Contact or null)
-- `currentStepIndex` (0-7)
+- `currentStepIndex` (0-8)
 - `DecisionTreeState` (per-product openings, questions, objections, closings, samples)
+- `storeSubdomain` (user's MLM store subdomain, fetched on mount)
 - Auto-save via `useEffect` with 500ms debounce
 - Contact gating (step 0 must be completed before proceeding)
 - Loads multiple roadmaps via `getRoadmapsForProducts()`
@@ -438,7 +441,8 @@ The app includes a comprehensive mobile-first experience informed by HubSpot, Pi
 A three-phase onboarding system that walks new reps through the app on first login.
 
 ### Phase 1: Feature Carousel (`/onboarding`)
-- 7 full-screen swipeable slides showcasing key features (guided conversations, pipeline, follow-ups, product scripts, objections, closing, install app)
+- 8 full-screen swipeable slides showcasing key features (guided conversations, store link setup, pipeline, follow-ups, product scripts, objections, closing, install app)
+- Slide 2 captures the user's Super Patch store subdomain (e.g., `yourname.superpatch.com`) for generating personalized purchase links
 - Mobile-first with CSS scroll-snap, keyboard arrows on desktop
 - Skip option available; middleware redirects new users here automatically
 - Final slide encourages PWA installation
@@ -459,6 +463,7 @@ Users can replay the carousel or tour anytime from the user dropdown menu in the
 ### Database Columns
 - `user_profiles.onboarding_step`: `carousel | tour | checklist | completed`
 - `user_profiles.onboarding_checklist`: JSONB with 5 boolean milestone flags
+- `user_profiles.store_subdomain`: text, user's MLM store subdomain (e.g., `"janesmith"` for `janesmith.superpatch.com`)
 
 ---
 
@@ -471,6 +476,7 @@ A two-phase notification system that reminds reps to follow up with contacts at 
 - **Activity Feed** opens as a right-side Sheet with filter pills (All, Overdue, Due Today, Upcoming)
 - **Staleness alerts** for contacts idle too long in any kanban stage (configurable thresholds per step)
 - **Follow-up sequence reminders** based on the roadmap DAY 1/3/7/14 timeline
+- **Sample follow-up reminders** fire 2 days after `sample_sent_at` with the experience call script ("Did you get it?" + "Before we open it..."); dismissed via `sample_followup_done` flag
 - **Feed entry cards** with one-tap call/email, copy script, and Mark Done/Snooze actions
 - **Script quick-view** expands inline with copy button (same pattern as `step-followup.tsx`)
 - `stage_entered_at` column tracks when a contact entered their current step
@@ -532,7 +538,7 @@ Every user-facing script and speakable text has a share-or-copy button powered b
 
 | Layer | File | Purpose |
 |-------|------|---------|
-| Utility | `src/lib/utils.ts` | `shareOrCopy(text, title?)` — tries `navigator.share`, falls back to `copyToClipboard` |
+| Utility | `src/lib/utils.ts` | `shareOrCopy(text, title?)` — tries `navigator.share`, falls back to `copyToClipboard`; `getProductPurchaseUrl(subdomain, productId)` — generates MLM purchase URLs |
 | Component | `src/components/ui/share-copy-button.tsx` | `ShareCopyButton` — reusable button with icon swap (Share2/Copy/Check), SSR-safe share detection, `"icon"` and `"labeled"` variants |
 
 ### Usage across components
@@ -542,9 +548,10 @@ Every user-facing script and speakable text has a share-or-copy button powered b
 | `step-opening-picker.tsx` | Each opening approach script |
 | `step-discovery.tsx` | Each discovery question |
 | `step-presentation.tsx` | Each P-A-S phase + full script |
-| `step-send-samples.tsx` | Sample offer script |
+| `step-send-samples.tsx` | Sample offer, commitment, and experience scripts |
 | `step-objections.tsx` | Each objection response |
 | `step-closing.tsx` | Pre-close reminder + each closing technique |
+| `step-purchase-links.tsx` | Per-product purchase URLs + single/multi-product share scripts |
 | `step-followup.tsx` | Each follow-up template |
 | `reference-tabs-view.tsx` | All scripts across Opening, Discovery, Presentation (P-A-S + full script), Objections, Closing, Follow-Up, and Quick Ref tabs |
 | `feed-entry.tsx` | Follow-up script templates in activity feed |

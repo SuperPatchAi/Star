@@ -14,6 +14,10 @@ export async function copyToClipboard(text: string): Promise<boolean> {
   }
 }
 
+export function getProductPurchaseUrl(subdomain: string, productId: string): string {
+  return `https://${subdomain}.superpatch.com/products/${productId}-patch`;
+}
+
 export async function shareOrCopy(
   text: string,
   title?: string

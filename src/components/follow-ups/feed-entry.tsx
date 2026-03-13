@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Phone, Mail, Clock, AlertCircle, ChevronDown, ChevronUp, Play, TimerReset, MessageSquare, Square, CheckSquare } from "lucide-react";
+import { Phone, Mail, Clock, AlertCircle, Package, Play, TimerReset, MessageSquare, Square, CheckSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { cn } from "@/lib/utils";
 import { interpolateScript } from "@/lib/interpolate-script";
-import { advanceFollowUpDay, dismissReminder } from "@/lib/actions/contacts";
+import { advanceFollowUpDay, dismissReminder, dismissSampleFollowUp } from "@/lib/actions/contacts";
 import type { FollowUpReminder } from "@/types/reminders";
 
 interface FeedEntryProps {
@@ -26,27 +26,33 @@ export function FeedEntry({ reminder, onAction }: FeedEntryProps) {
   const [expanded, setExpanded] = useState(false);
   const [acting, setActing] = useState(false);
 
-  const { contact, type, urgency, stageName, daysSinceEntry, followUpStep } = reminder;
+  const { contact, type, urgency, stageName, daysSinceEntry, followUpStep, sampleScript } = reminder;
   const fullName = `${contact.first_name} ${contact.last_name}`;
   const productNames = contact.product_ids.join(", ");
 
   const contextLine =
-    type === "followup_due" && followUpStep
-      ? `${followUpStep.day} ${followUpStep.action.toLowerCase()} due`
-      : `In ${stageName} for ${daysSinceEntry} day${daysSinceEntry !== 1 ? "s" : ""}`;
+    type === "sample_followup"
+      ? `Sample sent ${daysSinceEntry} day${daysSinceEntry !== 1 ? "s" : ""} ago — check in`
+      : type === "followup_due" && followUpStep
+        ? `${followUpStep.day} ${followUpStep.action.toLowerCase()} due`
+        : `In ${stageName} for ${daysSinceEntry} day${daysSinceEntry !== 1 ? "s" : ""}`;
 
   const TypeIcon =
-    type === "followup_due" && followUpStep
-      ? channelToIcon[followUpStep.channel] || Clock
-      : type === "stale"
-        ? AlertCircle
-        : Clock;
+    type === "sample_followup"
+      ? Package
+      : type === "followup_due" && followUpStep
+        ? channelToIcon[followUpStep.channel] || Clock
+        : type === "stale"
+          ? AlertCircle
+          : Clock;
 
   const handleMarkDone = async () => {
     setActing(true);
     try {
       if (type === "followup_due") {
         await advanceFollowUpDay(contact.id);
+      } else if (type === "sample_followup") {
+        await dismissSampleFollowUp(contact.id);
       } else {
         await dismissReminder(contact.id);
       }
@@ -125,6 +131,9 @@ export function FeedEntry({ reminder, onAction }: FeedEntryProps) {
             {type === "followup_due" && followUpStep && (
               <ShareCopyButton text={interpolateScript(followUpStep.template, contact.first_name)} variant="labeled" label="Script" />
             )}
+            {type === "sample_followup" && sampleScript && (
+              <ShareCopyButton text={interpolateScript(sampleScript, contact.first_name)} variant="labeled" label="Script" />
+            )}
 
             <div className="flex-1" />
 
@@ -147,7 +156,49 @@ export function FeedEntry({ reminder, onAction }: FeedEntryProps) {
       {/* Expanded content */}
       {expanded && (
         <div className="mt-3 ml-8 space-y-3 border-t pt-3" onClick={(e) => e.stopPropagation()}>
-          {type === "followup_due" && followUpStep ? (
+          {type === "sample_followup" && sampleScript ? (
+            <>
+              <div className="flex items-center gap-1.5 mb-2">
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Phone className="size-3.5" />
+                  Call
+                </span>
+                <span className="text-xs text-muted-foreground/70">·</span>
+                <span className="text-xs text-muted-foreground">Sample experience call</span>
+              </div>
+
+              <div className="bg-muted rounded-lg p-3 text-sm whitespace-pre-wrap relative group/script">
+                {interpolateScript(sampleScript, contact.first_name)}
+                <ShareCopyButton
+                  text={interpolateScript(sampleScript, contact.first_name)}
+                  className="absolute top-2 right-2 size-9 min-h-[44px] min-w-[44px] md:opacity-0 md:group-hover/script:opacity-100 transition-opacity"
+                />
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  className="h-10 flex-1"
+                  onClick={handleMarkDone}
+                  disabled={acting}
+                >
+                  <CheckSquare className="size-4 mr-1.5" />
+                  Mark Done
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-10 flex-1"
+                  asChild
+                >
+                  <Link href={`/contacts?openContact=${contact.id}`}>
+                    <Play className="size-4 mr-1.5" />
+                    Open Flow
+                  </Link>
+                </Button>
+              </div>
+            </>
+          ) : type === "followup_due" && followUpStep ? (
             <>
               <div className="flex items-center gap-1.5 mb-2">
                 <span className="text-xs text-muted-foreground flex items-center gap-1">

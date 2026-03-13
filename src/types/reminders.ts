@@ -2,7 +2,7 @@ import type { Contact, ContactStep } from "@/lib/db/types";
 import type { RoadmapFollowUpStep } from "./roadmap";
 
 export type ReminderUrgency = "overdue" | "due_today" | "upcoming";
-export type ReminderType = "stale" | "followup_due";
+export type ReminderType = "stale" | "followup_due" | "sample_followup";
 
 export interface FollowUpReminder {
   contact: Contact;
@@ -13,6 +13,7 @@ export interface FollowUpReminder {
   followUpStep?: RoadmapFollowUpStep;
   followUpDayIndex?: number;
   productId?: string;
+  sampleScript?: string;
 }
 
 export const STALENESS_THRESHOLDS: Record<ContactStep, number> = {
@@ -23,6 +24,7 @@ export const STALENESS_THRESHOLDS: Record<ContactStep, number> = {
   samples: 3,
   objections: 2,
   closing: 2,
+  purchase_links: 2,
   followup: 0, // handled by DAY sequence, not staleness
   closed: Infinity,
 };

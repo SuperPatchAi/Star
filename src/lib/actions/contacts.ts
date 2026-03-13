@@ -89,7 +89,7 @@ export async function updateContact(id: string, updates: ContactUpdate) {
       updateChecklistItem("start_first_conversation").catch(() => {});
     }
 
-    const advancedSteps = ["presentation", "samples", "objections", "closing", "followup", "closed"];
+    const advancedSteps = ["presentation", "samples", "objections", "closing", "purchase_links", "followup", "closed"];
     if (updated.current_step && advancedSteps.includes(updated.current_step)) {
       updateChecklistItem("complete_sales_step").catch(() => {});
     }
@@ -136,7 +136,7 @@ export async function updateContactOutcome(id: string, outcome: "pending" | "won
   return updateContact(id, { outcome });
 }
 
-const STEP_ORDER = ["add_contact", "opening", "discovery", "presentation", "samples", "objections", "closing", "followup", "closed"];
+const STEP_ORDER = ["add_contact", "opening", "discovery", "presentation", "samples", "objections", "closing", "purchase_links", "followup", "closed"];
 
 export async function updateContactStep(id: string, step: string) {
   const supabase = await createClient();
@@ -190,6 +190,12 @@ export async function advanceFollowUpDay(id: string) {
 export async function dismissReminder(id: string) {
   return updateContact(id, {
     stage_entered_at: new Date().toISOString(),
+  } as ContactUpdate);
+}
+
+export async function dismissSampleFollowUp(id: string) {
+  return updateContact(id, {
+    sample_followup_done: true,
   } as ContactUpdate);
 }
 

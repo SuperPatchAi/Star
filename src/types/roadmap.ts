@@ -114,6 +114,7 @@ export type SalesStep =
   | "samples"
   | "objections"
   | "closing"
+  | "purchase_links"
   | "followup";
 
 export const SALES_STEPS: { id: SalesStep; label: string; number: number }[] = [
@@ -124,5 +125,6 @@ export const SALES_STEPS: { id: SalesStep; label: string; number: number }[] = [
   { id: "samples", label: "Send Samples", number: 5 },
   { id: "objections", label: "Objections", number: 6 },
   { id: "closing", label: "Close", number: 7 },
-  { id: "followup", label: "Follow-Up", number: 8 },
+  { id: "purchase_links", label: "Purchase Links", number: 8 },
+  { id: "followup", label: "Follow-Up", number: 9 },
 ];
