@@ -18,7 +18,7 @@ export default function AuthLayout({
         />
         <div className="flex flex-col items-center">
           <span className="text-2xl font-bold">SuperPatch</span>
-          <span className="text-sm text-muted-foreground">Sales Enablement</span>
+          <span className="text-sm text-muted-foreground tracking-wider">S.T.A.R.</span>
         </div>
       </div>
       

@@ -50,7 +50,7 @@ export default function LoginPage() {
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold">Sign in</CardTitle>
         <CardDescription>
-          Sample. Track. Align. Recruit. (STAR)
+          Sign in to your account to continue
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleLogin}>
