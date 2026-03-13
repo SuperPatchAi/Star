@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Package, ChevronRight, MapPin, Check, Info, Phone } from "lucide-react";
+import { Package, ChevronRight, MapPin, Check, Info } from "lucide-react";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { interpolateScript } from "@/lib/interpolate-script";
 import Image from "next/image";
@@ -29,13 +29,13 @@ interface StepSendSamplesProps {
   onSetSampleAddress: (address: SampleAddress) => void;
   onContinue: () => void;
   contactFirstName?: string;
+  continueLabel?: string;
 }
 
 const SAMPLE_OFFER_SCRIPT = `{{FirstName}}, I don't give these to everyone. I only share them with people who are open to really experiencing something. If I sent you some, would you actually try them with me live so we can maximize the experience?`;
 
 const COMMITMENT_SCRIPT = `Call me as soon as you get my package. Do not open or use it until we're on the phone. OK?`;
 
-export const EXPERIENCE_SCRIPT = `Before we open it, I want you to understand. This isn't about hype. It's about experience. I want you to pay attention to what you notice, not what you expect.`;
 
 export function StepSendSamples({
   products,
@@ -47,12 +47,11 @@ export function StepSendSamples({
   onSetSampleAddress,
   onContinue,
   contactFirstName,
+  continueLabel = "Continue",
 }: StepSendSamplesProps) {
   const address = sampleAddress || { line1: "", line2: "", city: "", state: "", zip: "" };
   const offerScript = useMemo(() => interpolateScript(SAMPLE_OFFER_SCRIPT, contactFirstName), [contactFirstName]);
   const commitmentScript = useMemo(() => interpolateScript(COMMITMENT_SCRIPT, contactFirstName), [contactFirstName]);
-  const experienceScript = useMemo(() => interpolateScript(EXPERIENCE_SCRIPT, contactFirstName), [contactFirstName]);
-
   const handleAddressChange = (field: keyof SampleAddress, value: string) => {
     onSetSampleAddress({ ...address, [field]: value });
   };
@@ -102,18 +101,6 @@ export function StepSendSamples({
               <strong>After they agree:</strong> {commitmentScript}
             </p>
             <ShareCopyButton text={commitmentScript} className="size-9 min-h-[44px] min-w-[44px] shrink-0 md:opacity-0 md:group-hover:opacity-100 transition-opacity" />
-          </div>
-
-          {/* Script 3: Experience (follow-up call preview) */}
-          <div className="rounded-lg border border-dashed border-muted-foreground/30 p-3 group">
-            <div className="flex items-center gap-2 mb-2">
-              <Phone className="size-4 text-muted-foreground" />
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">On the follow-up call (2 days)</span>
-            </div>
-            <div className="bg-muted rounded-lg p-3 text-sm whitespace-pre-wrap relative">
-              {experienceScript}
-              <ShareCopyButton text={experienceScript} className="absolute top-2 right-2 size-9 min-h-[44px] min-w-[44px] md:opacity-0 md:group-hover:opacity-100 transition-opacity" />
-            </div>
           </div>
 
           <div className="space-y-2">
@@ -255,7 +242,7 @@ export function StepSendSamples({
       )}
 
       <Button onClick={onContinue} className="w-full">
-        Continue to Objections
+        {continueLabel}
         <ChevronRight className="size-4 ml-1" />
       </Button>
     </div>

@@ -43,16 +43,16 @@ alwaysApply: true
 - `(auth)/signup/page.tsx` — Invite-only signup
 
 ### Sales Flow (`src/components/sales-flow/`)
-- `decision-tree.tsx` — Central orchestrator (9 steps, auto-save, contact gating, `variant="drawer"` for embedded use, fetches `storeSubdomain` on mount)
-- `step-add-contact.tsx` — Step 0: create contact + select products (gate)
-- `step-opening-picker.tsx` — Step 1: choose opening approach
-- `step-discovery.tsx` — Step 2: check off discovery questions
-- `step-presentation.tsx` — Step 3: P-A-S framework with `{{discovery_callback}}`
-- `step-send-samples.tsx` — Step 4: 3-script sample flow (offer, commitment, experience) + product picker + address + 2-day follow-up reminder
-- `step-objections.tsx` — Step 5: handle objections
-- `step-closing.tsx` — Step 6: closing technique
-- `step-purchase-links.tsx` — Step 7: per-product purchase URLs with shareable scripts (single + multi-product)
-- `step-followup.tsx` — Step 8: follow-up sequence with Mark Done & Advance + current-day highlighting
+- `decision-tree.tsx` — Central orchestrator (9 steps, auto-save, contact gating, `variant="drawer"` for embedded use, dynamic `continueLabel`, timestamped question/objection tracking, fetches `storeSubdomain` on mount)
+- `step-add-contact.tsx` — Step 1: create contact + select products (gate)
+- `step-opening-picker.tsx` — Step 2: choose opening approach
+- `step-discovery.tsx` — Step 3: check off discovery questions
+- `step-presentation.tsx` — Step 4: P-A-S framework with `{{discovery_callback}}`
+- `step-send-samples.tsx` — Step 5: 2-script sample flow (offer, commitment) + product picker + address
+- `step-followup.tsx` — Step 6: 7-task follow-up sequence (shipping, arrival+checkbox, Zoom demo, experience check-in, product-specific follow-up, reorder+referral, ask for the close)
+- `step-closing.tsx` — Step 7: closing technique
+- `step-objections.tsx` — Step 8: handle objections
+- `step-purchase-links.tsx` — Step 9: per-product purchase URLs with shareable scripts + Won/Lost outcome recording
 - `product-tabs.tsx` — Multi-product tabbed content
 - `customer-insight.tsx` — Customer profile from roadmap
 
@@ -83,7 +83,7 @@ alwaysApply: true
 - `push-permission-banner.tsx` — Non-blocking push notification opt-in banner
 
 ### Lib (`src/lib/`)
-- `actions/contacts.ts` — Server actions: getContacts, getContact, createContact, updateContact, deleteContact, advanceFollowUpDay, dismissReminder, getDashboardStats
+- `actions/contacts.ts` — Server actions: getContacts, getContact, createContact, updateContact, deleteContact, advanceFollowUpDay, dismissReminder, markSamplesReceived, getDashboardStats, getSalesAnalytics
 - `actions/onboarding.ts` — getOnboardingState, completeCarousel, completeTour, updateChecklistItem, resetOnboarding, dismissOnboarding
 - `actions/profile.ts` — getMyProfile, getStoreSubdomain, updateStoreSubdomain
 - `actions/reminders.ts` — getFollowUpReminders, getFollowUpReminderCount (staleness + DAY sequence)
@@ -102,7 +102,7 @@ alwaysApply: true
 
 ## Sales Step IDs (in order)
 
-`add_contact` → `opening` → `discovery` → `presentation` → `samples` → `objections` → `closing` → `purchase_links` → `followup`
+`add_contact` → `opening` → `discovery` → `presentation` → `samples` → `followup` → `closing` → `objections` → `purchase_links`
 
 ## Database Table: `d2c_contacts`
 

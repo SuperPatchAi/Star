@@ -95,8 +95,7 @@ export function KanbanCard({
   );
   const canGoBack = currentStepIdx > 0;
   const canGoForward = currentStepIdx < ALL_STEPS.length - 1;
-  const showWonLost =
-    contact.current_step === "closing" || contact.current_step === "followup";
+  const showWonLost = contact.current_step === "purchase_links";
   const stale = isStale(contact);
   const staleDays = getStaleDays(contact);
   const recentlyAdvanced = !stale && isRecentlyAdvanced(contact);

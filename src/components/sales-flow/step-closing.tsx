@@ -13,9 +13,10 @@ interface StepClosingProps {
   onSelect: (technique: string) => void;
   onContinue: () => void;
   contactFirstName?: string;
+  continueLabel?: string;
 }
 
-export function StepClosing({ data, selectedTechnique, onSelect, onContinue, contactFirstName }: StepClosingProps) {
+export function StepClosing({ data, selectedTechnique, onSelect, onContinue, contactFirstName, continueLabel = "Continue" }: StepClosingProps) {
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
@@ -77,7 +78,7 @@ export function StepClosing({ data, selectedTechnique, onSelect, onContinue, con
 
       {selectedTechnique && (
         <Button onClick={onContinue} className="w-full">
-          Continue to Purchase Links
+          {continueLabel}
           <ChevronRight className="size-4 ml-1" />
         </Button>
       )}

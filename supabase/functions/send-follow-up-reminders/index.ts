@@ -1,16 +1,20 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+// Keep in sync with src/types/reminders.ts
 const STALENESS_THRESHOLDS: Record<string, number> = {
-  add_contact: 1,
+  add_contact: 2,
   opening: 2,
   discovery: 2,
-  presentation: 3,
-  samples: 3,
-  objections: 2,
+  presentation: 2,
+  samples: 2,
+  followup: 0,
   closing: 2,
+  objections: 2,
+  purchase_links: 2,
 };
 
-const FOLLOWUP_DAY_OFFSETS = [1, 3, 7, 14];
+// Keep in sync with src/types/reminders.ts
+const FOLLOWUP_DAY_OFFSETS = [1, 3, 4, 5, 7, 14, 14];
 
 interface PushSubscription {
   user_id: string;
@@ -98,7 +102,7 @@ Deno.serve(async (req) => {
 
       let shouldNotify = false;
       let message = "";
-      let url = `/sales?contactId=${contact.id}`;
+      let url = `/contacts?openContact=${contact.id}`;
 
       if (step === "followup") {
         const dayIndex = contact.follow_up_day ?? 0;

@@ -14,8 +14,11 @@ import {
   Plus,
   Bell,
   ChevronRight,
+  CheckCircle,
+  AlertTriangle,
+  BarChart3,
 } from "lucide-react";
-import { getDashboardStats, type DashboardStats } from "@/lib/actions/contacts";
+import { getDashboardStats, getSalesAnalytics, type DashboardStats, type SalesAnalytics } from "@/lib/actions/contacts";
 import { getFollowUpReminders } from "@/lib/actions/reminders";
 import { FeedEntry } from "@/components/follow-ups/feed-entry";
 import { SALES_STEPS } from "@/types/roadmap";
@@ -69,16 +72,19 @@ function StatCard({ label, value, icon: Icon, color, href }: {
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [analytics, setAnalytics] = useState<SalesAnalytics | null>(null);
   const [reminders, setReminders] = useState<FollowUpReminder[]>([]);
   const [loading, setLoading] = useState(true);
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const loadData = useCallback(async () => {
-    const [s, r] = await Promise.all([
+    const [s, r, a] = await Promise.all([
       getDashboardStats(),
       getFollowUpReminders(),
+      getSalesAnalytics(),
     ]);
     setStats(s);
+    setAnalytics(a);
     const list = r.data ?? [];
     setReminders(list.filter(rem => rem.urgency === "overdue" || rem.urgency === "due_today"));
     setLoading(false);
@@ -233,6 +239,104 @@ export default function DashboardPage() {
           <p className="text-sm text-muted-foreground py-3 text-center">No activity yet.</p>
         )}
       </div>
+
+      {/* Sales Analytics */}
+      {analytics && (analytics.topWinningQuestions.length > 0 || analytics.topLostObjections.length > 0) && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {/* What's Working */}
+          <div className="rounded-lg border p-4 space-y-3">
+            <div className="flex items-center gap-1.5">
+              <CheckCircle className="size-3.5 text-green-600 dark:text-green-400" />
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">What&apos;s Working</h2>
+            </div>
+            {analytics.topWinningQuestions.length > 0 && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-1.5">Top questions in won deals</p>
+                <ul className="space-y-1">
+                  {analytics.topWinningQuestions.slice(0, 3).map((q, i) => (
+                    <li key={i} className="text-xs flex items-start gap-1.5">
+                      <span className="font-semibold text-green-600 dark:text-green-400 shrink-0">{q.count}x</span>
+                      <span className="text-foreground truncate">{q.question}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {analytics.openingWinRates.length > 0 && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Best opening approach</p>
+                <p className="text-sm font-medium">{analytics.openingWinRates[0].approach} <span className="text-green-600 dark:text-green-400">({analytics.openingWinRates[0].rate}% win rate)</span></p>
+              </div>
+            )}
+            {analytics.closingWinRates.length > 0 && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Best closing technique</p>
+                <p className="text-sm font-medium">{analytics.closingWinRates[0].technique} <span className="text-green-600 dark:text-green-400">({analytics.closingWinRates[0].rate}% win rate)</span></p>
+              </div>
+            )}
+          </div>
+
+          {/* Watch Out */}
+          <div className="rounded-lg border p-4 space-y-3">
+            <div className="flex items-center gap-1.5">
+              <AlertTriangle className="size-3.5 text-amber-600 dark:text-amber-400" />
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Watch Out</h2>
+            </div>
+            {analytics.topLostObjections.length > 0 ? (
+              <div>
+                <p className="text-xs text-muted-foreground mb-1.5">Top objections in lost deals</p>
+                <ul className="space-y-1">
+                  {analytics.topLostObjections.slice(0, 3).map((o, i) => (
+                    <li key={i} className="text-xs flex items-start gap-1.5">
+                      <span className="font-semibold text-red-600 dark:text-red-400 shrink-0">{o.count}x</span>
+                      <span className="text-foreground truncate">{o.objection}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground">No lost deal data yet.</p>
+            )}
+            {analytics.openingWinRates.length > 1 && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Lowest performing opening</p>
+                <p className="text-sm font-medium">{analytics.openingWinRates[analytics.openingWinRates.length - 1].approach} <span className="text-red-600 dark:text-red-400">({analytics.openingWinRates[analytics.openingWinRates.length - 1].rate}% win rate)</span></p>
+              </div>
+            )}
+          </div>
+
+          {/* Discovery Depth */}
+          <div className="rounded-lg border p-4 space-y-3">
+            <div className="flex items-center gap-1.5">
+              <BarChart3 className="size-3.5 text-primary" />
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Discovery Depth</h2>
+            </div>
+            <p className="text-xs text-muted-foreground">Average questions asked</p>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Won deals</span>
+                <span className="text-sm font-bold text-green-600 dark:text-green-400">{analytics.avgQuestionsWon}</span>
+              </div>
+              <div className="h-2 rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-green-500 transition-all"
+                  style={{ width: `${Math.min(100, (analytics.avgQuestionsWon / Math.max(analytics.avgQuestionsWon, analytics.avgQuestionsLost, 1)) * 100)}%` }}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Lost deals</span>
+                <span className="text-sm font-bold text-red-600 dark:text-red-400">{analytics.avgQuestionsLost}</span>
+              </div>
+              <div className="h-2 rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-red-500 transition-all"
+                  style={{ width: `${Math.min(100, (analytics.avgQuestionsLost / Math.max(analytics.avgQuestionsWon, analytics.avgQuestionsLost, 1)) * 100)}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Performance */}
       <div className="grid grid-cols-2 gap-3">

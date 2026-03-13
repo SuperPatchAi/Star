@@ -497,14 +497,9 @@ function EditMode({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="add_contact">Add Contact</SelectItem>
-                <SelectItem value="opening">Opening</SelectItem>
-                <SelectItem value="discovery">Discovery</SelectItem>
-                <SelectItem value="presentation">Presentation</SelectItem>
-                <SelectItem value="samples">Send Samples</SelectItem>
-                <SelectItem value="objections">Objections</SelectItem>
-                <SelectItem value="closing">Closing</SelectItem>
-                <SelectItem value="followup">Follow-Up</SelectItem>
+                {SALES_STEPS.map((step) => (
+                  <SelectItem key={step.id} value={step.id}>{step.label}</SelectItem>
+                ))}
                 <SelectItem value="closed">Closed</SelectItem>
               </SelectContent>
             </Select>

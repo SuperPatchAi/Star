@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { Contact, ContactInsert, ContactUpdate } from "@/lib/db/types";
+import { SALES_STEPS } from "@/types/roadmap";
 import { updateChecklistItem } from "@/lib/actions/onboarding";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -89,7 +90,8 @@ export async function updateContact(id: string, updates: ContactUpdate) {
       updateChecklistItem("start_first_conversation").catch(() => {});
     }
 
-    const advancedSteps = ["presentation", "samples", "objections", "closing", "purchase_links", "followup", "closed"];
+    const advancedStepIds = SALES_STEPS.filter(s => s.number >= 4).map(s => s.id);
+    const advancedSteps = [...advancedStepIds, "closed"];
     if (updated.current_step && advancedSteps.includes(updated.current_step)) {
       updateChecklistItem("complete_sales_step").catch(() => {});
     }
@@ -136,7 +138,7 @@ export async function updateContactOutcome(id: string, outcome: "pending" | "won
   return updateContact(id, { outcome });
 }
 
-const STEP_ORDER = ["add_contact", "opening", "discovery", "presentation", "samples", "objections", "closing", "purchase_links", "followup", "closed"];
+const STEP_ORDER = [...SALES_STEPS.map(s => s.id), "closed"];
 
 export async function updateContactStep(id: string, step: string) {
   const supabase = await createClient();
@@ -183,7 +185,6 @@ export async function advanceFollowUpDay(id: string) {
 
   return updateContact(id, {
     follow_up_day: nextDay,
-    stage_entered_at: new Date().toISOString(),
   } as ContactUpdate);
 }
 
@@ -193,7 +194,7 @@ export async function dismissReminder(id: string) {
   } as ContactUpdate);
 }
 
-export async function dismissSampleFollowUp(id: string) {
+export async function markSamplesReceived(id: string) {
   return updateContact(id, {
     sample_followup_done: true,
   } as ContactUpdate);
@@ -257,4 +258,111 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   }));
 
   return { pipelineCounts, outcomeCounts, recentActivity, totalActive, wonCount, lostCount, winRate, contactsThisWeek };
+}
+
+export interface SalesAnalytics {
+  topWinningQuestions: { question: string; count: number }[];
+  topLostObjections: { objection: string; count: number }[];
+  openingWinRates: { approach: string; wins: number; total: number; rate: number }[];
+  closingWinRates: { technique: string; wins: number; total: number; rate: number }[];
+  avgQuestionsWon: number;
+  avgQuestionsLost: number;
+}
+
+export async function getSalesAnalytics(): Promise<SalesAnalytics> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const empty: SalesAnalytics = {
+    topWinningQuestions: [], topLostObjections: [],
+    openingWinRates: [], closingWinRates: [],
+    avgQuestionsWon: 0, avgQuestionsLost: 0,
+  };
+  if (!user) return empty;
+
+  const { data: contacts } = await (supabase as SupabaseAny)
+    .from("d2c_contacts")
+    .select("outcome, questions_asked, objections_encountered, opening_types, closing_techniques")
+    .eq("user_id", user.id)
+    .in("outcome", ["won", "lost"]);
+
+  if (!contacts || contacts.length === 0) return empty;
+
+  const questionCounts: Record<string, number> = {};
+  const objectionCounts: Record<string, number> = {};
+  const openingStats: Record<string, { wins: number; total: number }> = {};
+  const closingStats: Record<string, { wins: number; total: number }> = {};
+  let totalQuestionsWon = 0;
+  let wonCount = 0;
+  let totalQuestionsLost = 0;
+  let lostCount = 0;
+
+  for (const c of contacts) {
+    const isWon = c.outcome === "won";
+
+    const qa = c.questions_asked as Record<string, unknown[]> | null;
+    if (qa) {
+      let contactQuestionCount = 0;
+      for (const arr of Object.values(qa)) {
+        if (!Array.isArray(arr)) continue;
+        for (const item of arr) {
+          const q = typeof item === "string" ? item : (item as { question?: string })?.question;
+          if (!q) continue;
+          contactQuestionCount++;
+          if (isWon) questionCounts[q] = (questionCounts[q] || 0) + 1;
+        }
+      }
+      if (isWon) { totalQuestionsWon += contactQuestionCount; wonCount++; }
+      else { totalQuestionsLost += contactQuestionCount; lostCount++; }
+    }
+
+    if (!isWon) {
+      const oe = c.objections_encountered as Record<string, unknown[]> | null;
+      if (oe) {
+        for (const arr of Object.values(oe)) {
+          if (!Array.isArray(arr)) continue;
+          for (const item of arr) {
+            const o = typeof item === "string" ? item : (item as { objection?: string })?.objection;
+            if (o) objectionCounts[o] = (objectionCounts[o] || 0) + 1;
+          }
+        }
+      }
+    }
+
+    const ot = c.opening_types as Record<string, string> | null;
+    if (ot) {
+      for (const approach of Object.values(ot)) {
+        if (!openingStats[approach]) openingStats[approach] = { wins: 0, total: 0 };
+        openingStats[approach].total++;
+        if (isWon) openingStats[approach].wins++;
+      }
+    }
+
+    const ct = c.closing_techniques as Record<string, string> | null;
+    if (ct) {
+      for (const technique of Object.values(ct)) {
+        if (!closingStats[technique]) closingStats[technique] = { wins: 0, total: 0 };
+        closingStats[technique].total++;
+        if (isWon) closingStats[technique].wins++;
+      }
+    }
+  }
+
+  return {
+    topWinningQuestions: Object.entries(questionCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([question, count]) => ({ question, count })),
+    topLostObjections: Object.entries(objectionCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([objection, count]) => ({ objection, count })),
+    openingWinRates: Object.entries(openingStats)
+      .map(([approach, s]) => ({ approach, wins: s.wins, total: s.total, rate: s.total > 0 ? Math.round((s.wins / s.total) * 100) : 0 }))
+      .sort((a, b) => b.rate - a.rate),
+    closingWinRates: Object.entries(closingStats)
+      .map(([technique, s]) => ({ technique, wins: s.wins, total: s.total, rate: s.total > 0 ? Math.round((s.wins / s.total) * 100) : 0 }))
+      .sort((a, b) => b.rate - a.rate),
+    avgQuestionsWon: wonCount > 0 ? Math.round((totalQuestionsWon / wonCount) * 10) / 10 : 0,
+    avgQuestionsLost: lostCount > 0 ? Math.round((totalQuestionsLost / lostCount) * 10) / 10 : 0,
+  };
 }

@@ -1,18 +1,8 @@
 import { NextResponse } from "next/server";
 import webpush from "web-push";
 import { createAdminClient } from "@/lib/supabase/server";
-
-const STALENESS_THRESHOLDS: Record<string, number> = {
-  add_contact: 1,
-  opening: 2,
-  discovery: 2,
-  presentation: 3,
-  samples: 3,
-  objections: 2,
-  closing: 2,
-};
-
-const FOLLOWUP_DAY_OFFSETS = [1, 3, 7, 14];
+import type { ContactStep } from "@/lib/db/types";
+import { STALENESS_THRESHOLDS, FOLLOWUP_DAY_OFFSETS } from "@/types/reminders";
 
 function daysBetween(date1: Date, date2: Date): number {
   return Math.floor(
@@ -99,7 +89,7 @@ export async function GET(request: Request) {
           }
         }
       } else {
-        const threshold = STALENESS_THRESHOLDS[step];
+        const threshold = STALENESS_THRESHOLDS[step as ContactStep];
         if (threshold && daysSince >= threshold) {
           shouldNotify = true;
           message = `${contact.first_name} ${contact.last_name} has been in ${step} for ${daysSince} days`;

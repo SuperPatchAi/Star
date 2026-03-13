@@ -2,8 +2,39 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 
 export type UserRole = 'admin' | 'user';
 
-export type ContactStep = 'add_contact' | 'opening' | 'discovery' | 'presentation' | 'samples' | 'objections' | 'closing' | 'purchase_links' | 'followup' | 'closed';
+export type ContactStep = 'add_contact' | 'opening' | 'discovery' | 'presentation' | 'samples' | 'followup' | 'closing' | 'objections' | 'purchase_links' | 'closed';
 export type ContactOutcome = 'pending' | 'won' | 'lost' | 'follow_up';
+
+export interface TimestampedQuestion {
+  question: string;
+  asked_at: string;
+}
+
+export interface TimestampedObjection {
+  objection: string;
+  encountered_at: string;
+}
+
+/** Legacy format: string[]. New format: TimestampedQuestion[]. Use normalizeQuestions() to handle both. */
+export type QuestionsAsked = Record<string, TimestampedQuestion[]>;
+/** Legacy format: string[]. New format: TimestampedObjection[]. Use normalizeObjections() to handle both. */
+export type ObjectionsEncountered = Record<string, TimestampedObjection[]>;
+
+export function normalizeQuestions(raw: unknown): TimestampedQuestion[] {
+  if (!Array.isArray(raw) || raw.length === 0) return [];
+  if (typeof raw[0] === 'string') {
+    return (raw as string[]).map(q => ({ question: q, asked_at: '' }));
+  }
+  return raw as TimestampedQuestion[];
+}
+
+export function normalizeObjections(raw: unknown): TimestampedObjection[] {
+  if (!Array.isArray(raw) || raw.length === 0) return [];
+  if (typeof raw[0] === 'string') {
+    return (raw as string[]).map(o => ({ objection: o, encountered_at: '' }));
+  }
+  return raw as TimestampedObjection[];
+}
 
 export type OnboardingStep = 'carousel' | 'tour' | 'checklist' | 'completed';
 export type OnboardingChecklist = {
@@ -77,12 +108,13 @@ export interface Database {
           notes: string | null;
           current_step: ContactStep;
           opening_types: Record<string, string>;
-          objections_encountered: Record<string, string[]>;
+          objections_encountered: ObjectionsEncountered;
           closing_techniques: Record<string, string>;
-          questions_asked: Record<string, string[]>;
+          questions_asked: QuestionsAsked;
           sample_sent: boolean;
           sample_sent_at: string | null;
           sample_products: string[];
+          /** Repurposed: true = prospect confirmed they received the samples */
           sample_followup_done: boolean;
           outcome: ContactOutcome;
           follow_up_day: number | null;
@@ -107,9 +139,9 @@ export interface Database {
           notes?: string | null;
           current_step?: ContactStep;
           opening_types?: Record<string, string>;
-          objections_encountered?: Record<string, string[]>;
+          objections_encountered?: ObjectionsEncountered;
           closing_techniques?: Record<string, string>;
-          questions_asked?: Record<string, string[]>;
+          questions_asked?: QuestionsAsked;
           sample_sent?: boolean;
           sample_sent_at?: string | null;
           sample_products?: string[];
@@ -135,9 +167,9 @@ export interface Database {
           notes?: string | null;
           current_step?: ContactStep;
           opening_types?: Record<string, string>;
-          objections_encountered?: Record<string, string[]>;
+          objections_encountered?: ObjectionsEncountered;
           closing_techniques?: Record<string, string>;
-          questions_asked?: Record<string, string[]>;
+          questions_asked?: QuestionsAsked;
           sample_sent?: boolean;
           sample_sent_at?: string | null;
           sample_products?: string[];

@@ -74,11 +74,11 @@ The core feature is a 9-step guided sales conversation. Each step renders produc
 2. Opening          → Choose approach type (Cold, Warm, DM, Referral, Event)
 3. Discovery        → Check off discovery questions asked (3-5 required)
 4. Presentation     → Problem-Agitate-Solve framework with contextual callbacks
-5. Send Samples     → 3-script sequence (offer, commitment, experience), product picker, address
-6. Objections       → Handle objections with scripted responses
+5. Send Samples     → 2-script sequence (offer, commitment), product picker, address
+6. Follow-Up        → 7-task follow-up sequence (shipping, arrival+checkbox, Zoom demo, experience check-in, product-specific follow-up, reorder+referral, ask for the close)
 7. Close            → Select closing technique
-8. Purchase Links   → Share personalized product purchase URLs with scripts
-9. Follow-Up        → Follow-up sequence and outcome tracking
+8. Objections       → Handle objections with scripted responses
+9. Purchase Links   → Share personalized product purchase URLs + Won/Lost outcome recording
 ```
 
 ### Data Flow Diagram
@@ -121,8 +121,8 @@ User lands on /dashboard
 - The `ProductTabs` component renders a tabbed interface when multiple products are selected
 - Per-product state is stored as JSONB objects keyed by product ID:
   - `opening_types: { "freedom": "COLD APPROACH", "rem": "WARM INTRO" }`
-  - `questions_asked: { "freedom": ["q1", "q2"], "rem": ["q3"] }`
-  - `objections_encountered: { "freedom": ["TOO EXPENSIVE"] }`
+  - `questions_asked: { "freedom": [{ "question": "q1", "asked_at": "2026-03-13T..." }, ...] }`
+  - `objections_encountered: { "freedom": [{ "objection": "TOO EXPENSIVE", "encountered_at": "2026-03-13T..." }] }`
   - `closing_techniques: { "freedom": "ASSUMPTIVE" }`
 
 ### Script Personalization

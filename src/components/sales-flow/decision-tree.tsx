@@ -10,9 +10,10 @@ import Image from "next/image";
 import type { RoadmapV2, SalesStep } from "@/types/roadmap";
 import { SALES_STEPS } from "@/types/roadmap";
 import type { Product } from "@/types";
-import type { Contact } from "@/lib/db/types";
+import type { Contact, TimestampedQuestion, TimestampedObjection, QuestionsAsked, ObjectionsEncountered } from "@/lib/db/types";
+import { normalizeQuestions, normalizeObjections } from "@/lib/db/types";
 import { products as allProducts } from "@/data/products";
-import { updateContact, advanceFollowUpDay } from "@/lib/actions/contacts";
+import { updateContact, advanceFollowUpDay, markSamplesReceived } from "@/lib/actions/contacts";
 import { getStoreSubdomain } from "@/lib/actions/profile";
 import { getRoadmapsForProducts } from "@/lib/roadmap-data";
 import { StepAddContact } from "./step-add-contact";
@@ -29,12 +30,13 @@ import { CustomerInsight } from "./customer-insight";
 
 export interface DecisionTreeState {
   openingTypes: Record<string, string>;
-  questionsAsked: Record<string, string[]>;
-  objectionsEncountered: Record<string, string[]>;
+  questionsAsked: QuestionsAsked;
+  objectionsEncountered: ObjectionsEncountered;
   closingTechniques: Record<string, string>;
   sampleAgreed: boolean;
   sampleProducts: string[];
   sampleAddress: SampleAddress | null;
+  sampleReceived: boolean;
 }
 
 interface DecisionTreeProps {
@@ -48,14 +50,33 @@ function asRecord<T>(val: unknown, fallback: T): T {
   return fallback;
 }
 
+function normalizeQuestionsRecord(raw: unknown): QuestionsAsked {
+  const record = asRecord(raw, {} as Record<string, unknown>);
+  const result: QuestionsAsked = {};
+  for (const [key, value] of Object.entries(record)) {
+    result[key] = normalizeQuestions(value);
+  }
+  return result;
+}
+
+function normalizeObjectionsRecord(raw: unknown): ObjectionsEncountered {
+  const record = asRecord(raw, {} as Record<string, unknown>);
+  const result: ObjectionsEncountered = {};
+  for (const [key, value] of Object.entries(record)) {
+    result[key] = normalizeObjections(value);
+  }
+  return result;
+}
+
 function contactToState(contact: Contact): DecisionTreeState {
   return {
     openingTypes: asRecord(contact.opening_types, {}),
-    questionsAsked: asRecord(contact.questions_asked, {}),
-    objectionsEncountered: asRecord(contact.objections_encountered, {}),
+    questionsAsked: normalizeQuestionsRecord(contact.questions_asked),
+    objectionsEncountered: normalizeObjectionsRecord(contact.objections_encountered),
     closingTechniques: asRecord(contact.closing_techniques, {}),
     sampleAgreed: contact.sample_sent,
     sampleProducts: contact.sample_products || [],
+    sampleReceived: contact.sample_followup_done,
     sampleAddress: contact.address_line1
       ? {
           line1: contact.address_line1 || "",
@@ -101,6 +122,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
       sampleAgreed: false,
       sampleProducts: [],
       sampleAddress: null,
+      sampleReceived: false,
     }
   );
 
@@ -150,6 +172,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
     closing_techniques: state.closingTechniques,
     sample_sent: state.sampleAgreed,
     sample_products: state.sampleProducts,
+    sample_followup_done: state.sampleReceived,
     address_line1: state.sampleAddress?.line1 || null,
     address_line2: state.sampleAddress?.line2 || null,
     address_city: state.sampleAddress?.city || null,
@@ -189,6 +212,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
           closing_techniques: state.closingTechniques,
           sample_sent: state.sampleAgreed,
           sample_products: state.sampleProducts,
+          sample_followup_done: state.sampleReceived,
           address_line1: state.sampleAddress?.line1 || null,
           address_line2: state.sampleAddress?.line2 || null,
           address_city: state.sampleAddress?.city || null,
@@ -233,13 +257,14 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
   const toggleQuestion = useCallback((productId: string, question: string) => {
     setState(prev => {
       const current = prev.questionsAsked[productId] || [];
+      const exists = current.some(q => q.question === question);
       return {
         ...prev,
         questionsAsked: {
           ...prev.questionsAsked,
-          [productId]: current.includes(question)
-            ? current.filter(q => q !== question)
-            : [...current, question],
+          [productId]: exists
+            ? current.filter(q => q.question !== question)
+            : [...current, { question, asked_at: new Date().toISOString() } as TimestampedQuestion],
         },
       };
     });
@@ -248,13 +273,14 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
   const toggleObjection = useCallback((productId: string, objection: string) => {
     setState(prev => {
       const current = prev.objectionsEncountered[productId] || [];
+      const exists = current.some(o => o.objection === objection);
       return {
         ...prev,
         objectionsEncountered: {
           ...prev.objectionsEncountered,
-          [productId]: current.includes(objection)
-            ? current.filter(o => o !== objection)
-            : [...current, objection],
+          [productId]: exists
+            ? current.filter(o => o.objection !== objection)
+            : [...current, { objection, encountered_at: new Date().toISOString() } as TimestampedObjection],
         },
       };
     });
@@ -283,6 +309,16 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
   const setSampleAddress = useCallback((address: SampleAddress) => {
     setState(prev => ({ ...prev, sampleAddress: address }));
   }, []);
+
+  const handleSampleReceived = useCallback(async (received: boolean) => {
+    setState(prev => ({ ...prev, sampleReceived: received }));
+    if (received && activeContact) {
+      await markSamplesReceived(activeContact.id);
+    }
+  }, [activeContact]);
+
+  const nextStepLabel = SALES_STEPS[currentStepIndex + 1]?.label;
+  const continueLabel = nextStepLabel ? `Continue to ${nextStepLabel}` : "Complete";
 
   const renderStep = () => {
     switch (currentStep.id) {
@@ -331,7 +367,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                   />
                   <StepDiscovery
                     data={roadmap.sections["3_discovery_questions"]}
-                    questionsAsked={state.questionsAsked[product.id] || []}
+                    questionsAsked={(state.questionsAsked[product.id] || []).map(q => q.question)}
                     onToggleQuestion={(q) => toggleQuestion(product.id, q)}
                     onContinue={goNext}
                   />
@@ -351,7 +387,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                   data={roadmap.sections["4_presentation"]}
                   product={product}
                   metadata={roadmap.metadata}
-                  questionsAsked={state.questionsAsked[product.id] || []}
+                  questionsAsked={(state.questionsAsked[product.id] || []).map(q => q.question)}
                   onContinue={goNext}
                   contactFirstName={contactFirstName}
                 />
@@ -371,6 +407,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
             onSetSampleAddress={setSampleAddress}
             onContinue={goNext}
             contactFirstName={contactFirstName}
+            continueLabel={continueLabel}
           />
         );
       case "objections":
@@ -382,10 +419,11 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
               return (
                 <StepObjections
                   data={roadmap.sections["5_objection_handling"]}
-                  encountered={state.objectionsEncountered[product.id] || []}
+                  encountered={(state.objectionsEncountered[product.id] || []).map(o => o.objection)}
                   onToggle={(obj) => toggleObjection(product.id, obj)}
                   onContinue={goNext}
                   contactFirstName={contactFirstName}
+                  continueLabel={continueLabel}
                 />
               );
             }}
@@ -404,6 +442,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                   onSelect={(t) => setClosingTechnique(product.id, t)}
                   onContinue={goNext}
                   contactFirstName={contactFirstName}
+                  continueLabel={continueLabel}
                 />
               );
             }}
@@ -418,8 +457,8 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                 storeSubdomain={storeSubdomain}
                 contactFirstName={contactFirstName}
                 allProducts={contactProducts}
-                onContinue={goNext}
                 onSubdomainSaved={setStoreSubdomain}
+                contactId={activeContact?.id}
               />
             )}
           </ProductTabs>
@@ -437,6 +476,10 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                   followUpDay={followUpDay}
                   onAdvance={handleAdvanceFollowUp}
                   contactFirstName={contactFirstName}
+                  sampleReceived={state.sampleReceived}
+                  onSampleReceived={handleSampleReceived}
+                  continueLabel={continueLabel}
+                  onContinue={goNext}
                 />
               );
             }}

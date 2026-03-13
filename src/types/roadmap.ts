@@ -85,6 +85,7 @@ export interface RoadmapFollowUpStep {
   action: string;
   template: string;
   channel: string;
+  checkbox_label?: string;
 }
 
 export interface RoadmapFollowUp {
@@ -112,10 +113,10 @@ export type SalesStep =
   | "discovery"
   | "presentation"
   | "samples"
-  | "objections"
+  | "followup"
   | "closing"
-  | "purchase_links"
-  | "followup";
+  | "objections"
+  | "purchase_links";
 
 export const SALES_STEPS: { id: SalesStep; label: string; number: number }[] = [
   { id: "add_contact", label: "Add Contact", number: 1 },
@@ -123,8 +124,8 @@ export const SALES_STEPS: { id: SalesStep; label: string; number: number }[] = [
   { id: "discovery", label: "Discovery", number: 3 },
   { id: "presentation", label: "Presentation", number: 4 },
   { id: "samples", label: "Send Samples", number: 5 },
-  { id: "objections", label: "Objections", number: 6 },
+  { id: "followup", label: "Follow-Up", number: 6 },
   { id: "closing", label: "Close", number: 7 },
-  { id: "purchase_links", label: "Purchase Links", number: 8 },
-  { id: "followup", label: "Follow-Up", number: 9 },
+  { id: "objections", label: "Objections", number: 8 },
+  { id: "purchase_links", label: "Purchase Links", number: 9 },
 ];

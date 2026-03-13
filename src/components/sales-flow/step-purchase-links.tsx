@@ -4,10 +4,11 @@ import { useState, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronRight, ExternalLink, AlertCircle } from "lucide-react";
+import { ExternalLink, AlertCircle, CheckCircle, XCircle } from "lucide-react";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { getProductPurchaseUrl } from "@/lib/utils";
 import { updateStoreSubdomain } from "@/lib/actions/profile";
+import { updateContactOutcome } from "@/lib/actions/contacts";
 import type { Product } from "@/types";
 
 interface StepPurchaseLinksProps {
@@ -15,8 +16,8 @@ interface StepPurchaseLinksProps {
   storeSubdomain: string | null;
   contactFirstName?: string;
   allProducts: Product[];
-  onContinue: () => void;
   onSubdomainSaved: (subdomain: string) => void;
+  contactId?: string;
 }
 
 function buildSingleProductScript(
@@ -42,12 +43,13 @@ export function StepPurchaseLinks({
   storeSubdomain,
   contactFirstName,
   allProducts,
-  onContinue,
   onSubdomainSaved,
+  contactId,
 }: StepPurchaseLinksProps) {
   const [localSubdomain, setLocalSubdomain] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [outcome, setOutcome] = useState<string | null>(null);
 
   const handleSaveSubdomain = useCallback(async () => {
     const cleaned = localSubdomain.trim().toLowerCase().replace(/[^a-z0-9-]/g, "");
@@ -195,10 +197,54 @@ export function StepPurchaseLinks({
         </div>
       )}
 
-      <Button onClick={onContinue} className="w-full">
-        Continue to Follow-Up
-        <ChevronRight className="size-4 ml-1" />
-      </Button>
+      {/* Outcome actions */}
+      {contactId && (
+        <div className="rounded-lg border border-border/50 bg-primary/5 p-4">
+          {outcome ? (
+            <div className="flex items-center gap-2 text-sm font-medium">
+              {outcome === "won" ? (
+                <CheckCircle className="size-5 text-green-500" />
+              ) : (
+                <XCircle className="size-5 text-red-500" />
+              )}
+              Marked as {outcome === "won" ? "Won" : "Lost"}
+            </div>
+          ) : (
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">How did it go?</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Mark the outcome of this sales conversation
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  className="h-10 border-green-300 text-green-700 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-950"
+                  onClick={async () => {
+                    setOutcome("won");
+                    if (contactId) await updateContactOutcome(contactId, "won");
+                  }}
+                >
+                  <CheckCircle className="size-4 mr-1.5" />
+                  Won
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-10 border-red-300 text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950"
+                  onClick={async () => {
+                    setOutcome("lost");
+                    if (contactId) await updateContactOutcome(contactId, "lost");
+                  }}
+                >
+                  <XCircle className="size-4 mr-1.5" />
+                  Lost
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

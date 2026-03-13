@@ -14,9 +14,10 @@ interface StepObjectionsProps {
   onToggle: (objection: string) => void;
   onContinue: () => void;
   contactFirstName?: string;
+  continueLabel?: string;
 }
 
-export function StepObjections({ data, encountered, onToggle, onContinue, contactFirstName }: StepObjectionsProps) {
+export function StepObjections({ data, encountered, onToggle, onContinue, contactFirstName, continueLabel = "Continue" }: StepObjectionsProps) {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   return (
@@ -91,7 +92,7 @@ export function StepObjections({ data, encountered, onToggle, onContinue, contac
       </div>
 
       <Button onClick={onContinue} className="w-full">
-        {encountered.length > 0 ? "Objections Handled — Continue to Close" : "No Objections — Continue to Close"}
+        {encountered.length > 0 ? `Objections Handled — ${continueLabel}` : `No Objections — ${continueLabel}`}
         <ChevronRight className="size-4 ml-1" />
       </Button>
     </div>

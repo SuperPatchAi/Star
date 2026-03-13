@@ -219,30 +219,13 @@
       "title": "\ud83d\udcc5 FOLLOW-UP SEQUENCE",
       "goal": "Build relationship \u2192 Get testimonials \u2192 Generate referrals",
       "sequence": [
-        {
-          "day": "DAY 1",
-          "action": "Thank You + Tips",
-          "template": "Great connecting! Here's a quick guide to get the most from your patch. Let me know if questions pop up!",
-          "channel": "Text"
-        },
-        {
-          "day": "DAY 3",
-          "action": "Check-In",
-          "template": "How are you feeling with your patches? Noticed any difference yet? I'd love to hear!",
-          "channel": "Text"
-        },
-        {
-          "day": "DAY 7",
-          "action": "Results + Testimonial",
-          "template": "One week in! Are you feeling the benefits? Would you be open to sharing your experience?",
-          "channel": "Call/Text"
-        },
-        {
-          "day": "DAY 14",
-          "action": "Reorder + Referral",
-          "template": "Hope you're loving the results! Time to reorder soon. Who else might benefit from this?",
-          "channel": "Call"
-        }
+        { "day": "DAY 1", "action": "Shipping Follow-Up", "template": "Hey {{FirstName}}! Just confirming your samples are on the way. You should receive them in about 2 days. I'll check back in when they arrive!", "channel": "Text" },
+        { "day": "DAY 3", "action": "Sample Arrival Follow-Up", "template": "Hey {{FirstName}}! Your samples should be arriving today or tomorrow. Have they shown up yet? Let me know when they do — don't open them without me!", "channel": "Text", "checkbox_label": "Samples Received" },
+        { "day": "DAY 4", "action": "Open Package Together", "template": "Before we open it, I want you to understand. This isn't about hype. It's about experience. I want you to pay attention to what you notice, not what you expect.", "channel": "Zoom Call" },
+        { "day": "DAY 5", "action": "Experience Check-In", "template": "Hey {{FirstName}}, checking in! What did you notice today?\nWhat felt different?\nWhen did you feel it most?\nWhat surprised you?", "channel": "Text/Call" },
+        { "day": "DAY 7", "action": "Results Follow-Up", "template": "How is your mood? Noticing any improvements in how you feel day to day? Are things feeling a little brighter?", "channel": "Call" },
+        { "day": "DAY 14", "action": "Reorder + Referral", "template": "Hope you're loving the results! Ready to keep the momentum going? Who else do you know that could use a mood boost?", "channel": "Call" },
+        { "day": "DAY 14", "action": "Ask for the Close", "template": "Based on everything you've experienced — are you ready to make this part of your routine? Let's get you set up.", "channel": "Call" }
       ]
     }
   },
