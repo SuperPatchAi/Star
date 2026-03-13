@@ -50,7 +50,7 @@ export default function LoginPage() {
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold">Sign in</CardTitle>
         <CardDescription>
-          Enter your credentials to access the Sales Enablement platform
+          Sample. Track. Align. Recruit. (STAR)
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleLogin}>
