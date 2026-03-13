@@ -12,13 +12,20 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
-export function InstallPrompt() {
+interface InstallPromptProps {
+  onboardingStep?: string;
+}
+
+export function InstallPrompt({ onboardingStep }: InstallPromptProps) {
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
   const [showIOSPrompt, setShowIOSPrompt] = useState(false);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    const pastTour = !onboardingStep || onboardingStep === "checklist" || onboardingStep === "completed";
+    if (!pastTour) return;
+
     if (window.matchMedia("(display-mode: standalone)").matches) return;
     // @ts-expect-error -- navigator.standalone is iOS Safari only
     if (navigator.standalone) return;
@@ -53,7 +60,7 @@ export function InstallPrompt() {
       window.removeEventListener("beforeinstallprompt", handler);
       window.removeEventListener("appinstalled", installedHandler);
     };
-  }, []);
+  }, [onboardingStep]);
 
   const handleInstall = useCallback(async () => {
     if (!deferredPrompt) return;

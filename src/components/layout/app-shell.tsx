@@ -109,7 +109,7 @@ export function AppShell({ children, user, profile }: AppShellProps) {
           </main>
         </SidebarInset>
         <BottomNav />
-        <InstallPrompt />
+        <InstallPrompt onboardingStep={profile?.onboarding_step} />
         </TourProvider>
       </SidebarProvider>
     </AuthProvider>
