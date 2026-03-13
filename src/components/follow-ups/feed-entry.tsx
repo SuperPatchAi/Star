@@ -6,6 +6,7 @@ import { Phone, Mail, Clock, AlertCircle, ChevronDown, ChevronUp, Play, TimerRes
 import { Button } from "@/components/ui/button";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { cn } from "@/lib/utils";
+import { interpolateScript } from "@/lib/interpolate-script";
 import { advanceFollowUpDay, dismissReminder } from "@/lib/actions/contacts";
 import type { FollowUpReminder } from "@/types/reminders";
 
@@ -122,7 +123,7 @@ export function FeedEntry({ reminder, onAction }: FeedEntryProps) {
             )}
 
             {type === "followup_due" && followUpStep && (
-              <ShareCopyButton text={followUpStep.template} variant="labeled" label="Script" />
+              <ShareCopyButton text={interpolateScript(followUpStep.template, contact.first_name)} variant="labeled" label="Script" />
             )}
 
             <div className="flex-1" />
@@ -163,9 +164,9 @@ export function FeedEntry({ reminder, onAction }: FeedEntryProps) {
               </div>
 
               <div className="bg-muted rounded-lg p-3 text-sm relative group/script">
-                {followUpStep.template}
+                {interpolateScript(followUpStep.template, contact.first_name)}
                 <ShareCopyButton
-                  text={followUpStep.template}
+                  text={interpolateScript(followUpStep.template, contact.first_name)}
                   className="absolute top-2 right-2 size-9 min-h-[44px] min-w-[44px] md:opacity-0 md:group-hover/script:opacity-100 transition-opacity"
                 />
               </div>

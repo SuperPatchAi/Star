@@ -1,11 +1,13 @@
 "use client";
 
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Package, ChevronRight, MapPin, Check } from "lucide-react";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
+import { interpolateScript } from "@/lib/interpolate-script";
 import Image from "next/image";
 import type { Product } from "@/types";
 
@@ -26,6 +28,7 @@ interface StepSendSamplesProps {
   onToggleSampleProduct: (productId: string) => void;
   onSetSampleAddress: (address: SampleAddress) => void;
   onContinue: () => void;
+  contactFirstName?: string;
 }
 
 const SAMPLE_SCRIPT = `Based on what you've shared with me, I think the best next step would be for you to try it yourself. I'd love to send you a sample so you can experience the results firsthand — no commitment, just a chance to see how it works for you. What's the best address to send that to?`;
@@ -39,8 +42,10 @@ export function StepSendSamples({
   onToggleSampleProduct,
   onSetSampleAddress,
   onContinue,
+  contactFirstName,
 }: StepSendSamplesProps) {
   const address = sampleAddress || { line1: "", line2: "", city: "", state: "", zip: "" };
+  const sampleScript = useMemo(() => interpolateScript(SAMPLE_SCRIPT, contactFirstName), [contactFirstName]);
 
   const handleAddressChange = (field: keyof SampleAddress, value: string) => {
     onSetSampleAddress({ ...address, [field]: value });
@@ -60,14 +65,14 @@ export function StepSendSamples({
             <span className="text-sm font-semibold">Sample Offer Script</span>
           </div>
           <ShareCopyButton
-            text={SAMPLE_SCRIPT}
+            text={sampleScript}
             variant="icon"
             className="size-7"
             iconClassName="size-3.5"
           />
         </div>
         <div className="bg-muted rounded-lg p-4 text-sm whitespace-pre-wrap">
-          {SAMPLE_SCRIPT}
+          {sampleScript}
         </div>
       </div>
 

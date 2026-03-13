@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight, Info, CheckCircle } from "lucide-react";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { cn } from "@/lib/utils";
+import { interpolateScript } from "@/lib/interpolate-script";
 import type { RoadmapClosing } from "@/types/roadmap";
 
 interface StepClosingProps {
@@ -11,9 +12,10 @@ interface StepClosingProps {
   selectedTechnique: string | null;
   onSelect: (technique: string) => void;
   onContinue: () => void;
+  contactFirstName?: string;
 }
 
-export function StepClosing({ data, selectedTechnique, onSelect, onContinue }: StepClosingProps) {
+export function StepClosing({ data, selectedTechnique, onSelect, onContinue, contactFirstName }: StepClosingProps) {
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
@@ -24,9 +26,9 @@ export function StepClosing({ data, selectedTechnique, onSelect, onContinue }: S
       <div className="flex items-start gap-2 rounded-lg border border-blue-200 bg-blue-50 p-3 dark:bg-blue-950 dark:border-blue-800 group">
         <Info className="size-4 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
         <p className="text-sm text-blue-700 dark:text-blue-300 flex-1">
-          <strong>Pre-close:</strong> {data.pre_close}
+          <strong>Pre-close:</strong> {interpolateScript(data.pre_close, contactFirstName)}
         </p>
-        <ShareCopyButton text={data.pre_close} className="size-9 min-h-[44px] min-w-[44px] shrink-0 md:opacity-0 md:group-hover:opacity-100 transition-opacity" />
+        <ShareCopyButton text={interpolateScript(data.pre_close, contactFirstName)} className="size-9 min-h-[44px] min-w-[44px] shrink-0 md:opacity-0 md:group-hover:opacity-100 transition-opacity" />
       </div>
 
       {/* Closing techniques as flat rows */}
@@ -63,8 +65,8 @@ export function StepClosing({ data, selectedTechnique, onSelect, onContinue }: S
               {isSelected && (
                 <div className="mt-3 ml-8" onClick={(e) => e.stopPropagation()}>
                   <div className="bg-muted rounded-lg p-3 text-sm whitespace-pre-wrap relative group">
-                    {technique.script}
-                    <ShareCopyButton text={technique.script} className="absolute top-2 right-2 size-9 min-h-[44px] min-w-[44px] md:opacity-0 md:group-hover:opacity-100 transition-opacity" />
+                    {interpolateScript(technique.script, contactFirstName)}
+                    <ShareCopyButton text={interpolateScript(technique.script, contactFirstName)} className="absolute top-2 right-2 size-9 min-h-[44px] min-w-[44px] md:opacity-0 md:group-hover:opacity-100 transition-opacity" />
                   </div>
                 </div>
               )}

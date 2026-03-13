@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight, CheckCircle } from "lucide-react";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { cn } from "@/lib/utils";
+import { interpolateScript } from "@/lib/interpolate-script";
 import type { RoadmapPresentation, RoadmapMetadata } from "@/types/roadmap";
 import type { Product } from "@/types";
 
@@ -14,6 +15,7 @@ interface StepPresentationProps {
   metadata?: RoadmapMetadata;
   questionsAsked?: string[];
   onContinue: () => void;
+  contactFirstName?: string;
 }
 
 function buildDiscoveryCallback(questionsAsked: string[]): string {
@@ -28,10 +30,13 @@ function buildDiscoveryCallback(questionsAsked: string[]): string {
   return `You mentioned ${lowerQ}, and also ${lowerQ2} — those are exactly the kinds of challenges this was designed for.`;
 }
 
-function interpolateText(text: string, questionsAsked: string[]): string {
-  if (!text.includes("{{discovery_callback}}")) return text;
-  const callback = buildDiscoveryCallback(questionsAsked);
-  return text.replace("{{discovery_callback}}", callback).trim();
+function interpolateText(text: string, questionsAsked: string[], firstName?: string): string {
+  let result = text;
+  if (result.includes("{{discovery_callback}}")) {
+    const callback = buildDiscoveryCallback(questionsAsked);
+    result = result.replace("{{discovery_callback}}", callback).trim();
+  }
+  return interpolateScript(result, firstName);
 }
 
 const phaseColors = {
@@ -40,14 +45,14 @@ const phaseColors = {
   solve: "text-green-600 dark:text-green-400",
 };
 
-export function StepPresentation({ data, product, metadata, questionsAsked = [], onContinue }: StepPresentationProps) {
+export function StepPresentation({ data, product, metadata, questionsAsked = [], onContinue, contactFirstName }: StepPresentationProps) {
   const [currentPhase, setCurrentPhase] = useState(0);
 
   const phases = useMemo(() => [
-    { key: "problem" as const, label: "Problem", text: interpolateText(data.content.problem, questionsAsked) },
-    { key: "agitate" as const, label: "Agitate", text: interpolateText(data.content.agitate, questionsAsked) },
-    { key: "solve" as const, label: "Solve", text: interpolateText(data.content.solve, questionsAsked) },
-  ], [data.content.problem, data.content.agitate, data.content.solve, questionsAsked]);
+    { key: "problem" as const, label: "Problem", text: interpolateText(data.content.problem, questionsAsked, contactFirstName) },
+    { key: "agitate" as const, label: "Agitate", text: interpolateText(data.content.agitate, questionsAsked, contactFirstName) },
+    { key: "solve" as const, label: "Solve", text: interpolateText(data.content.solve, questionsAsked, contactFirstName) },
+  ], [data.content.problem, data.content.agitate, data.content.solve, questionsAsked, contactFirstName]);
 
   const fullScript = phases.map(p => p.text).join("\n\n");
 

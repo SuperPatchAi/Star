@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight, ShieldAlert, Brain, Lightbulb, CheckCircle } from "lucide-react";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { cn } from "@/lib/utils";
+import { interpolateScript } from "@/lib/interpolate-script";
 import type { RoadmapObjectionHandling } from "@/types/roadmap";
 
 interface StepObjectionsProps {
@@ -12,9 +13,10 @@ interface StepObjectionsProps {
   encountered: string[];
   onToggle: (objection: string) => void;
   onContinue: () => void;
+  contactFirstName?: string;
 }
 
-export function StepObjections({ data, encountered, onToggle, onContinue }: StepObjectionsProps) {
+export function StepObjections({ data, encountered, onToggle, onContinue, contactFirstName }: StepObjectionsProps) {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   return (
@@ -74,8 +76,8 @@ export function StepObjections({ data, encountered, onToggle, onContinue }: Step
                 <div className="mt-3 ml-7 space-y-3" onClick={(e) => e.stopPropagation()}>
                   <div className="bg-muted rounded-lg p-3 text-sm relative group">
                     <p className="font-medium text-xs text-muted-foreground mb-1">Response:</p>
-                    <p>{obj.response}</p>
-                    <ShareCopyButton text={obj.response} className="absolute top-2 right-2 size-9 min-h-[44px] min-w-[44px] md:opacity-0 md:group-hover:opacity-100 transition-opacity" />
+                    <p>{interpolateScript(obj.response, contactFirstName)}</p>
+                    <ShareCopyButton text={interpolateScript(obj.response, contactFirstName)} className="absolute top-2 right-2 size-9 min-h-[44px] min-w-[44px] md:opacity-0 md:group-hover:opacity-100 transition-opacity" />
                   </div>
                   <div className="flex items-start gap-2 text-xs text-muted-foreground">
                     <Brain className="size-3.5 mt-0.5 shrink-0" />

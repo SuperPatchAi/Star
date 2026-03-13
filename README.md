@@ -44,6 +44,7 @@ src/
 │   ├── auth.ts             # Auth helpers (getAuthUser, requireAdmin)
 │   ├── security.ts         # Redirect/input sanitization
 │   ├── utils.ts            # cn(), copyToClipboard(), shareOrCopy()
+│   ├── interpolate-script.ts # {{FirstName}}/[Name] replacement in scripts
 │   ├── roadmap-data.ts     # Roadmap spec loading functions
 │   ├── supabase/           # Supabase clients (server, client, middleware)
 │   ├── actions/            # Server actions (contacts, reminders, onboarding, push subscriptions)
@@ -122,6 +123,16 @@ User lands on /dashboard
   - `questions_asked: { "freedom": ["q1", "q2"], "rem": ["q3"] }`
   - `objections_encountered: { "freedom": ["TOO EXPENSIVE"] }`
   - `closing_techniques: { "freedom": "ASSUMPTIVE" }`
+
+### Script Personalization
+
+All sales scripts support **contact name interpolation** via the shared `interpolateScript()` utility (`src/lib/interpolate-script.ts`). When a contact has been created, the following placeholders are automatically replaced with the contact's first name:
+
+- `{{FirstName}}` — standard template variable
+- `[Name]` — existing roadmap bracket style
+- `[Prospect Name]` — existing roadmap bracket style
+
+This applies across every step that displays copyable scripts: Opening, Presentation, Samples, Objections, Closing, and Follow-Up — as well as the activity feed's follow-up script button. The `DecisionTree` passes `contactFirstName` to each step component.
 
 ### Contextual Presentation
 

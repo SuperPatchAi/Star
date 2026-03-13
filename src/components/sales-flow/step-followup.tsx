@@ -6,6 +6,7 @@ import { Phone, MessageSquare, Mail, CheckCircle, XCircle, Check } from "lucide-
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { updateContactOutcome } from "@/lib/actions/contacts";
 import { cn } from "@/lib/utils";
+import { interpolateScript } from "@/lib/interpolate-script";
 import type { RoadmapFollowUp } from "@/types/roadmap";
 
 interface StepFollowUpProps {
@@ -13,6 +14,7 @@ interface StepFollowUpProps {
   contactId?: string;
   followUpDay?: number;
   onAdvance?: () => void;
+  contactFirstName?: string;
 }
 
 const channelIcons: Record<string, React.ReactNode> = {
@@ -22,7 +24,7 @@ const channelIcons: Record<string, React.ReactNode> = {
   "Email": <Mail className="size-3.5" />,
 };
 
-export function StepFollowUp({ data, contactId, followUpDay = 0, onAdvance }: StepFollowUpProps) {
+export function StepFollowUp({ data, contactId, followUpDay = 0, onAdvance, contactFirstName }: StepFollowUpProps) {
   const [outcome, setOutcome] = useState<string | null>(null);
   const [advancing, setAdvancing] = useState(false);
 
@@ -68,9 +70,9 @@ export function StepFollowUp({ data, contactId, followUpDay = 0, onAdvance }: St
             </div>
           </div>
           <div className="bg-muted rounded-lg p-3 text-sm relative group">
-            {currentStep.template}
+            {interpolateScript(currentStep.template, contactFirstName)}
             <ShareCopyButton
-              text={currentStep.template}
+              text={interpolateScript(currentStep.template, contactFirstName)}
               className="absolute top-2 right-2 size-9 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
             />
           </div>
@@ -130,9 +132,9 @@ export function StepFollowUp({ data, contactId, followUpDay = 0, onAdvance }: St
                   <p className="text-xs text-muted-foreground mb-2">{step.day}</p>
                   {!isComplete && (
                     <div className="bg-muted rounded-lg p-3 text-sm relative group">
-                      {step.template}
+                      {interpolateScript(step.template, contactFirstName)}
                       <ShareCopyButton
-                        text={step.template}
+                        text={interpolateScript(step.template, contactFirstName)}
                         className="absolute top-2 right-2 size-9 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                       />
                     </div>

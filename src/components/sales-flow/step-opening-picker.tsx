@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { ChevronRight } from "lucide-react";
+import { interpolateScript } from "@/lib/interpolate-script";
 import type { RoadmapOpeningApproaches } from "@/types/roadmap";
 
 interface StepOpeningPickerProps {
@@ -12,6 +13,7 @@ interface StepOpeningPickerProps {
   selectedType: string | null;
   onSelect: (type: string) => void;
   onContinue: () => void;
+  contactFirstName?: string;
 }
 
 const approachIcons: Record<string, string> = {
@@ -22,7 +24,7 @@ const approachIcons: Record<string, string> = {
   "EVENT/PARTY": "🎉",
 };
 
-export function StepOpeningPicker({ data, selectedType, onSelect, onContinue }: StepOpeningPickerProps) {
+export function StepOpeningPicker({ data, selectedType, onSelect, onContinue, contactFirstName }: StepOpeningPickerProps) {
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
@@ -59,9 +61,9 @@ export function StepOpeningPicker({ data, selectedType, onSelect, onContinue }: 
               {isSelected && (
                 <CardContent className="pt-0">
                   <div className="bg-muted rounded-lg p-3 text-sm whitespace-pre-wrap relative group">
-                    {approach.script.trim()}
+                    {interpolateScript(approach.script.trim(), contactFirstName)}
                     <ShareCopyButton
-                      text={approach.script.trim()}
+                      text={interpolateScript(approach.script.trim(), contactFirstName)}
                       className="absolute top-2 right-2 size-9 min-h-[44px] min-w-[44px] md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                     />
                   </div>

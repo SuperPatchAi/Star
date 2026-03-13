@@ -104,6 +104,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
   const contactProductIds = activeContact?.product_ids || [];
   const contactProducts = allProducts.filter(p => contactProductIds.includes(p.id));
   const roadmaps = getRoadmapsForProducts(contactProductIds);
+  const contactFirstName = activeContact?.first_name || "";
 
   const isGated = !activeContact;
   const currentStep = SALES_STEPS[currentStepIndex];
@@ -289,6 +290,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                     selectedType={state.openingTypes[product.id] || null}
                     onSelect={(type) => { setOpeningType(product.id, type); }}
                     onContinue={goNext}
+                    contactFirstName={contactFirstName}
                   />
                 </div>
               );
@@ -331,6 +333,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                   metadata={roadmap.metadata}
                   questionsAsked={state.questionsAsked[product.id] || []}
                   onContinue={goNext}
+                  contactFirstName={contactFirstName}
                 />
               );
             }}
@@ -347,6 +350,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
             onToggleSampleProduct={toggleSampleProduct}
             onSetSampleAddress={setSampleAddress}
             onContinue={goNext}
+            contactFirstName={contactFirstName}
           />
         );
       case "objections":
@@ -361,6 +365,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                   encountered={state.objectionsEncountered[product.id] || []}
                   onToggle={(obj) => toggleObjection(product.id, obj)}
                   onContinue={goNext}
+                  contactFirstName={contactFirstName}
                 />
               );
             }}
@@ -378,6 +383,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                   selectedTechnique={state.closingTechniques[product.id] || null}
                   onSelect={(t) => setClosingTechnique(product.id, t)}
                   onContinue={goNext}
+                  contactFirstName={contactFirstName}
                 />
               );
             }}
@@ -395,6 +401,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                   contactId={activeContact?.id}
                   followUpDay={followUpDay}
                   onAdvance={handleAdvanceFollowUp}
+                  contactFirstName={contactFirstName}
                 />
               );
             }}
