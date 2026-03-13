@@ -164,6 +164,7 @@ export function StepSendSamples({
               <Label htmlFor="addr-line1">Street Address *</Label>
               <Input
                 id="addr-line1"
+                autoComplete="street-address"
                 value={address.line1}
                 onChange={(e) => handleAddressChange("line1", e.target.value)}
                 placeholder="123 Main St"
@@ -173,6 +174,7 @@ export function StepSendSamples({
               <Label htmlFor="addr-line2">Apt / Suite / Unit</Label>
               <Input
                 id="addr-line2"
+                autoComplete="address-line2"
                 value={address.line2}
                 onChange={(e) => handleAddressChange("line2", e.target.value)}
                 placeholder="Apt 4B"
@@ -183,6 +185,7 @@ export function StepSendSamples({
                 <Label htmlFor="addr-city-m">City *</Label>
                 <Input
                   id="addr-city-m"
+                  autoComplete="address-level2"
                   value={address.city}
                   onChange={(e) => handleAddressChange("city", e.target.value)}
                   placeholder="City"
@@ -193,6 +196,7 @@ export function StepSendSamples({
                   <Label htmlFor="addr-state-m">State *</Label>
                   <Input
                     id="addr-state-m"
+                    autoComplete="address-level1"
                     value={address.state}
                     onChange={(e) => handleAddressChange("state", e.target.value)}
                     placeholder="ST"
@@ -203,6 +207,7 @@ export function StepSendSamples({
                   <Label htmlFor="addr-zip-m">ZIP *</Label>
                   <Input
                     id="addr-zip-m"
+                    autoComplete="postal-code"
                     value={address.zip}
                     onChange={(e) => handleAddressChange("zip", e.target.value)}
                     placeholder="12345"
@@ -216,6 +221,7 @@ export function StepSendSamples({
                 <Label htmlFor="addr-city">City *</Label>
                 <Input
                   id="addr-city"
+                  autoComplete="address-level2"
                   value={address.city}
                   onChange={(e) => handleAddressChange("city", e.target.value)}
                   placeholder="City"
@@ -225,6 +231,7 @@ export function StepSendSamples({
                 <Label htmlFor="addr-state">State *</Label>
                 <Input
                   id="addr-state"
+                  autoComplete="address-level1"
                   value={address.state}
                   onChange={(e) => handleAddressChange("state", e.target.value)}
                   placeholder="ST"
@@ -235,6 +242,7 @@ export function StepSendSamples({
                 <Label htmlFor="addr-zip">ZIP *</Label>
                 <Input
                   id="addr-zip"
+                  autoComplete="postal-code"
                   value={address.zip}
                   onChange={(e) => handleAddressChange("zip", e.target.value)}
                   placeholder="12345"

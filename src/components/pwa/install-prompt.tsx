@@ -23,7 +23,8 @@ export function InstallPrompt() {
     // @ts-expect-error -- navigator.standalone is iOS Safari only
     if (navigator.standalone) return;
 
-    const dismissed = localStorage.getItem(DISMISSED_KEY);
+    let dismissed: string | null = null;
+    try { dismissed = localStorage.getItem(DISMISSED_KEY); } catch { /* private browsing */ }
     if (dismissed) {
       const dismissedAt = new Date(dismissed).getTime();
       if (Date.now() - dismissedAt < DISMISS_DAYS * 24 * 60 * 60 * 1000)
@@ -38,12 +39,9 @@ export function InstallPrompt() {
     window.addEventListener("beforeinstallprompt", handler);
 
     const isIOS =
-      /iPad|iPhone|iPod/.test(navigator.userAgent) &&
-      !("MSStream" in window);
-    const isSafari =
-      /Safari/.test(navigator.userAgent) &&
-      !/Chrome/.test(navigator.userAgent);
-    if (isIOS && isSafari) {
+      (/iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window)) ||
+      (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent));
+    if (isIOS) {
       setShowIOSPrompt(true);
       setVisible(true);
     }
@@ -68,7 +66,7 @@ export function InstallPrompt() {
   }, [deferredPrompt]);
 
   const handleDismiss = useCallback(() => {
-    localStorage.setItem(DISMISSED_KEY, new Date().toISOString());
+    try { localStorage.setItem(DISMISSED_KEY, new Date().toISOString()); } catch { /* private browsing */ }
     setVisible(false);
   }, []);
 

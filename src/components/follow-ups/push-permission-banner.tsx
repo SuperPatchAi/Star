@@ -17,7 +17,7 @@ export function PushPermissionBanner() {
     if (!supported) return;
     if (typeof Notification === "undefined") return;
     if (Notification.permission !== "default") return;
-    if (localStorage.getItem(DISMISSED_KEY)) return;
+    try { if (localStorage.getItem(DISMISSED_KEY)) return; } catch { /* private browsing */ }
     setVisible(true);
   }, [supported]);
 
@@ -65,7 +65,7 @@ export function PushPermissionBanner() {
   };
 
   const handleDismiss = () => {
-    localStorage.setItem(DISMISSED_KEY, "true");
+    try { localStorage.setItem(DISMISSED_KEY, "true"); } catch { /* private browsing */ }
     setVisible(false);
   };
 

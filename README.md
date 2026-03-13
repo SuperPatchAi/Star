@@ -560,6 +560,28 @@ Every user-facing script and speakable text has a share-or-copy button powered b
 
 On mobile, share/copy buttons are always visible; on desktop they appear on hover (`md:opacity-0 md:group-hover:opacity-100`).
 
+## Safari / iOS Compatibility
+
+The app targets **Safari 15.4+** (desktop) and **iOS 16.4+** (for Web Push). Key hardening applied:
+
+- **Autoprefixer** added to PostCSS — emits `-webkit-backdrop-filter` for all `backdrop-blur` usage
+- **PWA install prompt** detects all iOS browsers (Chrome, Firefox, Edge) and iPadOS desktop mode, not just Safari
+- **PushManager guard** — push permission banner only shows on browsers that actually support Web Push
+- **No iOS auto-zoom** — all `<Input>` and `<Textarea>` components use `text-base` (16px) at every breakpoint
+- **`type="tel"`** on all phone inputs for correct iOS keyboard
+- **`autoComplete`** attributes on all auth forms, address forms, and subdomain inputs
+- **Viewport unit fallbacks** — all `h-dvh` / `min-h-dvh` usage includes `100vh` fallback for older Safari
+- **`touch-action: manipulation`** on all interactive elements to eliminate 300ms tap delay
+- **Keyboard-aware fixed footer** — `DecisionTree` page-variant hides the fixed bottom nav when the iOS keyboard is open (via `visualViewport` API)
+- **`localStorage` try/catch** — install prompt and push banner handle Safari private browsing gracefully
+- **`.scrollbar-hide`** CSS utility alias matches both Tailwind naming conventions
+- **Explicit Apple meta tags** — `apple-mobile-web-app-capable` and `apple-mobile-web-app-status-bar-style` in `<head>`
+- **180x180 icon** in `manifest.json` for Apple touch icon requirements
+
+### Minimum Safari version rationale
+
+`oklch()` colors, `dvh` units, and `:has()` selectors all require Safari 15.4+. Container queries require 16+. `text-wrap: balance` requires 17.5+ but degrades gracefully. These establish 15.4 as the effective floor.
+
 ## Commit Convention
 
 Before every commit, ensure README.md and cursor rules are up to date with any architectural or structural changes made in the session.

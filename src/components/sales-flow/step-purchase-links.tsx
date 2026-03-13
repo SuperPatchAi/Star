@@ -105,6 +105,7 @@ export function StepPurchaseLinks({
               <div className="flex flex-1 items-center rounded-lg border border-amber-300 bg-white dark:bg-amber-900 dark:border-amber-700 overflow-hidden">
                 <Input
                   type="text"
+                  autoComplete="url"
                   placeholder="yourname"
                   value={localSubdomain}
                   onChange={(e) =>

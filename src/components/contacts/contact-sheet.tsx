@@ -454,6 +454,9 @@ function EditMode({
             <Label htmlFor="phone">Phone</Label>
             <Input
               id="phone"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="(555) 123-4567"

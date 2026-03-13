@@ -8,6 +8,7 @@ export function useServiceWorker() {
 
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
+    if (!("PushManager" in window)) return;
     setSupported(true);
 
     navigator.serviceWorker

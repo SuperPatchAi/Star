@@ -155,6 +155,9 @@ export function StepAddContact({
               <Label htmlFor="contact-phone">Phone</Label>
               <Input
                 id="contact-phone"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="(555) 123-4567"

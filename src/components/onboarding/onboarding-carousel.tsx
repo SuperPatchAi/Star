@@ -142,7 +142,7 @@ export function OnboardingCarousel() {
   }, [currentSlide, handleNext, scrollToSlide]);
 
   return (
-    <div className="relative h-dvh w-full overflow-hidden">
+    <div className="relative h-[100vh] h-dvh w-full overflow-hidden">
       <button
         onClick={handleComplete}
         disabled={isNavigating}
@@ -162,7 +162,7 @@ export function OnboardingCarousel() {
             return (
               <div
                 key={i}
-                className={`flex h-dvh w-full shrink-0 snap-start flex-col items-center justify-center px-8 text-center ${slide.gradient}`}
+                className={`flex h-[100vh] h-dvh w-full shrink-0 snap-start flex-col items-center justify-center px-8 text-center ${slide.gradient}`}
               >
                 <div className="mb-8 rounded-3xl bg-white/20 p-6 backdrop-blur-sm">
                   <Icon className="size-16 text-white" strokeWidth={1.5} />
@@ -176,6 +176,7 @@ export function OnboardingCarousel() {
                 <div className="flex w-full max-w-sm items-center rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 overflow-hidden">
                   <Input
                     type="text"
+                    autoComplete="url"
                     placeholder="yourname"
                     value={subdomain}
                     onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}

@@ -105,9 +105,20 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
   );
 
   const [storeSubdomain, setStoreSubdomain] = useState<string | null>(null);
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
 
   useEffect(() => {
     getStoreSubdomain().then(setStoreSubdomain);
+  }, []);
+
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const handler = () => {
+      setKeyboardOpen(vv.height < window.innerHeight * 0.75);
+    };
+    vv.addEventListener("resize", handler);
+    return () => vv.removeEventListener("resize", handler);
   }, []);
 
   const contactProductIds = activeContact?.product_ids || [];
@@ -570,7 +581,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
         </Button>
       </div>
 
-      {!isDrawer && (
+      {!isDrawer && !keyboardOpen && (
         <div className="fixed bottom-16 left-0 right-0 z-40 flex items-center gap-2 border-t bg-background/95 backdrop-blur-sm px-4 py-2 md:hidden pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))]">
           <Button
             variant="outline"
