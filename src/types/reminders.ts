@@ -10,6 +10,8 @@ export interface FollowUpReminder {
   urgency: ReminderUrgency;
   stageName: string;
   daysSinceEntry: number;
+  /** ISO date string (YYYY-MM-DD) when this reminder is due */
+  dueDate: string;
   followUpStep?: RoadmapFollowUpStep;
   followUpDayIndex?: number;
   productId?: string;
@@ -17,11 +19,11 @@ export interface FollowUpReminder {
 }
 
 export const STALENESS_THRESHOLDS: Record<ContactStep, number> = {
-  add_contact: 1,
+  add_contact: 2,
   opening: 2,
   discovery: 2,
-  presentation: 3,
-  samples: 3,
+  presentation: 2,
+  samples: 2,
   objections: 2,
   closing: 2,
   purchase_links: 2,

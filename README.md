@@ -302,9 +302,15 @@ Landing page with sales pipeline overview:
 - **Performance stats**: Contacts this week, active conversations
 
 ### FollowUpCalendar (`src/components/follow-ups/follow-up-calendar.tsx`)
-Calendar component on the Activity page:
-- **Week strip** (default): 7-day horizontal row with navigation arrows, colored dots for reminders
-- **Expanded month**: Full month grid with the same dot indicators
+Premium mobile-first calendar on the Activity page:
+- **Week strip** (default): 7-day horizontal row with navigation arrows
+- **Expanded month**: Full 6-row (42-cell) grid with leading/trailing month days (faded), weekend column shading, and current-week highlight stripe
+- **Reminder count badges**: Colored count badges per day (red = overdue, amber = due, muted = upcoming) replacing the old 1px dots
+- **Today indicator**: Filled primary circle on today's number (iOS Calendar style), ring-2 on selected day
+- **Today button**: Appears in header when navigated away from the current month
+- **Safari-safe**: Uses `new Date(y,m,d)` constructors, `max-height` transitions, explicit `-webkit-tap-highlight-color` removal, 44px minimum touch targets
+- **Reminder dot map**: Uses `dueDate` field from `FollowUpReminder` to place badges on correct calendar dates
+- **Uniform 2-day idle reminders**: All `STALENESS_THRESHOLDS` set to 2 days — any step idle for 2+ days triggers a follow-up reminder
 - Tapping a day filters the activity feed below
 
 ## Server Actions (`src/lib/actions/contacts.ts`)

@@ -24,6 +24,18 @@ function daysBetween(date1: Date, date2: Date): number {
   return Math.floor(ms / (1000 * 60 * 60 * 24));
 }
 
+function addDays(date: Date, days: number): Date {
+  const result = new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+  return result;
+}
+
+function toISODateString(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
 function computeUrgency(daysSinceEntry: number, thresholdDays: number): ReminderUrgency {
   if (daysSinceEntry > thresholdDays) return "overdue";
   if (daysSinceEntry === thresholdDays) return "due_today";
@@ -74,12 +86,14 @@ export async function getFollowUpReminders(): Promise<{
               ? "due_today"
               : "upcoming";
 
+        const sampleDueDate = addDays(sentAt, SAMPLE_FOLLOWUP_THRESHOLD_DAYS);
         reminders.push({
           contact,
           type: "sample_followup",
           urgency,
           stageName: "Sample Follow-Up",
           daysSinceEntry: daysSinceSent,
+          dueDate: toISODateString(sampleDueDate),
           sampleScript: `${SAMPLE_CHECKIN_SCRIPT}\n\n${SAMPLE_EXPERIENCE_SCRIPT}`,
         });
       }
@@ -102,12 +116,14 @@ export async function getFollowUpReminders(): Promise<{
       const followUpSequence = roadmap?.sections["7_followup"]?.sequence;
       const followUpStep = followUpSequence?.[dayIndex];
 
+      const followupDueDate = addDays(enteredAt, dueOffset);
       reminders.push({
         contact,
         type: "followup_due",
         urgency,
         stageName: getStageName(step),
         daysSinceEntry,
+        dueDate: toISODateString(followupDueDate),
         followUpStep: followUpStep ?? undefined,
         followUpDayIndex: dayIndex,
         productId: primaryProductId,
@@ -119,12 +135,14 @@ export async function getFollowUpReminders(): Promise<{
       const previewWindow = threshold - 1;
       if (daysSinceEntry < previewWindow) continue;
 
+      const staleDueDate = addDays(enteredAt, threshold);
       reminders.push({
         contact,
         type: "stale",
         urgency: computeUrgency(daysSinceEntry, threshold),
         stageName: getStageName(step),
         daysSinceEntry,
+        dueDate: toISODateString(staleDueDate),
       });
     }
   }
