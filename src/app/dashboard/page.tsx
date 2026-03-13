@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -23,6 +23,7 @@ import type { FollowUpReminder } from "@/types/reminders";
 import { cn } from "@/lib/utils";
 import { GettingStartedChecklist } from "@/components/onboarding/getting-started-checklist";
 import { PushPermissionBanner } from "@/components/follow-ups/push-permission-banner";
+import { ContactSheet } from "@/components/contacts/contact-sheet";
 
 const STEP_LABELS: Record<string, string> = {};
 for (const s of SALES_STEPS) {
@@ -70,20 +71,22 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [reminders, setReminders] = useState<FollowUpReminder[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  const loadData = useCallback(async () => {
+    const [s, r] = await Promise.all([
+      getDashboardStats(),
+      getFollowUpReminders(),
+    ]);
+    setStats(s);
+    const list = r.data ?? [];
+    setReminders(list.filter(rem => rem.urgency === "overdue" || rem.urgency === "due_today"));
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
-    async function load() {
-      const [s, r] = await Promise.all([
-        getDashboardStats(),
-        getFollowUpReminders(),
-      ]);
-      setStats(s);
-      const list = r.data ?? [];
-      setReminders(list.filter(rem => rem.urgency === "overdue" || rem.urgency === "due_today"));
-      setLoading(false);
-    }
-    load();
-  }, []);
+    loadData();
+  }, [loadData]);
 
   if (loading) {
     return (
@@ -113,11 +116,9 @@ export default function DashboardPage() {
           <p className="text-sm text-muted-foreground">Your sales pipeline at a glance.</p>
         </div>
         <div data-tour-step="new-contact">
-          <Button asChild size="sm">
-            <Link href="/contacts">
-              <Plus className="size-4 mr-1.5" />
-              New Contact
-            </Link>
+          <Button size="sm" onClick={() => setSheetOpen(true)}>
+            <Plus className="size-4 mr-1.5" />
+            New Contact
           </Button>
         </div>
       </div>
@@ -238,6 +239,13 @@ export default function DashboardPage() {
         <StatCard label="This Week" value={stats.contactsThisWeek} icon={CalendarCheck} color="text-primary" href="/contacts" />
         <StatCard label="Active Conversations" value={stats.totalActive} icon={Users} color="text-primary" href="/contacts" />
       </div>
+
+      <ContactSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        contact={null}
+        onSaved={loadData}
+      />
     </div>
   );
 }
