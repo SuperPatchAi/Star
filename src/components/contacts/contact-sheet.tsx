@@ -152,6 +152,12 @@ function ViewMode({
                   )}
                 </div>
               )}
+              {localContact.address_line1 && (
+                <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1 truncate">
+                  <MapPin className="size-3 shrink-0" />
+                  {[localContact.address_line1, localContact.address_line2, localContact.address_city, localContact.address_state, localContact.address_zip].filter(Boolean).join(", ")}
+                </p>
+              )}
             </div>
           </div>
 
@@ -543,60 +549,36 @@ function EditMode({
             </Label>
           </div>
 
-          {sampleSent && (
-            <div className="space-y-3">
-              <div className="space-y-2">
-                <Label className="flex items-center gap-1.5">
-                  <MapPin className="size-3.5" />
-                  Shipping Address
-                </Label>
+          <div className="space-y-3">
+            <div className="space-y-2">
+              <Label className="flex items-center gap-1.5">
+                <MapPin className="size-3.5" />
+                Shipping Address
+              </Label>
+              <Input
+                value={addressLine1}
+                onChange={(e) => setAddressLine1(e.target.value)}
+                placeholder="Street address"
+              />
+              <Input
+                value={addressLine2}
+                onChange={(e) => setAddressLine2(e.target.value)}
+                placeholder="Apt / Suite / Unit"
+              />
+              <div className="space-y-2 sm:hidden">
                 <Input
-                  value={addressLine1}
-                  onChange={(e) => setAddressLine1(e.target.value)}
-                  placeholder="Street address"
+                  value={addressCity}
+                  onChange={(e) => setAddressCity(e.target.value)}
+                  placeholder="City"
                 />
-                <Input
-                  value={addressLine2}
-                  onChange={(e) => setAddressLine2(e.target.value)}
-                  placeholder="Apt / Suite / Unit"
-                />
-                <div className="space-y-2 sm:hidden">
+                <div className="grid grid-cols-2 gap-2">
                   <Input
-                    value={addressCity}
-                    onChange={(e) => setAddressCity(e.target.value)}
-                    placeholder="City"
-                  />
-                  <div className="grid grid-cols-2 gap-2">
-                    <Input
-                      value={addressState}
-                      onChange={(e) => setAddressState(e.target.value)}
-                      placeholder="ST"
-                      maxLength={2}
-                    />
-                    <Input
-                      value={addressZip}
-                      onChange={(e) => setAddressZip(e.target.value)}
-                      placeholder="ZIP"
-                      maxLength={10}
-                    />
-                  </div>
-                </div>
-                <div className="hidden sm:grid grid-cols-5 gap-2">
-                  <Input
-                    className="col-span-2"
-                    value={addressCity}
-                    onChange={(e) => setAddressCity(e.target.value)}
-                    placeholder="City"
-                  />
-                  <Input
-                    className="col-span-1"
                     value={addressState}
                     onChange={(e) => setAddressState(e.target.value)}
                     placeholder="ST"
                     maxLength={2}
                   />
                   <Input
-                    className="col-span-2"
                     value={addressZip}
                     onChange={(e) => setAddressZip(e.target.value)}
                     placeholder="ZIP"
@@ -604,8 +586,30 @@ function EditMode({
                   />
                 </div>
               </div>
+              <div className="hidden sm:grid grid-cols-5 gap-2">
+                <Input
+                  className="col-span-2"
+                  value={addressCity}
+                  onChange={(e) => setAddressCity(e.target.value)}
+                  placeholder="City"
+                />
+                <Input
+                  className="col-span-1"
+                  value={addressState}
+                  onChange={(e) => setAddressState(e.target.value)}
+                  placeholder="ST"
+                  maxLength={2}
+                />
+                <Input
+                  className="col-span-2"
+                  value={addressZip}
+                  onChange={(e) => setAddressZip(e.target.value)}
+                  placeholder="ZIP"
+                  maxLength={10}
+                />
+              </div>
             </div>
-          )}
+          </div>
         </div>
 
         <div className="pt-4 pb-2">

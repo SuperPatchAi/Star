@@ -15,6 +15,7 @@ import {
   Users,
   MessageSquarePlus,
   SlidersHorizontal,
+  MapPin,
 } from "lucide-react";
 import { products } from "@/data/products";
 import type { Contact, ContactStep } from "@/lib/db/types";
@@ -285,6 +286,12 @@ export function ContactsTable({
                   <p className={cn("text-xs truncate", context.accent || "text-muted-foreground")}>
                     {context.text}
                   </p>
+                  {contact.address_line1 && (
+                    <p className="text-xs text-muted-foreground/70 truncate flex items-center gap-1 mt-0.5">
+                      <MapPin className="size-2.5 shrink-0" />
+                      {[contact.address_line1, contact.address_city, contact.address_state, contact.address_zip].filter(Boolean).join(", ")}
+                    </p>
+                  )}
                 </div>
 
                 {/* Outcome icon */}
