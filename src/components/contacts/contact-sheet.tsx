@@ -285,7 +285,7 @@ function EditMode({
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
-  const [currentStep, setCurrentStep] = useState<ContactStep>("opening");
+  const [currentStep, setCurrentStep] = useState<ContactStep>("add_contact");
   const [sampleSent, setSampleSent] = useState(false);
   const [sampleProducts, setSampleProducts] = useState<string[]>([]);
   const [addressLine1, setAddressLine1] = useState("");
@@ -325,7 +325,7 @@ function EditMode({
       setPhone("");
       setNotes("");
       setSelectedProductIds([]);
-      setCurrentStep("opening");
+      setCurrentStep("add_contact");
       setSampleSent(false);
       setSampleProducts([]);
       setAddressLine1("");

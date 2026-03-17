@@ -31,14 +31,16 @@ interface ContactsTableProps {
 
 const stepLabels: Record<string, string> = {
   add_contact: "Add Contact",
-  opening: "Opening",
   discovery: "Discovery",
-  presentation: "Presentation",
   samples: "Send Samples",
+  followup: "Follow-Up",
+  close: "Close",
+  purchase_links: "Purchase Links",
+  closed: "Closed",
+  opening: "Opening",
+  presentation: "Presentation",
   objections: "Objections",
   closing: "Closing",
-  followup: "Follow-Up",
-  closed: "Closed",
 };
 
 function OutcomeIcon({ outcome }: { outcome: string }) {
