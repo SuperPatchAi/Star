@@ -1,6 +1,6 @@
 # SuperPatch S.T.A.R.
 
-**Sample. Track. Align. Recruit.** — A Next.js 16 sales enablement app for SuperPatch direct-to-consumer reps. Guided 9-step sales conversations with multi-product support, contact tracking, auto-save, and product-specific scripts powered by roadmap spec data.
+**Sample. Track. Align. Recruit.** — A Next.js 16 sales enablement app for SuperPatch direct-to-consumer reps. Guided 6-step sales conversations with multi-product support, contact tracking, auto-save, and product-specific scripts powered by roadmap spec data.
 
 ## Tech Stack
 
@@ -65,31 +65,28 @@ src/
 
 ## Sales Conversation Flow
 
-The core feature is a 9-step guided sales conversation. Each step renders product-specific content from roadmap spec JSON files.
+The core feature is a 6-step guided sales conversation. Universal discovery questions drive product recommendation, with quantifiable 1-10 ratings tracked through follow-up.
 
 ### Step Sequence
 
 ```
-1. Add Contact      → Create contact with first/last name, select products
-2. Opening          → Choose approach type (Cold, Warm, DM, Referral, Event)
-3. Discovery        → Check off discovery questions asked (3-5 required)
-4. Presentation     → Problem-Agitate-Solve framework with contextual callbacks
-5. Send Samples     → 2-script sequence (offer, commitment), product picker, address
-6. Follow-Up        → 7-task follow-up sequence (shipping, arrival+checkbox, Zoom demo, experience check-in, product-specific follow-up, reorder+referral, ask for the close)
-7. Close            → Select closing technique
-8. Objections       → Handle objections with scripted responses
-9. Purchase Links   → Share personalized product purchase URLs + Won/Lost outcome recording
+1. Add Contact      → Create contact with first/last name (no product selection)
+2. Discovery        → 5 universal questions: category selection, quality rating (1-10), duration, what they've tried, results
+3. Send Samples     → Auto-suggested product from discovery category, address collection
+4. Follow-Up        → 7-day sequence with 1-10 rating at each touchpoint, category-contextual scripts
+5. Close            → Closing techniques + collapsible objection handling (merged)
+6. Purchase Links   → Share personalized product purchase URLs + Won/Lost outcome recording
 ```
 
 ### Data Flow Diagram
 
 ```
-User lands on /dashboard
+User lands on /contacts
         │
         ▼
 ┌─────────────────┐     ┌──────────────────┐
 │  DecisionTree   │────▶│  StepAddContact   │  Step 0: Gate
-│  (client state) │     │  Creates contact  │
+│  (client state) │     │  Name/phone only  │
 └────────┬────────┘     └──────────────────┘
          │                       │
          │  onContactCreated     │  createContact() server action
@@ -97,14 +94,17 @@ User lands on /dashboard
          │
          ▼
 ┌─────────────────────────────────────────┐
-│  Steps 1-8: Product-specific content    │
-│  ┌─────────────┐  ┌──────────────────┐  │
-│  │ ProductTabs  │──│ Step Component   │  │
-│  │ (per product)│  │ (roadmap data)   │  │
-│  └─────────────┘  └──────────────────┘  │
-│                                         │
+│  Step 2: Universal Discovery            │
+│  Category → auto-maps to product        │
+│  1-10 baseline rating recorded          │
+└─────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────┐
+│  Steps 3-6: Product-contextual content  │
 │  Auto-save on every state change        │
 │  (500ms debounce → updateContact())     │
+│  Follow-up tracks 1-10 improvement      │
 └─────────────────────────────────────────┘
          │
          ▼
@@ -115,29 +115,17 @@ User lands on /dashboard
 └─────────────────┘
 ```
 
-### Multi-Product Support
+### Product Auto-Suggestion
 
-- Contacts can have multiple products (`product_ids: text[]`)
-- The `ProductTabs` component renders a tabbed interface when multiple products are selected
-- Per-product state is stored as JSONB objects keyed by product ID:
-  - `opening_types: { "freedom": "COLD APPROACH", "rem": "WARM INTRO" }`
-  - `questions_asked: { "freedom": [{ "question": "q1", "asked_at": "2026-03-13T..." }, ...] }`
-  - `objections_encountered: { "freedom": [{ "objection": "TOO EXPENSIVE", "encountered_at": "2026-03-13T..." }] }`
+- Discovery category selection maps to a recommended product (e.g., "Pain Management" → Freedom)
+- Rep can override or add more products at the Sample step
+- Per-product state is still stored as JSONB for closing techniques and objections:
   - `closing_techniques: { "freedom": "ASSUMPTIVE" }`
+  - `objections_encountered: { "freedom": [{ "objection": "TOO EXPENSIVE", "encountered_at": "..." }] }`
 
 ### Script Personalization
 
-All sales scripts support **contact name interpolation** via the shared `interpolateScript()` utility (`src/lib/interpolate-script.ts`). When a contact has been created, the following placeholders are automatically replaced with the contact's first name:
-
-- `{{FirstName}}` — standard template variable
-- `[Name]` — existing roadmap bracket style
-- `[Prospect Name]` — existing roadmap bracket style
-
-This applies across every step that displays copyable scripts: Opening, Presentation, Samples, Objections, Closing, and Follow-Up — as well as the activity feed's follow-up script button. The `DecisionTree` passes `contactFirstName` to each step component.
-
-### Contextual Presentation
-
-The Presentation step (Problem-Agitate-Solve) uses a `{{discovery_callback}}` placeholder in the agitate phase. At render time, `StepPresentation` replaces this with a sentence referencing the actual discovery questions the user checked off, creating a personalized script.
+All sales scripts support **contact name interpolation** via `interpolateScript()` and **category-contextual interpolation** via `interpolateFollowUpTemplate()`. Discovery answers (category, baseline rating) are dynamically inserted into follow-up scripts at runtime.
 
 ### Resume Flow
 
@@ -204,6 +192,12 @@ create table public.d2c_contacts (
   sample_followup_done boolean not null default false,
   outcome         text default 'pending',
   follow_up_day   integer,
+  discovery_category    text,
+  discovery_quality_rating integer,
+  discovery_duration    text,
+  discovery_tried_before text[] default '{}',
+  discovery_tried_result text,
+  followup_ratings      jsonb default '{}'::jsonb,
   stage_entered_at timestamptz default now(),
   peak_step       text,
   created_at      timestamptz default now() not null,
@@ -265,12 +259,13 @@ All 13 products have fully customized, product-specific content across all secti
 ### DecisionTree (`src/components/sales-flow/decision-tree.tsx`)
 The central orchestrator. Manages:
 - `activeContact` state (Contact or null)
-- `currentStepIndex` (0-8)
-- `DecisionTreeState` (per-product openings, questions, objections, closings, samples)
+- `currentStepIndex` (0-5)
+- `DecisionTreeState` (discovery answers, samples, follow-up ratings, closings, objections)
 - `storeSubdomain` (user's MLM store subdomain, fetched on mount)
 - Auto-save via `useEffect` with 500ms debounce
 - Contact gating (step 0 must be completed before proceeding)
-- Loads multiple roadmaps via `getRoadmapsForProducts()`
+- Auto-maps discovery category to product_ids
+- Legacy step normalization for existing contacts via `normalizeContactStep()`
 
 ### ProductTabs (`src/components/sales-flow/product-tabs.tsx`)
 Renders product-specific content in a tabbed interface. If only one product is selected, renders directly without tabs. Shows product tagline under tab name.
@@ -405,7 +400,7 @@ The app follows a clean, monochromatic visual language inspired by Pipedrive CRM
 - **Contact detail sheet**: View-first layout with summary, interactive stage navigator (chevrons advance/regress stages), Won/Lost buttons, tabbed content (INFO / SALES PROGRESS), active follow-up script with copy-to-clipboard, sticky mobile bottom action bar (Resume Flow, phone, email), and "Resume Flow" CTA. Edit mode via pencil icon toggle.
 - **Activity feed entries**: Flat list rows with type icons (phone/email/clock), red overdue dates, plain text day labels, one-tap checkbox for marking items done -- no card wrappers or colored accent bars
 - **Activity feed section headers**: Uppercase label with count (e.g., "OVERDUE 2") -- no parentheses
-- **Sales flow steps**: All step components (presentation, objections, closing, follow-up, samples) use flat div sections with border-b dividers instead of Card wrappers; Badge labels replaced with plain colored text or muted pills
+- **Sales flow steps**: All step components (discovery-v2, send-samples, follow-up, close, purchase-links) use flat div sections with border-b dividers instead of Card wrappers; Badge labels replaced with plain colored text or muted pills
 - **Reference tabs view**: All Card/CardHeader/CardContent stripped; sections use flat divs with section headers; Badge labels replaced with plain text spans
 - **Pipeline direction indicators**: Green TrendingUp arrow on kanban cards when stage_entered_at is within 24h (recently advanced); red TrendingDown arrow when current_step is behind peak_step (regressed); amber AlertCircle for stale contacts
 - **Resume flow**: DecisionTree shows a bordered contact header bar with back link to /contacts, product avatars, and bold name; step counter uses plain text instead of Badge; sales page heading shows "Resume: {name}" when resuming
@@ -558,15 +553,12 @@ Every user-facing script and speakable text has a share-or-copy button powered b
 
 | Component | What's Shareable |
 |-----------|-----------------|
-| `step-opening-picker.tsx` | Each opening approach script |
-| `step-discovery.tsx` | Each discovery question |
-| `step-presentation.tsx` | Each P-A-S phase + full script |
+| `step-discovery-v2.tsx` | Discovery questions and category selection |
 | `step-send-samples.tsx` | Sample offer, commitment, and experience scripts |
-| `step-objections.tsx` | Each objection response |
-| `step-closing.tsx` | Pre-close reminder + each closing technique |
-| `step-purchase-links.tsx` | Per-product purchase URLs + single/multi-product share scripts |
 | `step-followup.tsx` | Each follow-up template |
-| `reference-tabs-view.tsx` | All scripts across Opening, Discovery, Presentation (P-A-S + full script), Objections, Closing, Follow-Up, and Quick Ref tabs |
+| `step-close.tsx` | Closing techniques + objection responses |
+| `step-purchase-links.tsx` | Per-product purchase URLs + single/multi-product share scripts |
+| `reference-tabs-view.tsx` | All scripts across Discovery, Samples, Follow-Up, Close, and Quick Ref tabs |
 | `feed-entry.tsx` | Follow-up script templates in activity feed |
 | `contact-sheet.tsx` | Active follow-up script on contact detail |
 | `favorites/page.tsx` | Saved scripts, objections, and product references |
