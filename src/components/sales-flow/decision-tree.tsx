@@ -159,7 +159,6 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
 
   const isGated = !activeContact;
   const currentStep = SALES_STEPS[currentStepIndex];
-  const progress = ((currentStepIndex + 1) / SALES_STEPS.length) * 100;
   const saveInFlight = useRef(false);
   const stepsScrollRef = useRef<HTMLDivElement>(null);
   const pendingSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -496,87 +495,36 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
         </div>
       )}
 
-      {/* Progress bar */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between text-xs">
-          <span className="font-semibold text-foreground">Step {currentStepIndex + 1} of {SALES_STEPS.length}</span>
-          <span className="font-semibold text-foreground">{Math.round(progress)}% Complete</span>
-        </div>
-        <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-          <div
-            className="h-full rounded-full bg-primary transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-
-        {/* Step indicators -- desktop: bar, mobile: scrollable pills */}
-        <div className="hidden md:flex gap-1">
-          {SALES_STEPS.map((step, index) => {
-            const disabled = isGated && index > 0;
-            return (
-              <button
-                key={step.id}
-                onClick={() => !disabled && goToStep(index)}
-                className={`flex-1 group ${disabled ? "opacity-40 cursor-not-allowed" : ""}`}
-                disabled={disabled}
-              >
-                <div
-                  className={`h-1.5 rounded-full transition-colors ${
-                    index <= currentStepIndex ? "bg-primary" : "bg-muted"
-                  }`}
-                />
-                <span
-                  className={`text-[10px] mt-1 block truncate transition-colors ${
-                    index === currentStepIndex
-                      ? "text-foreground font-semibold"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  {step.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        <div
-          ref={stepsScrollRef}
-          className="flex md:hidden gap-2 overflow-x-auto scrollbar-none snap-x snap-mandatory -mx-4 px-4 pb-1"
-        >
-          {SALES_STEPS.map((step, index) => {
-            const disabled = isGated && index > 0;
-            const isCurrent = index === currentStepIndex;
-            const isCompleted = index < currentStepIndex;
-            const Icon = STEP_ICONS[step.id] || HelpCircle;
-            return (
-              <button
-                key={step.id}
-                onClick={() => !disabled && goToStep(index)}
-                disabled={disabled}
-                className={cn(
-                  "flex items-center gap-1.5 shrink-0 snap-center rounded-full px-3 min-h-[44px] text-xs font-medium border transition-all",
-                  isCurrent && "bg-primary text-primary-foreground border-primary",
-                  isCompleted && !isCurrent && "bg-primary/10 text-primary border-primary/30",
-                  !isCurrent && !isCompleted && "bg-muted text-muted-foreground border-transparent",
-                  disabled && "opacity-40 cursor-not-allowed"
-                )}
-              >
-                <Icon className="size-4 shrink-0" />
-                <span className={cn("whitespace-nowrap", isCurrent ? "" : "sr-only sm:not-sr-only")}>
-                  {step.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Current step header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-xs tabular-nums text-muted-foreground font-medium">{currentStep.number}/{SALES_STEPS.length}</span>
-          <h2 className="text-lg font-semibold">{currentStep.label}</h2>
-        </div>
+      {/* Sales flow stepper */}
+      <div
+        ref={stepsScrollRef}
+        className="flex gap-2 overflow-x-auto scrollbar-none snap-x snap-mandatory -mx-4 px-4 pb-1"
+      >
+        {SALES_STEPS.map((step, index) => {
+          const disabled = isGated && index > 0;
+          const isCurrent = index === currentStepIndex;
+          const isCompleted = index < currentStepIndex;
+          const Icon = STEP_ICONS[step.id] || HelpCircle;
+          return (
+            <button
+              key={step.id}
+              onClick={() => !disabled && goToStep(index)}
+              disabled={disabled}
+              className={cn(
+                "flex items-center gap-1.5 shrink-0 snap-center rounded-full px-3 min-h-[44px] text-xs font-medium border transition-all",
+                isCurrent && "bg-primary text-primary-foreground border-primary",
+                isCompleted && !isCurrent && "bg-primary/10 text-primary border-primary/30",
+                !isCurrent && !isCompleted && "bg-muted text-muted-foreground border-transparent",
+                disabled && "opacity-40 cursor-not-allowed"
+              )}
+            >
+              <Icon className="size-4 shrink-0" />
+              <span className="whitespace-nowrap">
+                {step.label}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Step content */}
