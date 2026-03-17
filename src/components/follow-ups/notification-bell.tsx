@@ -46,9 +46,9 @@ export function NotificationBell() {
     };
   }, [fetchCount]);
 
-  const handleCountChange = (newCount: number) => {
+  const handleCountChange = useCallback((newCount: number) => {
     setCount(newCount);
-  };
+  }, []);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>

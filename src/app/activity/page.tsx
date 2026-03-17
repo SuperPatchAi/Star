@@ -19,6 +19,10 @@ export default function ActivityPage() {
     fetchReminders();
   }, [fetchReminders]);
 
+  const handleCountChange = useCallback(() => {
+    fetchReminders();
+  }, [fetchReminders]);
+
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
       <div className="flex flex-col gap-1">
@@ -37,7 +41,7 @@ export default function ActivityPage() {
       <div className="-mx-4 md:-mx-6 flex-1 min-h-0">
         <ActivityFeed
           selectedDate={selectedDate}
-          onCountChange={() => fetchReminders()}
+          onCountChange={handleCountChange}
         />
       </div>
     </div>
