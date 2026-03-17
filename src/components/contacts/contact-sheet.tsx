@@ -29,6 +29,7 @@ import {
   X,
   Check,
   Plus,
+  Package,
 } from "lucide-react";
 import Image from "next/image";
 import { createContact, updateContact, updateContactOutcome } from "@/lib/actions/contacts";
@@ -241,6 +242,19 @@ function ViewMode({
           <X className="size-5 text-muted-foreground" />
         </button>
         <div className="flex items-center gap-1">
+          {localContact.sample_sent && (
+            <div
+              className="relative size-9 flex items-center justify-center"
+              title={localContact.sample_followup_done ? "Samples received" : "Samples sent — awaiting delivery"}
+            >
+              <Package className={cn(
+                "size-4",
+                localContact.sample_followup_done
+                  ? "text-green-600 dark:text-green-400"
+                  : "text-red-500 dark:text-red-400"
+              )} />
+            </div>
+          )}
           {localContact.phone && (
             <Button variant="ghost" size="icon" className="size-9" asChild>
               <a href={`tel:${localContact.phone}`} aria-label="Call">
