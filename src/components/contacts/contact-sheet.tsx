@@ -27,6 +27,8 @@ import {
   Mail,
   Pencil,
   X,
+  Check,
+  Plus,
 } from "lucide-react";
 import Image from "next/image";
 import { createContact, updateContact, updateContactOutcome } from "@/lib/actions/contacts";
@@ -171,6 +173,11 @@ function ViewMode({
 }) {
   const [acting, setActing] = useState(false);
   const [localContact, setLocalContact] = useState(contact);
+  const [editingAddress, setEditingAddress] = useState(false);
+  const [addressDraft, setAddressDraft] = useState({
+    line1: "", line2: "", city: "", state: "", zip: "",
+  });
+  const [savingAddress, setSavingAddress] = useState(false);
 
   useEffect(() => {
     setLocalContact(contact);
@@ -196,6 +203,35 @@ function ViewMode({
   const handleContactUpdated = useCallback((updates: Record<string, unknown>) => {
     setLocalContact((prev) => ({ ...prev, ...updates } as Contact));
   }, []);
+
+  const openAddressEdit = useCallback(() => {
+    setAddressDraft({
+      line1: localContact.address_line1 || "",
+      line2: localContact.address_line2 || "",
+      city: localContact.address_city || "",
+      state: localContact.address_state || "",
+      zip: localContact.address_zip || "",
+    });
+    setEditingAddress(true);
+  }, [localContact]);
+
+  const saveAddress = useCallback(async () => {
+    setSavingAddress(true);
+    try {
+      const updates = {
+        address_line1: addressDraft.line1.trim() || null,
+        address_line2: addressDraft.line2.trim() || null,
+        address_city: addressDraft.city.trim() || null,
+        address_state: addressDraft.state.trim() || null,
+        address_zip: addressDraft.zip.trim() || null,
+      };
+      await updateContact(localContact.id, updates);
+      setLocalContact((prev) => ({ ...prev, ...updates }));
+      setEditingAddress(false);
+    } finally {
+      setSavingAddress(false);
+    }
+  }, [localContact.id, addressDraft]);
 
   return (
     <div className="flex flex-col h-full">
@@ -260,11 +296,81 @@ function ViewMode({
                   )}
                 </div>
               )}
-              {localContact.address_line1 && (
-                <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1 truncate">
+              {editingAddress ? (
+                <div className="mt-2 space-y-2">
+                  <Input
+                    placeholder="Street address"
+                    value={addressDraft.line1}
+                    onChange={(e) => setAddressDraft(d => ({ ...d, line1: e.target.value }))}
+                    className="h-8 text-xs"
+                  />
+                  <Input
+                    placeholder="Apt / Suite / Unit"
+                    value={addressDraft.line2}
+                    onChange={(e) => setAddressDraft(d => ({ ...d, line2: e.target.value }))}
+                    className="h-8 text-xs"
+                  />
+                  <div className="grid grid-cols-5 gap-1.5">
+                    <Input
+                      placeholder="City"
+                      value={addressDraft.city}
+                      onChange={(e) => setAddressDraft(d => ({ ...d, city: e.target.value }))}
+                      className="col-span-2 h-8 text-xs"
+                    />
+                    <Input
+                      placeholder="ST"
+                      value={addressDraft.state}
+                      onChange={(e) => setAddressDraft(d => ({ ...d, state: e.target.value }))}
+                      maxLength={2}
+                      className="col-span-1 h-8 text-xs"
+                    />
+                    <Input
+                      placeholder="ZIP"
+                      value={addressDraft.zip}
+                      onChange={(e) => setAddressDraft(d => ({ ...d, zip: e.target.value }))}
+                      maxLength={10}
+                      className="col-span-2 h-8 text-xs"
+                    />
+                  </div>
+                  <div className="flex gap-1.5">
+                    <Button
+                      size="sm"
+                      className="h-7 text-xs flex-1"
+                      onClick={saveAddress}
+                      disabled={savingAddress}
+                    >
+                      {savingAddress ? <Loader2 className="size-3 animate-spin mr-1" /> : <Check className="size-3 mr-1" />}
+                      Save
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-7 text-xs"
+                      onClick={() => setEditingAddress(false)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              ) : localContact.address_line1 ? (
+                <button
+                  type="button"
+                  onClick={openAddressEdit}
+                  className="text-xs text-muted-foreground flex items-center gap-1 mt-1 truncate hover:text-foreground transition-colors group"
+                >
                   <MapPin className="size-3 shrink-0" />
                   {[localContact.address_line1, localContact.address_line2, localContact.address_city, localContact.address_state, localContact.address_zip].filter(Boolean).join(", ")}
-                </p>
+                  <Pencil className="size-2.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={openAddressEdit}
+                  className="text-xs text-muted-foreground flex items-center gap-1 mt-1 hover:text-foreground transition-colors"
+                >
+                  <Plus className="size-3 shrink-0" />
+                  Add address
+                </button>
               )}
             </div>
           </div>
