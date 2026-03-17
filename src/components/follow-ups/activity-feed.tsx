@@ -15,9 +15,10 @@ type FilterOption = "all" | ReminderUrgency;
 
 const FILTER_OPTIONS: { id: FilterOption; label: string }[] = [
   { id: "all", label: "All" },
-  { id: "overdue", label: "Overdue" },
   { id: "due_today", label: "Due Today" },
-  { id: "upcoming", label: "Upcoming" },
+  { id: "due_tomorrow", label: "Due Tomorrow" },
+  { id: "due_this_week", label: "Due This Week" },
+  { id: "overdue", label: "Overdue" },
 ];
 
 interface ActivityFeedProps {
@@ -49,18 +50,20 @@ export function ActivityFeed({ onCountChange, selectedDate }: ActivityFeedProps)
   const filtered = filter === "all" ? reminders : reminders.filter((r) => r.urgency === filter);
 
   const grouped: Record<ReminderUrgency, FollowUpReminder[]> = {
-    overdue: [],
     due_today: [],
-    upcoming: [],
+    due_tomorrow: [],
+    due_this_week: [],
+    overdue: [],
   };
   for (const r of filtered) {
     grouped[r.urgency].push(r);
   }
 
   const sectionConfig: { key: ReminderUrgency; label: string; accent: string }[] = [
-    { key: "overdue", label: "Overdue", accent: "text-destructive" },
     { key: "due_today", label: "Due Today", accent: "text-amber-600 dark:text-amber-400" },
-    { key: "upcoming", label: "Upcoming", accent: "text-muted-foreground" },
+    { key: "due_tomorrow", label: "Due Tomorrow", accent: "text-blue-600 dark:text-blue-400" },
+    { key: "due_this_week", label: "Due This Week", accent: "text-muted-foreground" },
+    { key: "overdue", label: "Overdue", accent: "text-destructive" },
   ];
 
   if (loading) {

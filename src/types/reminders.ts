@@ -1,7 +1,7 @@
 import type { Contact, ContactStep } from "@/lib/db/types";
 import type { RoadmapFollowUpStep } from "./roadmap";
 
-export type ReminderUrgency = "overdue" | "due_today" | "upcoming";
+export type ReminderUrgency = "due_today" | "due_tomorrow" | "due_this_week" | "overdue";
 export type ReminderType = "stale" | "followup_due";
 
 export interface FollowUpReminder {

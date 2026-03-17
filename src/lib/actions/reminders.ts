@@ -33,10 +33,11 @@ function toISODateString(date: Date): string {
   return `${y}-${m}-${d}`;
 }
 
-function computeUrgency(daysSinceEntry: number, thresholdDays: number): ReminderUrgency {
-  if (daysSinceEntry > thresholdDays) return "overdue";
-  if (daysSinceEntry === thresholdDays) return "due_today";
-  return "upcoming";
+function computeUrgencyFromDaysUntilDue(daysUntilDue: number): ReminderUrgency {
+  if (daysUntilDue < 0) return "overdue";
+  if (daysUntilDue === 0) return "due_today";
+  if (daysUntilDue === 1) return "due_tomorrow";
+  return "due_this_week";
 }
 
 export async function getFollowUpReminders(): Promise<{
@@ -79,12 +80,7 @@ export async function getFollowUpReminders(): Promise<{
         const daysUntilDue = dueOffset - daysSinceEntry;
         const followUpStep = followUpSequence?.[dayIndex];
 
-        let urgency: ReminderUrgency;
-        if (dayIndex === currentDayIndex) {
-          urgency = daysUntilDue < 0 ? "overdue" : daysUntilDue === 0 ? "due_today" : "upcoming";
-        } else {
-          urgency = "upcoming";
-        }
+        const urgency = computeUrgencyFromDaysUntilDue(daysUntilDue);
 
         const followupDueDate = addDays(enteredAt, dueOffset);
         reminders.push({
@@ -110,7 +106,7 @@ export async function getFollowUpReminders(): Promise<{
       reminders.push({
         contact,
         type: "stale",
-        urgency: computeUrgency(daysSinceEntry, threshold),
+        urgency: computeUrgencyFromDaysUntilDue(threshold - daysSinceEntry),
         stageName: getStageName(step),
         daysSinceEntry,
         dueDate: toISODateString(staleDueDate),
@@ -120,9 +116,10 @@ export async function getFollowUpReminders(): Promise<{
 
   reminders.sort((a, b) => {
     const urgencyOrder: Record<ReminderUrgency, number> = {
-      overdue: 0,
-      due_today: 1,
-      upcoming: 2,
+      due_today: 0,
+      due_tomorrow: 1,
+      due_this_week: 2,
+      overdue: 3,
     };
     return urgencyOrder[a.urgency] - urgencyOrder[b.urgency];
   });
