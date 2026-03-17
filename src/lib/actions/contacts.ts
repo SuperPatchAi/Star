@@ -90,7 +90,7 @@ export async function updateContact(id: string, updates: ContactUpdate) {
       updateChecklistItem("start_first_conversation").catch(() => {});
     }
 
-    const advancedStepIds = SALES_STEPS.filter(s => s.number >= 4).map(s => s.id);
+    const advancedStepIds = SALES_STEPS.filter(s => s.number >= 3).map(s => s.id);
     const advancedSteps = [...advancedStepIds, "closed"];
     if (updated.current_step && advancedSteps.includes(updated.current_step)) {
       updateChecklistItem("complete_sales_step").catch(() => {});
