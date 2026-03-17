@@ -37,6 +37,7 @@ interface StepDiscoveryV2Props {
   onTriedBeforeChange: (items: string[]) => void;
   onTriedResultChange: (result: string) => void;
   onContinue: () => void;
+  continueLabel?: string;
 }
 
 function getRatingLabel(value: number): string {
@@ -61,8 +62,12 @@ export function StepDiscoveryV2({
   onTriedBeforeChange,
   onTriedResultChange,
   onContinue,
+  continueLabel,
 }: StepDiscoveryV2Props) {
-  const [otherText, setOtherText] = useState("");
+  const existingOther = discoveryTriedBefore.find((i) => i.startsWith("Other: "));
+  const [otherText, setOtherText] = useState(
+    existingOther ? existingOther.replace("Other: ", "") : ""
+  );
 
   const category = discoveryCategory
     ? getCategoryByKey(discoveryCategory)
@@ -76,7 +81,22 @@ export function StepDiscoveryV2({
   const q4Script = `What else have you tried or done to deal with ${categoryLabel}?`;
   const q5Script = "How did that work out for you?";
 
+  const isOtherChecked =
+    discoveryTriedBefore.includes("Other") ||
+    discoveryTriedBefore.some((i) => i.startsWith("Other: "));
+
   const toggleTriedBefore = (item: string) => {
+    if (item === "Other") {
+      if (isOtherChecked) {
+        onTriedBeforeChange(
+          discoveryTriedBefore.filter((i) => i !== "Other" && !i.startsWith("Other: "))
+        );
+        setOtherText("");
+      } else {
+        onTriedBeforeChange([...discoveryTriedBefore, "Other"]);
+      }
+      return;
+    }
     const next = discoveryTriedBefore.includes(item)
       ? discoveryTriedBefore.filter((i) => i !== item)
       : [...discoveryTriedBefore, item];
@@ -244,7 +264,7 @@ export function StepDiscoveryV2({
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {TRIED_BEFORE_OPTIONS.map((item) => {
-              const checked = discoveryTriedBefore.includes(item);
+              const checked = item === "Other" ? isOtherChecked : discoveryTriedBefore.includes(item);
               const id = `tried-${item.toLowerCase().replace(/\s+/g, "-")}`;
               return (
                 <div key={item} className="flex items-center gap-2">
@@ -260,10 +280,18 @@ export function StepDiscoveryV2({
               );
             })}
           </div>
-          {discoveryTriedBefore.includes("Other") && (
+          {isOtherChecked && (
             <Input
               value={otherText}
               onChange={(e) => setOtherText(e.target.value)}
+              onBlur={() => {
+                if (!otherText.trim()) return;
+                const tag = `Other: ${otherText.trim()}`;
+                const cleaned = discoveryTriedBefore.filter(
+                  (i) => i !== "Other" && !i.startsWith("Other: ")
+                );
+                onTriedBeforeChange([...cleaned, tag]);
+              }}
               placeholder="What else have they tried?"
               className="mt-2"
             />
@@ -308,7 +336,7 @@ export function StepDiscoveryV2({
         disabled={!canContinue}
         className="w-full"
       >
-        Continue to Send Samples
+        {continueLabel ?? "Continue to Send Samples"}
         <ChevronRight className="size-4 ml-1.5" />
       </Button>
     </div>

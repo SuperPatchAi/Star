@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { Contact, ContactInsert, ContactUpdate } from "@/lib/db/types";
+import { normalizeContactStep } from "@/lib/db/types";
 import { SALES_STEPS } from "@/types/roadmap";
 import { updateChecklistItem } from "@/lib/actions/onboarding";
 
@@ -20,7 +21,11 @@ export async function getContacts() {
     .eq("user_id", user.id)
     .order("updated_at", { ascending: false });
 
-  return { data: data as Contact[] | null, error: error?.message || null };
+  const normalized = (data as Contact[] | null)?.map(c => ({
+    ...c,
+    current_step: normalizeContactStep(c.current_step),
+  })) ?? null;
+  return { data: normalized, error: error?.message || null };
 }
 
 export async function getContact(id: string) {
@@ -35,7 +40,8 @@ export async function getContact(id: string) {
     .eq("user_id", user.id)
     .single();
 
-  return { data: data as Contact | null, error: error?.message || null };
+  const contact = data ? { ...data, current_step: normalizeContactStep((data as Contact).current_step) } as Contact : null;
+  return { data: contact, error: error?.message || null };
 }
 
 export async function createContact(contact: Omit<ContactInsert, "user_id">) {
@@ -225,7 +231,10 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     .eq("user_id", user.id)
     .order("updated_at", { ascending: false });
 
-  const all = (contacts as Contact[]) || [];
+  const all = ((contacts as Contact[]) || []).map(c => ({
+    ...c,
+    current_step: normalizeContactStep(c.current_step),
+  }));
 
   const pipelineCounts: Record<string, number> = {};
   const outcomeCounts: Record<string, number> = {};

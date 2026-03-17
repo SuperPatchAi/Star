@@ -10,7 +10,7 @@ import Image from "next/image";
 import type { RoadmapV2, SalesStep } from "@/types/roadmap";
 import { SALES_STEPS } from "@/types/roadmap";
 import type { Product } from "@/types";
-import type { Contact, TimestampedQuestion, TimestampedObjection, QuestionsAsked, ObjectionsEncountered } from "@/lib/db/types";
+import type { Contact, TimestampedObjection, QuestionsAsked, ObjectionsEncountered } from "@/lib/db/types";
 import { normalizeQuestions, normalizeObjections, normalizeContactStep } from "@/lib/db/types";
 import { products as allProducts } from "@/data/products";
 import { updateContact, advanceFollowUpDay, markSamplesReceived } from "@/lib/actions/contacts";
@@ -268,27 +268,16 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
     setFollowUpDay(prev => prev + 1);
   }, [activeContact]);
 
-  const toggleQuestion = useCallback((productId: string, question: string) => {
-    setState(prev => {
-      const current = prev.questionsAsked[productId] || [];
-      const exists = current.some(q => q.question === question);
-      return {
-        ...prev,
-        questionsAsked: {
-          ...prev.questionsAsked,
-          [productId]: exists
-            ? current.filter(q => q.question !== question)
-            : [...current, { question, asked_at: new Date().toISOString() } as TimestampedQuestion],
-        },
-      };
-    });
-  }, []);
-
   const setDiscoveryCategory = useCallback((key: string) => {
     setState(prev => ({ ...prev, discoveryCategory: key }));
     const cat = getCategoryByKey(key);
     if (cat && activeContact) {
-      setActiveContact(prev => prev ? { ...prev, product_ids: [cat.productId] } : prev);
+      setActiveContact(prev => {
+        if (!prev) return prev;
+        if (prev.product_ids.length === 0) return { ...prev, product_ids: [cat.productId] };
+        const already = prev.product_ids.includes(cat.productId);
+        return already ? prev : { ...prev, product_ids: [cat.productId, ...prev.product_ids] };
+      });
     }
   }, [activeContact]);
 
@@ -389,6 +378,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
             onTriedBeforeChange={setDiscoveryTriedBefore}
             onTriedResultChange={setDiscoveryTriedResult}
             onContinue={goNext}
+            continueLabel={continueLabel}
           />
         );
       case "samples":

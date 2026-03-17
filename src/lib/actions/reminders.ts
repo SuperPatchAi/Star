@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getRoadmapSpec } from "@/lib/roadmap-data";
 import { SALES_STEPS } from "@/types/roadmap";
 import type { Contact, ContactStep } from "@/lib/db/types";
+import { normalizeContactStep } from "@/lib/db/types";
 import type { FollowUpReminder, ReminderUrgency } from "@/types/reminders";
 import { STALENESS_THRESHOLDS, FOLLOWUP_DAY_OFFSETS } from "@/types/reminders";
 
@@ -65,7 +66,7 @@ export async function getFollowUpReminders(): Promise<{
   for (const contact of contacts as Contact[]) {
     const enteredAt = new Date(contact.stage_entered_at);
     const daysSinceEntry = daysBetween(enteredAt, now);
-    const step = contact.current_step;
+    const step = normalizeContactStep(contact.current_step);
 
     if (step === "followup") {
       const currentDayIndex = contact.follow_up_day ?? 0;

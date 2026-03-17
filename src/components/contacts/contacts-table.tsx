@@ -20,6 +20,7 @@ import {
 import { products } from "@/data/products";
 import type { Contact, ContactStep } from "@/lib/db/types";
 import { STALENESS_THRESHOLDS } from "@/types/reminders";
+import { SALES_STEPS } from "@/types/roadmap";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
@@ -29,19 +30,10 @@ interface ContactsTableProps {
   onStartNew?: () => void;
 }
 
-const stepLabels: Record<string, string> = {
-  add_contact: "Add Contact",
-  discovery: "Discovery",
-  samples: "Send Samples",
-  followup: "Follow-Up",
-  close: "Close",
-  purchase_links: "Purchase Links",
-  closed: "Closed",
-  opening: "Opening",
-  presentation: "Presentation",
-  objections: "Objections",
-  closing: "Closing",
-};
+const stepLabels: Record<string, string> = Object.fromEntries([
+  ...SALES_STEPS.map(s => [s.id, s.label]),
+  ["closed", "Closed"],
+]);
 
 function OutcomeIcon({ outcome }: { outcome: string }) {
   switch (outcome) {
