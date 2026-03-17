@@ -45,6 +45,7 @@ interface DecisionTreeProps {
   initialContact?: Contact;
   variant?: "page" | "drawer";
   onContactCreated?: (contact: Contact) => void;
+  onContactUpdated?: (updates: Record<string, unknown>) => void;
 }
 
 function asRecord<T>(val: unknown, fallback: T): T {
@@ -110,7 +111,7 @@ const STEP_ICONS: Record<string, React.ElementType> = {
   purchase_links: ShoppingCart,
 };
 
-export function DecisionTree({ initialContact, variant = "page", onContactCreated: onContactCreatedProp }: DecisionTreeProps) {
+export function DecisionTree({ initialContact, variant = "page", onContactCreated: onContactCreatedProp, onContactUpdated }: DecisionTreeProps) {
   const isDrawer = variant === "drawer";
   const [activeContact, setActiveContact] = useState<Contact | null>(initialContact || null);
   const [followUpDay, setFollowUpDay] = useState(() => initialContact?.follow_up_day ?? 0);
@@ -201,7 +202,9 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
       saveInFlight.current = true;
       pendingSaveRef.current = null;
       try {
-        await updateContact(activeContact.id, buildSavePayload());
+        const payload = buildSavePayload();
+        await updateContact(activeContact.id, payload);
+        onContactUpdated?.(payload as Record<string, unknown>);
       } finally {
         saveInFlight.current = false;
       }

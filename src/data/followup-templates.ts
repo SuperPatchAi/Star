@@ -4,6 +4,7 @@ export interface FollowUpTemplate {
   channel: string;
   template: string;
   includesRating: boolean;
+  includesReferral?: boolean;
   checkboxLabel?: string;
 }
 
@@ -49,7 +50,8 @@ export const FOLLOWUP_SEQUENCE: FollowUpTemplate[] = [
     action: "Reorder + Referral",
     channel: "Call",
     template: "{{FirstName}}, you started at {{baseline}}/10 for {{categoryLabel}} and now you're at {{currentRating}}/10 — that's a {{improvement}}-point improvement! Who else in your life could benefit from this kind of change?",
-    includesRating: true,
+    includesRating: false,
+    includesReferral: true,
   },
   {
     day: "DAY 14",

@@ -193,6 +193,10 @@ function ViewMode({
     }
   }, [localContact.id, onSaved]);
 
+  const handleContactUpdated = useCallback((updates: Record<string, unknown>) => {
+    setLocalContact((prev) => ({ ...prev, ...updates } as Contact));
+  }, []);
+
   return (
     <div className="flex flex-col h-full">
       {/* Sticky header bar */}
@@ -322,6 +326,7 @@ function ViewMode({
             key={localContact.id}
             initialContact={localContact}
             variant="drawer"
+            onContactUpdated={handleContactUpdated}
           />
         </div>
       </div>

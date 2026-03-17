@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import {
@@ -18,6 +19,9 @@ import {
   TrendingUp,
   TrendingDown,
   Minus,
+  UserPlus,
+  Plus,
+  Trash2,
 } from "lucide-react";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { cn } from "@/lib/utils";
@@ -27,6 +31,14 @@ import {
 } from "@/data/followup-templates";
 import { joinCategoryLabels } from "@/data/discovery-categories";
 import { getProductById } from "@/data/products";
+import { createContact } from "@/lib/actions/contacts";
+
+interface ReferralEntry {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+}
 
 interface StepFollowUpProps {
   contactId?: string;
@@ -84,6 +96,8 @@ export function StepFollowUp({
   sampleProducts,
 }: StepFollowUpProps) {
   const [advancing, setAdvancing] = useState(false);
+  const emptyReferral = (): ReferralEntry => ({ firstName: "", lastName: "", phone: "", email: "" });
+  const [referrals, setReferrals] = useState<ReferralEntry[]>([emptyReferral()]);
 
   const categoryLabel = joinCategoryLabels(discoveryCategories);
   const firstProduct = sampleProducts.length > 0 ? getProductById(sampleProducts[0]) : null;
@@ -116,10 +130,37 @@ export function StepFollowUp({
     });
   }
 
+  const updateReferral = (index: number, field: keyof ReferralEntry, value: string) => {
+    setReferrals((prev) => prev.map((r, i) => (i === index ? { ...r, [field]: value } : r)));
+  };
+
+  const addReferral = () => setReferrals((prev) => [...prev, emptyReferral()]);
+
+  const removeReferral = (index: number) => {
+    setReferrals((prev) => (prev.length <= 1 ? [emptyReferral()] : prev.filter((_, i) => i !== index)));
+  };
+
+  const validReferrals = referrals.filter((r) => r.firstName.trim() && r.lastName.trim());
+
   const handleAdvance = async () => {
     if (!onAdvance) return;
     setAdvancing(true);
     try {
+      if (currentStep?.includesReferral && validReferrals.length > 0) {
+        await Promise.all(
+          validReferrals.map((r) =>
+            createContact({
+              first_name: r.firstName.trim(),
+              last_name: r.lastName.trim(),
+              phone: r.phone.trim() || null,
+              email: r.email.trim() || null,
+              product_ids: [],
+              current_step: "add_contact",
+              notes: `Referral from ${contactFirstName ?? "a contact"}`,
+            })
+          )
+        );
+      }
       await onAdvance();
     } finally {
       setAdvancing(false);
@@ -274,6 +315,75 @@ export function StepFollowUp({
             </div>
           )}
 
+          {/* Referral capture form */}
+          {currentStep.includesReferral && (
+            <div className="rounded-lg border bg-card p-3 space-y-3">
+              <div className="flex items-center gap-2">
+                <UserPlus className="size-4 text-primary" />
+                <Label className="text-sm font-medium">Referrals</Label>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Add anyone they mentioned. These will be saved as new contacts.
+              </p>
+              <div className="space-y-3">
+                {referrals.map((ref, idx) => (
+                  <div key={idx} className="space-y-2 rounded-lg border border-border/60 p-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-muted-foreground">
+                        Referral {idx + 1}
+                      </span>
+                      {referrals.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeReferral(idx)}
+                          className="text-muted-foreground hover:text-destructive transition-colors"
+                        >
+                          <Trash2 className="size-3.5" />
+                        </button>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Input
+                        placeholder="First Name"
+                        value={ref.firstName}
+                        onChange={(e) => updateReferral(idx, "firstName", e.target.value)}
+                      />
+                      <Input
+                        placeholder="Last Name"
+                        value={ref.lastName}
+                        onChange={(e) => updateReferral(idx, "lastName", e.target.value)}
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Input
+                        placeholder="Phone"
+                        type="tel"
+                        value={ref.phone}
+                        onChange={(e) => updateReferral(idx, "phone", e.target.value)}
+                      />
+                      <Input
+                        placeholder="Email"
+                        type="email"
+                        value={ref.email}
+                        onChange={(e) => updateReferral(idx, "email", e.target.value)}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="w-full"
+                onClick={addReferral}
+              >
+                <Plus className="size-3.5 mr-1.5" />
+                Add Another
+              </Button>
+            </div>
+          )}
+
           {onAdvance && (
             <Button
               className="w-full h-10"
@@ -281,7 +391,9 @@ export function StepFollowUp({
               disabled={advancing || zoomBlocked}
             >
               <Check className="size-4 mr-1.5" />
-              Mark Done &amp; Advance
+              {currentStep.includesReferral && validReferrals.length > 0
+                ? `Save ${validReferrals.length} Referral${validReferrals.length > 1 ? "s" : ""} & Advance`
+                : "Mark Done & Advance"}
             </Button>
           )}
         </div>
