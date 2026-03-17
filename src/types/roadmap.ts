@@ -109,23 +109,17 @@ export interface RoadmapV2 {
 
 export type SalesStep =
   | "add_contact"
-  | "opening"
   | "discovery"
-  | "presentation"
   | "samples"
   | "followup"
-  | "closing"
-  | "objections"
+  | "close"
   | "purchase_links";
 
 export const SALES_STEPS: { id: SalesStep; label: string; number: number }[] = [
   { id: "add_contact", label: "Add Contact", number: 1 },
-  { id: "opening", label: "Opening Approach", number: 2 },
-  { id: "discovery", label: "Discovery", number: 3 },
-  { id: "presentation", label: "Presentation", number: 4 },
-  { id: "samples", label: "Send Samples", number: 5 },
-  { id: "followup", label: "Follow-Up", number: 6 },
-  { id: "closing", label: "Close", number: 7 },
-  { id: "objections", label: "Objections", number: 8 },
-  { id: "purchase_links", label: "Purchase Links", number: 9 },
+  { id: "discovery", label: "Discovery", number: 2 },
+  { id: "samples", label: "Send Samples", number: 3 },
+  { id: "followup", label: "Follow-Up", number: 4 },
+  { id: "close", label: "Close", number: 5 },
+  { id: "purchase_links", label: "Purchase Links", number: 6 },
 ];

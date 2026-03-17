@@ -19,13 +19,10 @@ export interface FollowUpReminder {
 
 export const STALENESS_THRESHOLDS: Record<ContactStep, number> = {
   add_contact: 2,
-  opening: 2,
   discovery: 2,
-  presentation: 2,
   samples: 2,
-  followup: 0, // handled by DAY sequence, not staleness
-  closing: 2,
-  objections: 2,
+  followup: 0,
+  close: 2,
   purchase_links: 2,
   closed: Infinity,
 };

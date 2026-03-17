@@ -2,7 +2,19 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 
 export type UserRole = 'admin' | 'user';
 
-export type ContactStep = 'add_contact' | 'opening' | 'discovery' | 'presentation' | 'samples' | 'followup' | 'closing' | 'objections' | 'purchase_links' | 'closed';
+export type ContactStep = 'add_contact' | 'discovery' | 'samples' | 'followup' | 'close' | 'purchase_links' | 'closed';
+
+const LEGACY_STEP_MAP: Record<string, ContactStep> = {
+  opening: 'discovery',
+  presentation: 'samples',
+  closing: 'close',
+  objections: 'close',
+};
+
+export function normalizeContactStep(step: string): ContactStep {
+  return (LEGACY_STEP_MAP[step] as ContactStep) || (step as ContactStep);
+}
+
 export type ContactOutcome = 'pending' | 'won' | 'lost' | 'follow_up';
 
 export interface TimestampedQuestion {
@@ -118,6 +130,12 @@ export interface Database {
           sample_followup_done: boolean;
           outcome: ContactOutcome;
           follow_up_day: number | null;
+          discovery_category: string | null;
+          discovery_quality_rating: number | null;
+          discovery_duration: string | null;
+          discovery_tried_before: string[];
+          discovery_tried_result: string | null;
+          followup_ratings: Record<string, number>;
           peak_step: string | null;
           stage_entered_at: string;
           created_at: string;
@@ -148,6 +166,12 @@ export interface Database {
           sample_followup_done?: boolean;
           outcome?: ContactOutcome;
           follow_up_day?: number | null;
+          discovery_category?: string | null;
+          discovery_quality_rating?: number | null;
+          discovery_duration?: string | null;
+          discovery_tried_before?: string[];
+          discovery_tried_result?: string | null;
+          followup_ratings?: Record<string, number>;
           peak_step?: string | null;
           stage_entered_at?: string;
           created_at?: string;
@@ -176,6 +200,12 @@ export interface Database {
           sample_followup_done?: boolean;
           outcome?: ContactOutcome;
           follow_up_day?: number | null;
+          discovery_category?: string | null;
+          discovery_quality_rating?: number | null;
+          discovery_duration?: string | null;
+          discovery_tried_before?: string[];
+          discovery_tried_result?: string | null;
+          followup_ratings?: Record<string, number>;
           peak_step?: string | null;
           stage_entered_at?: string;
           updated_at?: string;
