@@ -5,38 +5,40 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, UserPlus, MessageSquare, HelpCircle, Presentation, Package, ShieldAlert, Handshake, ShoppingCart, CalendarCheck, ArrowLeft } from "lucide-react";
+import { ChevronLeft, ChevronRight, UserPlus, HelpCircle, Package, Handshake, ShoppingCart, CalendarCheck, ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import type { RoadmapV2, SalesStep } from "@/types/roadmap";
 import { SALES_STEPS } from "@/types/roadmap";
 import type { Product } from "@/types";
 import type { Contact, TimestampedQuestion, TimestampedObjection, QuestionsAsked, ObjectionsEncountered } from "@/lib/db/types";
-import { normalizeQuestions, normalizeObjections } from "@/lib/db/types";
+import { normalizeQuestions, normalizeObjections, normalizeContactStep } from "@/lib/db/types";
 import { products as allProducts } from "@/data/products";
 import { updateContact, advanceFollowUpDay, markSamplesReceived } from "@/lib/actions/contacts";
 import { getStoreSubdomain } from "@/lib/actions/profile";
 import { getRoadmapsForProducts } from "@/lib/roadmap-data";
 import { StepAddContact } from "./step-add-contact";
-import { StepOpeningPicker } from "./step-opening-picker";
-import { StepDiscovery } from "./step-discovery";
-import { StepPresentation } from "./step-presentation";
-import { StepObjections } from "./step-objections";
-import { StepClosing } from "./step-closing";
+import { StepDiscoveryV2 } from "./step-discovery-v2";
+import { StepClose } from "./step-close";
 import { StepFollowUp } from "./step-followup";
 import { StepPurchaseLinks } from "./step-purchase-links";
 import { StepSendSamples, type SampleAddress } from "./step-send-samples";
 import { ProductTabs } from "./product-tabs";
-import { CustomerInsight } from "./customer-insight";
+import { getCategoryByKey } from "@/data/discovery-categories";
 
 export interface DecisionTreeState {
-  openingTypes: Record<string, string>;
-  questionsAsked: QuestionsAsked;
-  objectionsEncountered: ObjectionsEncountered;
-  closingTechniques: Record<string, string>;
+  discoveryCategory: string | null;
+  discoveryQualityRating: number | null;
+  discoveryDuration: string | null;
+  discoveryTriedBefore: string[];
+  discoveryTriedResult: string | null;
   sampleAgreed: boolean;
   sampleProducts: string[];
   sampleAddress: SampleAddress | null;
   sampleReceived: boolean;
+  followupRatings: Record<string, number>;
+  questionsAsked: QuestionsAsked;
+  objectionsEncountered: ObjectionsEncountered;
+  closingTechniques: Record<string, string>;
 }
 
 interface DecisionTreeProps {
@@ -68,42 +70,44 @@ function normalizeObjectionsRecord(raw: unknown): ObjectionsEncountered {
   return result;
 }
 
+function getLatestRating(ratings: Record<string, number>): number | undefined {
+  const keys = Object.keys(ratings).map(Number).sort((a, b) => b - a);
+  return keys.length > 0 ? ratings[String(keys[0])] : undefined;
+}
+
 function contactToState(contact: Contact): DecisionTreeState {
   return {
-    openingTypes: asRecord(contact.opening_types, {}),
-    questionsAsked: normalizeQuestionsRecord(contact.questions_asked),
-    objectionsEncountered: normalizeObjectionsRecord(contact.objections_encountered),
-    closingTechniques: asRecord(contact.closing_techniques, {}),
+    discoveryCategory: contact.discovery_category || null,
+    discoveryQualityRating: contact.discovery_quality_rating || null,
+    discoveryDuration: contact.discovery_duration || null,
+    discoveryTriedBefore: contact.discovery_tried_before || [],
+    discoveryTriedResult: contact.discovery_tried_result || null,
     sampleAgreed: contact.sample_sent,
     sampleProducts: contact.sample_products || [],
     sampleReceived: contact.sample_followup_done,
     sampleAddress: contact.address_line1
-      ? {
-          line1: contact.address_line1 || "",
-          line2: contact.address_line2 || "",
-          city: contact.address_city || "",
-          state: contact.address_state || "",
-          zip: contact.address_zip || "",
-        }
+      ? { line1: contact.address_line1 || "", line2: contact.address_line2 || "", city: contact.address_city || "", state: contact.address_state || "", zip: contact.address_zip || "" }
       : null,
+    followupRatings: asRecord(contact.followup_ratings, {} as Record<string, number>),
+    questionsAsked: normalizeQuestionsRecord(contact.questions_asked),
+    objectionsEncountered: normalizeObjectionsRecord(contact.objections_encountered),
+    closingTechniques: asRecord(contact.closing_techniques, {}),
   };
 }
 
 function stepIdToIndex(stepId: string): number {
-  const idx = SALES_STEPS.findIndex((s) => s.id === stepId);
+  const normalized = normalizeContactStep(stepId);
+  const idx = SALES_STEPS.findIndex((s) => s.id === normalized);
   return idx >= 0 ? idx : 0;
 }
 
 const STEP_ICONS: Record<string, React.ElementType> = {
   add_contact: UserPlus,
-  opening: MessageSquare,
   discovery: HelpCircle,
-  presentation: Presentation,
   samples: Package,
-  objections: ShieldAlert,
-  closing: Handshake,
-  purchase_links: ShoppingCart,
   followup: CalendarCheck,
+  close: Handshake,
+  purchase_links: ShoppingCart,
 };
 
 export function DecisionTree({ initialContact, variant = "page", onContactCreated: onContactCreatedProp }: DecisionTreeProps) {
@@ -115,14 +119,19 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
   );
   const [state, setState] = useState<DecisionTreeState>(() =>
     initialContact ? contactToState(initialContact) : {
-      openingTypes: {},
-      questionsAsked: {},
-      objectionsEncountered: {},
-      closingTechniques: {},
+      discoveryCategory: null,
+      discoveryQualityRating: null,
+      discoveryDuration: null,
+      discoveryTriedBefore: [],
+      discoveryTriedResult: null,
       sampleAgreed: false,
       sampleProducts: [],
       sampleAddress: null,
       sampleReceived: false,
+      followupRatings: {},
+      questionsAsked: {},
+      objectionsEncountered: {},
+      closingTechniques: {},
     }
   );
 
@@ -166,19 +175,25 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
 
   const buildSavePayload = useCallback(() => ({
     current_step: currentStep.id,
-    opening_types: state.openingTypes,
+    product_ids: activeContact?.product_ids || [],
+    discovery_category: state.discoveryCategory,
+    discovery_quality_rating: state.discoveryQualityRating,
+    discovery_duration: state.discoveryDuration,
+    discovery_tried_before: state.discoveryTriedBefore,
+    discovery_tried_result: state.discoveryTriedResult,
     questions_asked: state.questionsAsked,
     objections_encountered: state.objectionsEncountered,
     closing_techniques: state.closingTechniques,
     sample_sent: state.sampleAgreed,
     sample_products: state.sampleProducts,
     sample_followup_done: state.sampleReceived,
+    followup_ratings: state.followupRatings,
     address_line1: state.sampleAddress?.line1 || null,
     address_line2: state.sampleAddress?.line2 || null,
     address_city: state.sampleAddress?.city || null,
     address_state: state.sampleAddress?.state || null,
     address_zip: state.sampleAddress?.zip || null,
-  }), [currentStep.id, state]);
+  }), [currentStep.id, state, activeContact?.product_ids]);
 
   useEffect(() => {
     if (!activeContact || currentStepIndex === 0 || saveInFlight.current) return;
@@ -206,13 +221,19 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
         pendingSaveRef.current = null;
         updateContact(contactRef.id, {
           current_step: currentStep.id,
-          opening_types: state.openingTypes,
+          product_ids: contactRef.product_ids || [],
+          discovery_category: state.discoveryCategory,
+          discovery_quality_rating: state.discoveryQualityRating,
+          discovery_duration: state.discoveryDuration,
+          discovery_tried_before: state.discoveryTriedBefore,
+          discovery_tried_result: state.discoveryTriedResult,
           questions_asked: state.questionsAsked,
           objections_encountered: state.objectionsEncountered,
           closing_techniques: state.closingTechniques,
           sample_sent: state.sampleAgreed,
           sample_products: state.sampleProducts,
           sample_followup_done: state.sampleReceived,
+          followup_ratings: state.followupRatings,
           address_line1: state.sampleAddress?.line1 || null,
           address_line2: state.sampleAddress?.line2 || null,
           address_city: state.sampleAddress?.city || null,
@@ -247,13 +268,6 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
     setFollowUpDay(prev => prev + 1);
   }, [activeContact]);
 
-  const setOpeningType = useCallback((productId: string, type: string) => {
-    setState(prev => ({
-      ...prev,
-      openingTypes: { ...prev.openingTypes, [productId]: type },
-    }));
-  }, []);
-
   const toggleQuestion = useCallback((productId: string, question: string) => {
     setState(prev => {
       const current = prev.questionsAsked[productId] || [];
@@ -268,6 +282,37 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
         },
       };
     });
+  }, []);
+
+  const setDiscoveryCategory = useCallback((key: string) => {
+    setState(prev => ({ ...prev, discoveryCategory: key }));
+    const cat = getCategoryByKey(key);
+    if (cat && activeContact) {
+      setActiveContact(prev => prev ? { ...prev, product_ids: [cat.productId] } : prev);
+    }
+  }, [activeContact]);
+
+  const setDiscoveryQualityRating = useCallback((rating: number) => {
+    setState(prev => ({ ...prev, discoveryQualityRating: rating }));
+  }, []);
+
+  const setDiscoveryDuration = useCallback((duration: string) => {
+    setState(prev => ({ ...prev, discoveryDuration: duration }));
+  }, []);
+
+  const setDiscoveryTriedBefore = useCallback((items: string[]) => {
+    setState(prev => ({ ...prev, discoveryTriedBefore: items }));
+  }, []);
+
+  const setDiscoveryTriedResult = useCallback((result: string) => {
+    setState(prev => ({ ...prev, discoveryTriedResult: result }));
+  }, []);
+
+  const setFollowupRating = useCallback((dayIndex: number, rating: number) => {
+    setState(prev => ({
+      ...prev,
+      followupRatings: { ...prev.followupRatings, [String(dayIndex)]: rating },
+    }));
   }, []);
 
   const toggleObjection = useCallback((productId: string, objection: string) => {
@@ -329,71 +374,22 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
             existingContact={activeContact}
           />
         );
-      case "opening":
-        return (
-          <ProductTabs products={contactProducts}>
-            {(product) => {
-              const roadmap = roadmaps[product.id];
-              if (!roadmap) return null;
-              return (
-                <div className="space-y-4">
-                  <CustomerInsight
-                    data={roadmap.sections["1_customer_profile"]}
-                    productName={product.name}
-                  />
-                  <StepOpeningPicker
-                    data={roadmap.sections["2_opening_approaches"]}
-                    selectedType={state.openingTypes[product.id] || null}
-                    onSelect={(type) => { setOpeningType(product.id, type); }}
-                    onContinue={goNext}
-                    contactFirstName={contactFirstName}
-                  />
-                </div>
-              );
-            }}
-          </ProductTabs>
-        );
       case "discovery":
         return (
-          <ProductTabs products={contactProducts}>
-            {(product) => {
-              const roadmap = roadmaps[product.id];
-              if (!roadmap) return null;
-              return (
-                <div className="space-y-4">
-                  <CustomerInsight
-                    data={roadmap.sections["1_customer_profile"]}
-                    productName={product.name}
-                  />
-                  <StepDiscovery
-                    data={roadmap.sections["3_discovery_questions"]}
-                    questionsAsked={(state.questionsAsked[product.id] || []).map(q => q.question)}
-                    onToggleQuestion={(q) => toggleQuestion(product.id, q)}
-                    onContinue={goNext}
-                  />
-                </div>
-              );
-            }}
-          </ProductTabs>
-        );
-      case "presentation":
-        return (
-          <ProductTabs products={contactProducts}>
-            {(product) => {
-              const roadmap = roadmaps[product.id];
-              if (!roadmap) return null;
-              return (
-                <StepPresentation
-                  data={roadmap.sections["4_presentation"]}
-                  product={product}
-                  metadata={roadmap.metadata}
-                  questionsAsked={(state.questionsAsked[product.id] || []).map(q => q.question)}
-                  onContinue={goNext}
-                  contactFirstName={contactFirstName}
-                />
-              );
-            }}
-          </ProductTabs>
+          <StepDiscoveryV2
+            discoveryCategory={state.discoveryCategory}
+            discoveryQualityRating={state.discoveryQualityRating}
+            discoveryDuration={state.discoveryDuration}
+            discoveryTriedBefore={state.discoveryTriedBefore}
+            discoveryTriedResult={state.discoveryTriedResult}
+            contactFirstName={contactFirstName}
+            onCategoryChange={setDiscoveryCategory}
+            onQualityRatingChange={setDiscoveryQualityRating}
+            onDurationChange={setDiscoveryDuration}
+            onTriedBeforeChange={setDiscoveryTriedBefore}
+            onTriedResultChange={setDiscoveryTriedResult}
+            onContinue={goNext}
+          />
         );
       case "samples":
         return (
@@ -408,40 +404,46 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
             onContinue={goNext}
             contactFirstName={contactFirstName}
             continueLabel={continueLabel}
+            discoveryCategory={state.discoveryCategory}
           />
         );
-      case "objections":
+      case "followup":
         return (
-          <ProductTabs products={contactProducts}>
-            {(product) => {
-              const roadmap = roadmaps[product.id];
-              if (!roadmap) return null;
-              return (
-                <StepObjections
-                  data={roadmap.sections["5_objection_handling"]}
-                  encountered={(state.objectionsEncountered[product.id] || []).map(o => o.objection)}
-                  onToggle={(obj) => toggleObjection(product.id, obj)}
-                  onContinue={goNext}
-                  contactFirstName={contactFirstName}
-                  continueLabel={continueLabel}
-                />
-              );
-            }}
-          </ProductTabs>
+          <StepFollowUp
+            contactId={activeContact?.id}
+            followUpDay={followUpDay}
+            onAdvance={handleAdvanceFollowUp}
+            contactFirstName={contactFirstName}
+            sampleReceived={state.sampleReceived}
+            onSampleReceived={handleSampleReceived}
+            continueLabel={continueLabel}
+            onContinue={goNext}
+            discoveryCategory={state.discoveryCategory}
+            discoveryQualityRating={state.discoveryQualityRating}
+            followupRatings={state.followupRatings}
+            onFollowupRatingChange={setFollowupRating}
+            sampleProducts={state.sampleProducts}
+          />
         );
-      case "closing":
+      case "close":
         return (
           <ProductTabs products={contactProducts}>
             {(product) => {
               const roadmap = roadmaps[product.id];
               if (!roadmap) return null;
               return (
-                <StepClosing
-                  data={roadmap.sections["6_closing"]}
+                <StepClose
+                  closingData={roadmap.sections["6_closing"]}
+                  objectionData={roadmap.sections["5_objection_handling"]}
                   selectedTechnique={state.closingTechniques[product.id] || null}
-                  onSelect={(t) => setClosingTechnique(product.id, t)}
+                  encounteredObjections={(state.objectionsEncountered[product.id] || []).map(o => o.objection)}
+                  onSelectTechnique={(t) => setClosingTechnique(product.id, t)}
+                  onToggleObjection={(obj) => toggleObjection(product.id, obj)}
                   onContinue={goNext}
                   contactFirstName={contactFirstName}
+                  baseline={state.discoveryQualityRating || undefined}
+                  currentRating={getLatestRating(state.followupRatings)}
+                  categoryLabel={getCategoryByKey(state.discoveryCategory || "")?.categoryLabel}
                   continueLabel={continueLabel}
                 />
               );
@@ -461,28 +463,6 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                 contactId={activeContact?.id}
               />
             )}
-          </ProductTabs>
-        );
-      case "followup":
-        return (
-          <ProductTabs products={contactProducts}>
-            {(product) => {
-              const roadmap = roadmaps[product.id];
-              if (!roadmap) return null;
-              return (
-                <StepFollowUp
-                  data={roadmap.sections["7_followup"]}
-                  contactId={activeContact?.id}
-                  followUpDay={followUpDay}
-                  onAdvance={handleAdvanceFollowUp}
-                  contactFirstName={contactFirstName}
-                  sampleReceived={state.sampleReceived}
-                  onSampleReceived={handleSampleReceived}
-                  continueLabel={continueLabel}
-                  onContinue={goNext}
-                />
-              );
-            }}
           </ProductTabs>
         );
       default:
