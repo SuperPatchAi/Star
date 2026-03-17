@@ -28,7 +28,7 @@ interface ActivityFeedProps {
 export function ActivityFeed({ onCountChange, selectedDate }: ActivityFeedProps) {
   const [reminders, setReminders] = useState<FollowUpReminder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<FilterOption>("all");
+  const [filter, setFilter] = useState<FilterOption>("due_today");
 
   const fetchReminders = useCallback(async () => {
     const { data } = await getFollowUpReminders();

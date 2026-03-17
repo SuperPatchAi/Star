@@ -37,6 +37,7 @@ export interface SampleAddress {
 
 interface StepSendSamplesProps {
   products: Product[];
+  allProducts: Product[];
   sampleAgreed: boolean;
   sampleProducts: string[];
   sampleAddress: SampleAddress | null;
@@ -55,6 +56,7 @@ const COMMITMENT_SCRIPT = `Call me as soon as you get my package. Do not open or
 
 export function StepSendSamples({
   products,
+  allProducts,
   sampleAgreed,
   sampleProducts,
   sampleAddress,
@@ -81,7 +83,7 @@ export function StepSendSamples({
     onSetSampleAddress({ ...address, [field]: value });
   };
 
-  const otherProducts = products.filter((p) => !suggestedProductIds.has(p.id));
+  const otherProducts = allProducts.filter((p) => !suggestedProductIds.has(p.id));
 
   return (
     <div className="space-y-4">

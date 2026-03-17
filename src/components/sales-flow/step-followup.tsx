@@ -310,15 +310,17 @@ export function StepFollowUp({
           {FOLLOWUP_SEQUENCE.map((step, index) => {
             const isComplete = index < followUpDay;
             const isCurrent = index === followUpDay;
+            const isFuture = index > followUpDay;
             const scriptText = getInterpolatedScript(step.template, index);
             return (
-              <div key={index} className="relative flex gap-4">
+              <div key={index} className={cn("relative flex gap-4", isFuture && "opacity-40")}>
                 <div
                   className={cn(
                     "relative z-10 flex size-[44px] shrink-0 items-center justify-center rounded-full border-2 bg-background text-xs font-bold transition-colors",
                     isCurrent && "border-primary text-primary",
                     isComplete && "border-green-500 bg-green-500 text-white",
-                    !isCurrent && !isComplete && "border-muted-foreground/30 text-muted-foreground/50"
+                    isFuture && "border-muted-foreground/20 text-muted-foreground/30 bg-muted/50",
+                    !isCurrent && !isComplete && !isFuture && "border-muted-foreground/30 text-muted-foreground/50"
                   )}
                 >
                   {isComplete ? <Check className="size-4" /> : step.day.replace("DAY ", "D")}
@@ -334,7 +336,8 @@ export function StepFollowUp({
                     <p
                       className={cn(
                         "text-sm font-semibold",
-                        isComplete && "line-through"
+                        isComplete && "line-through",
+                        isFuture && "text-muted-foreground"
                       )}
                     >
                       {step.action}
@@ -345,7 +348,7 @@ export function StepFollowUp({
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground mb-2">{step.day}</p>
-                  {!isComplete && (
+                  {isCurrent && (
                     <div className="bg-muted rounded-lg p-3 text-sm relative group whitespace-pre-wrap">
                       {scriptText}
                       <ShareCopyButton

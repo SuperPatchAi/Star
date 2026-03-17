@@ -396,6 +396,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
         return (
           <StepSendSamples
             products={contactProducts}
+            allProducts={allProducts}
             sampleAgreed={state.sampleAgreed}
             sampleProducts={state.sampleProducts}
             sampleAddress={state.sampleAddress}
