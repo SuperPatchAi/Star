@@ -172,24 +172,17 @@ export function StepDiscoveryV2({
           </div>
           <div className="text-center">
             <span className="text-4xl font-bold tabular-nums">
-              {discoveryQualityRating ?? "—"}
+              {discoveryQualityRating ?? 5}
             </span>
-            {discoveryQualityRating !== null && (
-              <p className="text-xs text-muted-foreground mt-1">
-                {getRatingLabel(discoveryQualityRating)}
-              </p>
-            )}
+            <p className="text-xs text-muted-foreground mt-1">
+              {getRatingLabel(discoveryQualityRating ?? 5)}
+            </p>
           </div>
           <Slider
             min={1}
             max={10}
             step={1}
-            value={
-              discoveryQualityRating !== null
-                ? [discoveryQualityRating]
-                : undefined
-            }
-            defaultValue={[5]}
+            value={[discoveryQualityRating ?? 5]}
             onValueChange={([val]) => onQualityRatingChange(val)}
           />
           <div className="flex justify-between text-[10px] text-muted-foreground">

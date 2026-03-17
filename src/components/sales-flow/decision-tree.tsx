@@ -269,7 +269,11 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
   }, [activeContact]);
 
   const setDiscoveryCategory = useCallback((key: string) => {
-    setState(prev => ({ ...prev, discoveryCategory: key }));
+    setState(prev => ({
+      ...prev,
+      discoveryCategory: key,
+      discoveryQualityRating: prev.discoveryQualityRating ?? 5,
+    }));
     const cat = getCategoryByKey(key);
     if (cat && activeContact) {
       setActiveContact(prev => {
