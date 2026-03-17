@@ -2,19 +2,15 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import {
   CheckCircle,
   Loader2,
   UserPlus,
 } from "lucide-react";
-import Image from "next/image";
 import { createContact } from "@/lib/actions/contacts";
-import { products as allProducts } from "@/data/products";
 import type { Contact } from "@/lib/db/types";
 
 interface StepAddContactProps {
@@ -30,23 +26,12 @@ export function StepAddContact({
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const toggleProduct = (id: string) => {
-    setSelectedProductIds(prev =>
-      prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]
-    );
-  };
 
   const handleCreate = async () => {
     if (!firstName.trim() || !lastName.trim()) {
       setError("First name and last name are required");
-      return;
-    }
-    if (selectedProductIds.length === 0) {
-      setError("Select at least one product");
       return;
     }
     setLoading(true);
@@ -57,7 +42,7 @@ export function StepAddContact({
         last_name: lastName.trim(),
         email: email.trim() || null,
         phone: phone.trim() || null,
-        product_ids: selectedProductIds,
+        product_ids: [],
         current_step: "add_contact",
       });
       if (err) throw new Error(err);
@@ -70,7 +55,6 @@ export function StepAddContact({
   };
 
   if (existingContact) {
-    const contactProducts = allProducts.filter(p => existingContact.product_ids.includes(p.id));
     return (
       <div className="space-y-4">
         <Card className="border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-800">
@@ -84,18 +68,6 @@ export function StepAddContact({
                 <p className="text-xs text-green-600 dark:text-green-400">
                   {existingContact.email || existingContact.phone || "No contact details"}
                 </p>
-                {contactProducts.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {contactProducts.map(p => (
-                      <Badge key={p.id} variant="secondary" className="text-[10px] flex items-center gap-1">
-                        <div className="relative size-3.5 rounded-full overflow-hidden">
-                          <Image src={p.image} alt={p.name} fill className="object-cover" sizes="14px" />
-                        </div>
-                        {p.name}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
               </div>
             </div>
           </CardContent>
@@ -167,59 +139,9 @@ export function StepAddContact({
         </CardContent>
       </Card>
 
-      <Separator />
-
-      <div className="space-y-2">
-        <Label className="text-sm font-medium">
-          Which products are you presenting? *
-        </Label>
-        <p className="text-xs text-muted-foreground">
-          Select one or more products for this conversation.
-        </p>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-          {allProducts.map((product) => {
-            const isSelected = selectedProductIds.includes(product.id);
-            return (
-              <button
-                key={product.id}
-                type="button"
-                onClick={() => toggleProduct(product.id)}
-                className={`flex items-center gap-2 p-2.5 rounded-lg border text-left transition-all ${
-                  isSelected
-                    ? "ring-2 ring-primary border-primary bg-primary/5"
-                    : "border-border hover:border-primary/50"
-                }`}
-              >
-                <div className="relative size-8 flex-shrink-0 rounded-full overflow-hidden bg-muted">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                    sizes="32px"
-                  />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <span className="text-sm font-medium block truncate">{product.name}</span>
-                  <span className="text-[10px] text-muted-foreground block truncate">{product.tagline}</span>
-                </div>
-                {isSelected && (
-                  <CheckCircle className="size-4 text-primary shrink-0" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-        {selectedProductIds.length > 0 && (
-          <p className="text-xs text-muted-foreground">
-            {selectedProductIds.length} product{selectedProductIds.length !== 1 ? "s" : ""} selected
-          </p>
-        )}
-      </div>
-
       <Button
         onClick={handleCreate}
-        disabled={loading || !firstName.trim() || !lastName.trim() || selectedProductIds.length === 0}
+        disabled={loading || !firstName.trim() || !lastName.trim()}
         className="w-full"
       >
         {loading ? (
