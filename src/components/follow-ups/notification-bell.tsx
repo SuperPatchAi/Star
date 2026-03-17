@@ -82,15 +82,15 @@ export function NotificationBell() {
       >
         <SheetHeader className="border-b px-4 py-3">
           <div className="flex items-center gap-2">
-            <SheetTitle className="text-base">Follow-Ups</SheetTitle>
+            <SheetTitle className="text-base">Activity</SheetTitle>
             {count > 0 && (
               <Badge variant="secondary" className="text-xs">
-                {count}
+                {count} due
               </Badge>
             )}
           </div>
           <SheetDescription>
-            Contacts that need your attention
+            Follow-ups, milestones, and recent activity
           </SheetDescription>
         </SheetHeader>
 

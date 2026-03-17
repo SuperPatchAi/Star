@@ -6,65 +6,68 @@ import { Bell, MessageSquarePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getFollowUpReminders } from "@/lib/actions/reminders";
+import { getUnifiedFeed } from "@/lib/actions/activity";
 import { FeedEntry } from "./feed-entry";
+import { ActivityEventEntry } from "./activity-event-entry";
 import { PushPermissionBanner } from "./push-permission-banner";
-import type { FollowUpReminder, ReminderUrgency } from "@/types/reminders";
+import type { UnifiedFeedItem, TimeBucket } from "@/types/activity";
+import { getTimeBucket } from "@/types/activity";
 
-type FilterOption = "all" | ReminderUrgency;
+type FilterOption = "all" | TimeBucket;
 
 const FILTER_OPTIONS: { id: FilterOption; label: string }[] = [
   { id: "all", label: "All" },
-  { id: "due_today", label: "Due Today" },
-  { id: "due_tomorrow", label: "Due Tomorrow" },
-  { id: "due_this_week", label: "Due This Week" },
-  { id: "overdue", label: "Overdue" },
+  { id: "today", label: "Today" },
+  { id: "this_week", label: "This Week" },
+  { id: "older", label: "Older" },
+];
+
+const SECTION_CONFIG: { key: TimeBucket; label: string; accent: string }[] = [
+  { key: "today", label: "Today", accent: "text-amber-600 dark:text-amber-400" },
+  { key: "this_week", label: "This Week", accent: "text-blue-600 dark:text-blue-400" },
+  { key: "older", label: "Older", accent: "text-muted-foreground" },
 ];
 
 interface ActivityFeedProps {
   onCountChange?: (count: number) => void;
-  selectedDate?: Date | null;
 }
 
-export function ActivityFeed({ onCountChange, selectedDate }: ActivityFeedProps) {
-  const [reminders, setReminders] = useState<FollowUpReminder[]>([]);
+export function ActivityFeed({ onCountChange }: ActivityFeedProps) {
+  const [items, setItems] = useState<UnifiedFeedItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<FilterOption>("due_today");
+  const [filter, setFilter] = useState<FilterOption>("all");
 
-  const fetchReminders = useCallback(async () => {
-    const { data } = await getFollowUpReminders();
-    const list = data ?? [];
-    setReminders(list);
-    onCountChange?.(list.length);
+  const fetchFeed = useCallback(async () => {
+    const feedResult = await getUnifiedFeed();
+    const feedItems = feedResult.data ?? [];
+    setItems(feedItems);
+    const reminderCount = feedItems.filter((i) => i.kind === "reminder").length;
+    onCountChange?.(reminderCount);
     setLoading(false);
   }, [onCountChange]);
 
   useEffect(() => {
-    fetchReminders();
-  }, [fetchReminders]);
+    fetchFeed();
+  }, [fetchFeed]);
 
   const handleAction = () => {
-    fetchReminders();
+    fetchFeed();
   };
 
-  const filtered = filter === "all" ? reminders : reminders.filter((r) => r.urgency === filter);
+  const filtered =
+    filter === "all"
+      ? items
+      : items.filter((item) => getTimeBucket(item.timestamp) === filter);
 
-  const grouped: Record<ReminderUrgency, FollowUpReminder[]> = {
-    due_today: [],
-    due_tomorrow: [],
-    due_this_week: [],
-    overdue: [],
+  const grouped: Record<TimeBucket, UnifiedFeedItem[]> = {
+    today: [],
+    this_week: [],
+    older: [],
   };
-  for (const r of filtered) {
-    grouped[r.urgency].push(r);
+  for (const item of filtered) {
+    const bucket = getTimeBucket(item.timestamp);
+    grouped[bucket].push(item);
   }
-
-  const sectionConfig: { key: ReminderUrgency; label: string; accent: string }[] = [
-    { key: "due_today", label: "Due Today", accent: "text-amber-600 dark:text-amber-400" },
-    { key: "due_tomorrow", label: "Due Tomorrow", accent: "text-blue-600 dark:text-blue-400" },
-    { key: "due_this_week", label: "Due This Week", accent: "text-muted-foreground" },
-    { key: "overdue", label: "Overdue", accent: "text-destructive" },
-  ];
 
   if (loading) {
     return (
@@ -79,13 +82,13 @@ export function ActivityFeed({ onCountChange, selectedDate }: ActivityFeedProps)
     );
   }
 
-  if (reminders.length === 0) {
+  if (items.length === 0) {
     return (
       <div className="py-16 text-center px-4">
         <Bell className="size-12 mx-auto text-muted-foreground/50 mb-3" />
-        <h3 className="font-medium text-base mb-1">All caught up</h3>
+        <h3 className="font-medium text-base mb-1">No activity yet</h3>
         <p className="text-sm text-muted-foreground mb-4">
-          No follow-ups due right now. Keep selling!
+          Add a contact to start tracking your sales activity.
         </p>
         <Button variant="outline" asChild>
           <Link href="/contacts">
@@ -101,13 +104,12 @@ export function ActivityFeed({ onCountChange, selectedDate }: ActivityFeedProps)
     <div className="flex flex-col h-full">
       <PushPermissionBanner />
 
-      {/* Filter pills */}
       <div className="flex items-center gap-2 px-4 py-3 border-b overflow-x-auto scrollbar-none">
         {FILTER_OPTIONS.map((opt) => {
           const count =
             opt.id === "all"
-              ? reminders.length
-              : reminders.filter((r) => r.urgency === opt.id).length;
+              ? items.length
+              : items.filter((i) => getTimeBucket(i.timestamp) === opt.id).length;
           return (
             <button
               key={opt.id}
@@ -119,33 +121,43 @@ export function ActivityFeed({ onCountChange, selectedDate }: ActivityFeedProps)
               }`}
             >
               {opt.label}
-              {count > 0 && (
-                <span className="tabular-nums">{count}</span>
-              )}
+              {count > 0 && <span className="tabular-nums">{count}</span>}
             </button>
           );
         })}
       </div>
 
-      {/* Reminder list */}
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-5">
-          {sectionConfig.map(({ key, label, accent }) => {
-            const items = grouped[key];
-            if (items.length === 0) return null;
+          {SECTION_CONFIG.map(({ key, label, accent }) => {
+            const sectionItems = grouped[key];
+            if (sectionItems.length === 0) return null;
             return (
               <div key={key}>
-                <h3 className={`text-xs font-semibold uppercase tracking-wider mb-2 px-1 ${accent}`}>
-                  {label} <span className="tabular-nums">{items.length}</span>
+                <h3
+                  className={`text-xs font-semibold uppercase tracking-wider mb-2 px-1 ${accent}`}
+                >
+                  {label}{" "}
+                  <span className="tabular-nums">{sectionItems.length}</span>
                 </h3>
                 <div className="rounded-lg border divide-y divide-border">
-                  {items.map((reminder) => (
-                    <FeedEntry
-                      key={reminder.contact.id}
-                      reminder={reminder}
-                      onAction={handleAction}
-                    />
-                  ))}
+                  {sectionItems.map((item, idx) => {
+                    if (item.kind === "reminder") {
+                      return (
+                        <FeedEntry
+                          key={`r-${item.data.contact.id}-${item.data.followUpDayIndex ?? idx}`}
+                          reminder={item.data}
+                          onAction={handleAction}
+                        />
+                      );
+                    }
+                    return (
+                      <ActivityEventEntry
+                        key={`e-${item.data.id}`}
+                        event={item.data}
+                      />
+                    );
+                  })}
                 </div>
               </div>
             );

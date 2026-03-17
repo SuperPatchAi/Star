@@ -6,6 +6,7 @@ import type { Contact, ContactInsert, ContactUpdate } from "@/lib/db/types";
 import { normalizeContactStep } from "@/lib/db/types";
 import { SALES_STEPS } from "@/types/roadmap";
 import { updateChecklistItem } from "@/lib/actions/onboarding";
+import { logActivity } from "@/lib/actions/activity";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SupabaseAny = any;
@@ -67,10 +68,15 @@ export async function createContact(contact: Omit<ContactInsert, "user_id">) {
     .select()
     .single();
 
-  if (!error) {
+  if (!error && data) {
     revalidatePath("/contacts");
     revalidatePath("/dashboard");
     updateChecklistItem("add_first_contact").catch(() => {});
+    const c = data as Contact;
+    logActivity("contact_created", c.id, {
+      contact_name: `${c.first_name} ${c.last_name}`,
+      product_ids: c.product_ids,
+    }).catch(() => {});
   }
 
   return { data: data as Contact | null, error: error?.message || null };
@@ -80,6 +86,21 @@ export async function updateContact(id: string, updates: ContactUpdate) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { data: null, error: "Not authenticated" };
+
+  const needsPrev =
+    updates.current_step || updates.sample_sent !== undefined ||
+    updates.sample_followup_done !== undefined || updates.outcome;
+
+  let prevContact: Pick<Contact, "current_step" | "sample_sent" | "sample_followup_done" | "outcome" | "first_name" | "last_name" | "product_ids"> | null = null;
+  if (needsPrev) {
+    const { data: prev } = await (supabase as SupabaseAny)
+      .from("d2c_contacts")
+      .select("current_step, sample_sent, sample_followup_done, outcome, first_name, last_name, product_ids")
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .single();
+    prevContact = prev;
+  }
 
   const payload: Record<string, unknown> = {
     ...updates,
@@ -103,6 +124,7 @@ export async function updateContact(id: string, updates: ContactUpdate) {
     revalidatePath("/dashboard");
 
     const updated = data as Contact;
+    const contactName = `${updated.first_name} ${updated.last_name}`;
 
     if (updated.current_step && updated.current_step !== "add_contact") {
       updateChecklistItem("start_first_conversation").catch(() => {});
@@ -120,6 +142,33 @@ export async function updateContact(id: string, updates: ContactUpdate) {
 
     if (updated.follow_up_day !== null && updated.follow_up_day !== undefined && updated.follow_up_day >= 0) {
       updateChecklistItem("setup_followup").catch(() => {});
+    }
+
+    if (prevContact) {
+      if (updates.current_step && updates.current_step !== prevContact.current_step) {
+        logActivity("step_changed", id, {
+          contact_name: contactName,
+          from_step: prevContact.current_step,
+          to_step: updates.current_step,
+        }).catch(() => {});
+      }
+      if (updates.sample_sent === true && !prevContact.sample_sent) {
+        logActivity("sample_sent", id, {
+          contact_name: contactName,
+          product_ids: updated.product_ids,
+        }).catch(() => {});
+      }
+      if (updates.sample_followup_done === true && !prevContact.sample_followup_done) {
+        logActivity("sample_confirmed", id, {
+          contact_name: contactName,
+        }).catch(() => {});
+      }
+      if (updates.outcome && updates.outcome !== "pending" && updates.outcome !== prevContact.outcome) {
+        logActivity("outcome_changed", id, {
+          contact_name: contactName,
+          outcome: updates.outcome,
+        }).catch(() => {});
+      }
     }
   }
 
@@ -191,7 +240,7 @@ export async function advanceFollowUpDay(id: string) {
 
   const { data: contact } = await (supabase as SupabaseAny)
     .from("d2c_contacts")
-    .select("follow_up_day")
+    .select("follow_up_day, first_name, last_name, product_ids")
     .eq("id", id)
     .eq("user_id", user.id)
     .single();
@@ -201,9 +250,19 @@ export async function advanceFollowUpDay(id: string) {
   const currentDay = contact.follow_up_day ?? -1;
   const nextDay = currentDay + 1;
 
-  return updateContact(id, {
+  const result = await updateContact(id, {
     follow_up_day: nextDay,
   } as ContactUpdate);
+
+  if (!result.error) {
+    logActivity("followup_completed", id, {
+      contact_name: `${contact.first_name} ${contact.last_name}`,
+      day_index: currentDay,
+      product_id: contact.product_ids?.[0] ?? null,
+    }).catch(() => {});
+  }
+
+  return result;
 }
 
 export async function dismissReminder(id: string) {

@@ -77,8 +77,9 @@ alwaysApply: true
 
 ### Follow-Up Reminders (`src/components/follow-ups/`)
 - `notification-bell.tsx` — Bell icon + badge count + Sheet trigger in header
-- `activity-feed.tsx` — Feed list with Overdue/Due Today/Upcoming sections + filter pills + optional date filter
-- `feed-entry.tsx` — Compact card with one-tap call/email, script accordion, Mark Done/Snooze
+- `activity-feed.tsx` — Unified feed merging reminders + activity events with Today/This Week/Older time-based grouping
+- `activity-event-entry.tsx` — Activity event card with type-specific icon, description, relative timestamp, tap-to-open contact
+- `feed-entry.tsx` — Reminder card with one-tap call/email, script accordion, Mark Done/Snooze
 - `follow-up-calendar.tsx` — Week strip / full month calendar with reminder dots for the Activity page
 - `push-permission-banner.tsx` — Non-blocking push notification opt-in banner
 
@@ -87,6 +88,7 @@ alwaysApply: true
 - `actions/onboarding.ts` — getOnboardingState, completeCarousel, completeTour, updateChecklistItem, resetOnboarding, dismissOnboarding
 - `actions/profile.ts` — getMyProfile, getStoreSubdomain, updateStoreSubdomain
 - `actions/reminders.ts` — getFollowUpReminders, getFollowUpReminderCount (staleness + DAY sequence)
+- `actions/activity.ts` — logActivity, getActivityLog, getUnifiedFeed (unified feed merging reminders + activity events)
 - `actions/push-subscriptions.ts` — subscribePush, unsubscribePush
 - `roadmap-data.ts` — getRoadmapSpec, getRoadmapsForProducts, getAllRoadmapSpecs
 - `auth.ts` — getAuthUser, requireAdmin
@@ -98,6 +100,7 @@ alwaysApply: true
 ### Types (`src/types/`)
 - `roadmap.ts` — RoadmapV2, SalesStep, SALES_STEPS (9 steps)
 - `reminders.ts` — FollowUpReminder, STALENESS_THRESHOLDS, FOLLOWUP_DAY_OFFSETS
+- `activity.ts` — ActivityEvent, UnifiedFeedItem, TimeBucket, getTimeBucket, EVENT_LABELS
 - `index.ts` — Product, WordTrack, NavItem
 
 ## Sales Step IDs (in order)
@@ -111,6 +114,10 @@ Key columns: `user_id`, `product_ids text[]`, `first_name`, `last_name`, `email`
 ## Database Table: `user_profiles` (onboarding columns)
 
 Key additions: `onboarding_step text` (carousel | tour | checklist | completed), `onboarding_checklist jsonb` (5 boolean milestone flags), `store_subdomain text` (MLM store subdomain for purchase URLs)
+
+## Database Table: `d2c_activity_log`
+
+Append-only event log for unified activity feed. Key columns: `user_id`, `contact_id`, `event_type` (contact_created | step_changed | sample_sent | sample_confirmed | followup_completed | outcome_changed), `metadata` (jsonb), `created_at`. RLS scoped to `auth.uid() = user_id`. Events logged fire-and-forget from server actions.
 
 ## Database Table: `d2c_push_subscriptions`
 

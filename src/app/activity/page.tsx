@@ -28,7 +28,7 @@ export default function ActivityPage() {
       <div className="flex flex-col gap-1">
         <h1 className="text-xl font-semibold tracking-tight">Activity</h1>
         <p className="text-sm text-muted-foreground">
-          Follow-up reminders and upcoming tasks.
+          Follow-ups, milestones, and recent sales activity.
         </p>
       </div>
 
@@ -39,10 +39,7 @@ export default function ActivityPage() {
       />
 
       <div className="-mx-4 md:-mx-6 flex-1 min-h-0">
-        <ActivityFeed
-          selectedDate={selectedDate}
-          onCountChange={handleCountChange}
-        />
+        <ActivityFeed onCountChange={handleCountChange} />
       </div>
     </div>
   );

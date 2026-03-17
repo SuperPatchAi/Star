@@ -47,7 +47,7 @@ src/
 │   ├── interpolate-script.ts # {{FirstName}}/[Name] replacement in scripts
 │   ├── roadmap-data.ts     # Roadmap spec loading functions
 │   ├── supabase/           # Supabase clients (server, client, middleware)
-│   ├── actions/            # Server actions (contacts, reminders, onboarding, push subscriptions)
+│   ├── actions/            # Server actions (contacts, reminders, activity, onboarding, push subscriptions)
 │   └── db/                 # Database TypeScript types
 ├── data/
 │   ├── products.ts         # Product catalog (13 products)
@@ -57,6 +57,7 @@ src/
 ├── types/
 │   ├── index.ts            # Product, WordTrack, NavItem types
 │   ├── roadmap.ts          # RoadmapV2 types + SALES_STEPS constant
+│   ├── activity.ts         # ActivityEvent, UnifiedFeedItem, TimeBucket, getTimeBucket
 │   └── wordtrack.ts        # WordTrack section types
 ├── contexts/               # AuthContext provider
 ├── hooks/                  # useAuth, useIsMobile, useServiceWorker
@@ -212,6 +213,12 @@ create table public.d2c_contacts (
 
 Fields: `id`, `email`, `full_name`, `avatar_url`, `role` (admin/user), `is_active`, `invited_by`, `onboarding_step`, `onboarding_checklist` (JSONB), `store_subdomain` (MLM store subdomain for purchase URLs), `created_at`, `updated_at`. Auto-created on signup via the `handle_new_user()` trigger on `auth.users`.
 
+### `d2c_activity_log` Table
+
+Append-only event log for the unified activity feed. Fields: `id` (uuid), `user_id` (uuid), `contact_id` (uuid, nullable), `event_type` (text), `metadata` (jsonb), `created_at` (timestamptz). RLS scoped to `auth.uid() = user_id`. Indexed on `(user_id, created_at desc)`.
+
+**Event types**: `contact_created`, `step_changed`, `sample_sent`, `sample_confirmed`, `followup_completed`, `outcome_changed`. Events are logged fire-and-forget from `createContact`, `updateContact`, and `advanceFollowUpDay` server actions.
+
 ### `d2c_push_subscriptions` Table
 
 Stores web push subscriptions per user. Fields: `id`, `user_id`, `endpoint`, `p256dh`, `auth`, `created_at`. RLS scoped to `auth.uid() = user_id`.
@@ -328,6 +335,9 @@ Premium mobile-first calendar on the Activity page:
 | `dismissReminder(id)` | Reset `stage_entered_at` to snooze a reminder |
 | `getFollowUpReminders()` | Compute all pending reminders for the user |
 | `getFollowUpReminderCount()` | Count of pending reminders (for badge) |
+| `logActivity(type, contactId, metadata)` | Append event to `d2c_activity_log` (fire-and-forget) |
+| `getActivityLog(limit?)` | Query recent activity events for the user |
+| `getUnifiedFeed()` | Merge reminders + activity events into a single sorted feed |
 | `subscribePush(subscription)` | Save push notification subscription |
 | `unsubscribePush(endpoint)` | Remove push notification subscription |
 
@@ -476,13 +486,16 @@ Users can replay the carousel or tour anytime from the user dropdown menu in the
 
 A two-phase notification system that reminds reps to follow up with contacts at every stage of the sales pipeline.
 
-### Phase 1: In-App Activity Feed
-- **Bell icon** in the app-shell header with badge count of pending reminders
-- **Activity Feed** opens as a right-side Sheet with filter pills (All, Overdue, Due Today, Upcoming)
+### Phase 1: Unified Activity Feed
+- **Bell icon** in the app-shell header with badge count of pending reminders (actionable items)
+- **Unified feed** opens as a right-side Sheet merging follow-up reminders and activity log events into a single chronological stream
+- **Time-based grouping**: Items are bucketed into Today, This Week, and Older sections with filter pills
+- **Activity event types**: contact created, step changed, samples sent/confirmed, follow-up completed, outcome changed (won/lost/follow_up)
+- **Activity events** are logged to `d2c_activity_log` table fire-and-forget from server actions
 - **Staleness alerts** for contacts idle too long in any kanban stage (configurable thresholds per step)
 - **Follow-up sequence reminders** based on the roadmap DAY 1/3/7/14 timeline
-- **Sample follow-up reminders** fire 2 days after `sample_sent_at` with the experience call script ("Did you get it?" + "Before we open it..."); dismissed via `sample_followup_done` flag
 - **Feed entry cards** with one-tap call/email, copy script, and Mark Done/Snooze actions
+- **Activity event cards** with type-specific icons, contact name, description, relative timestamp, and tap-to-open contact link
 - **Script quick-view** expands inline with copy button (same pattern as `step-followup.tsx`)
 - `stage_entered_at` column tracks when a contact entered their current step
 - `peak_step` column tracks the highest step a contact has reached (for regression detection)
@@ -501,9 +514,12 @@ A two-phase notification system that reminds reps to follow up with contacts at 
 |------|---------|
 | `src/lib/actions/reminders.ts` | `getFollowUpReminders()` server action |
 | `src/types/reminders.ts` | Types + staleness thresholds + DAY offsets |
+| `src/lib/actions/activity.ts` | `logActivity()`, `getActivityLog()`, `getUnifiedFeed()` server actions |
+| `src/types/activity.ts` | `ActivityEvent`, `UnifiedFeedItem`, `TimeBucket` types + `getTimeBucket()` |
 | `src/components/follow-ups/notification-bell.tsx` | Bell icon + badge + Sheet trigger |
-| `src/components/follow-ups/activity-feed.tsx` | Feed list with sections and filter pills |
-| `src/components/follow-ups/feed-entry.tsx` | Compact card with quick actions + script accordion |
+| `src/components/follow-ups/activity-feed.tsx` | Unified feed list with time-based sections and filter pills |
+| `src/components/follow-ups/activity-event-entry.tsx` | Activity event card with type icon, description, relative time |
+| `src/components/follow-ups/feed-entry.tsx` | Reminder card with quick actions + script accordion |
 | `src/components/follow-ups/push-permission-banner.tsx` | Non-blocking push permission prompt |
 | `src/hooks/use-service-worker.ts` | Service worker registration hook |
 | `src/lib/actions/push-subscriptions.ts` | Push subscription server actions |
