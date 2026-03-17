@@ -1,17 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Phone, MessageSquare, Mail, Video, CheckCircle, Check, ChevronRight, Package, AlertCircle } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
+import {
+  Phone,
+  MessageSquare,
+  Mail,
+  Video,
+  CheckCircle,
+  Check,
+  ChevronRight,
+  Package,
+  AlertCircle,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+} from "lucide-react";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { cn } from "@/lib/utils";
-import { interpolateScript } from "@/lib/interpolate-script";
-import type { RoadmapFollowUp } from "@/types/roadmap";
+import {
+  FOLLOWUP_SEQUENCE,
+  interpolateFollowUpTemplate,
+} from "@/data/followup-templates";
+import { getCategoryByKey } from "@/data/discovery-categories";
+import { getProductById } from "@/data/products";
 
 interface StepFollowUpProps {
-  data: RoadmapFollowUp;
   contactId?: string;
   followUpDay?: number;
   onAdvance?: () => void;
@@ -20,19 +37,38 @@ interface StepFollowUpProps {
   onSampleReceived?: (received: boolean) => void;
   continueLabel?: string;
   onContinue?: () => void;
+  discoveryCategory: string | null;
+  discoveryQualityRating: number | null;
+  followupRatings: Record<string, number>;
+  onFollowupRatingChange: (dayIndex: number, rating: number) => void;
+  sampleProducts: string[];
 }
 
+const GOAL = "Track improvement and build proof through consistent follow-up";
+
 const channelIcons: Record<string, React.ReactNode> = {
-  "Text": <MessageSquare className="size-3.5" />,
-  "Call": <Phone className="size-3.5" />,
+  Text: <MessageSquare className="size-3.5" />,
+  Call: <Phone className="size-3.5" />,
   "Call/Text": <Phone className="size-3.5" />,
   "Text/Call": <Phone className="size-3.5" />,
-  "Email": <Mail className="size-3.5" />,
+  Email: <Mail className="size-3.5" />,
+  Zoom: <Video className="size-3.5" />,
   "Zoom Call": <Video className="size-3.5" />,
 };
 
+function getTrendIcon(current: number, baseline: number) {
+  if (current > baseline) return <TrendingUp className="size-3.5 text-green-600" />;
+  if (current < baseline) return <TrendingDown className="size-3.5 text-red-600" />;
+  return <Minus className="size-3.5 text-muted-foreground" />;
+}
+
+function getTrendColor(current: number, baseline: number) {
+  if (current > baseline) return "text-green-600 dark:text-green-400";
+  if (current < baseline) return "text-red-600 dark:text-red-400";
+  return "text-muted-foreground";
+}
+
 export function StepFollowUp({
-  data,
   contactId,
   followUpDay = 0,
   onAdvance,
@@ -41,8 +77,45 @@ export function StepFollowUp({
   onSampleReceived,
   continueLabel = "Continue",
   onContinue,
+  discoveryCategory,
+  discoveryQualityRating,
+  followupRatings,
+  onFollowupRatingChange,
+  sampleProducts,
 }: StepFollowUpProps) {
   const [advancing, setAdvancing] = useState(false);
+
+  const category = discoveryCategory ? getCategoryByKey(discoveryCategory) : null;
+  const categoryLabel = category?.categoryLabel ?? "quality of life";
+  const firstProduct = sampleProducts.length > 0 ? getProductById(sampleProducts[0]) : null;
+  const productName = firstProduct?.name ?? "SuperPatch";
+  const baseline = discoveryQualityRating ?? 5;
+
+  const ratingsEntries = useMemo(() => {
+    return Object.entries(followupRatings)
+      .map(([key, val]) => ({ dayIndex: Number(key), rating: val }))
+      .sort((a, b) => a.dayIndex - b.dayIndex);
+  }, [followupRatings]);
+
+  const hasRatings = ratingsEntries.length > 0;
+
+  const lastRecordedRating = useMemo(() => {
+    if (ratingsEntries.length === 0) return baseline;
+    return ratingsEntries[ratingsEntries.length - 1].rating;
+  }, [ratingsEntries, baseline]);
+
+  function getInterpolatedScript(template: string, dayIndex: number) {
+    const currentDayRating = followupRatings[String(dayIndex)];
+    return interpolateFollowUpTemplate(template, {
+      firstName: contactFirstName ?? "{{FirstName}}",
+      productName,
+      categoryLabel,
+      baseline,
+      lastRating: lastRecordedRating,
+      currentRating: currentDayRating ?? lastRecordedRating,
+      improvement: (currentDayRating ?? lastRecordedRating) - baseline,
+    });
+  }
 
   const handleAdvance = async () => {
     if (!onAdvance) return;
@@ -54,18 +127,46 @@ export function StepFollowUp({
     }
   };
 
-  const currentStep = data.sequence[followUpDay];
-  const allComplete = followUpDay >= data.sequence.length;
-  const hasCheckbox = currentStep?.checkbox_label;
+  const currentStep = FOLLOWUP_SEQUENCE[followUpDay];
+  const allComplete = followUpDay >= FOLLOWUP_SEQUENCE.length;
 
-  const isZoomStep = currentStep?.channel === "Zoom Call";
+  const isZoomStep = currentStep?.channel === "Zoom" || currentStep?.channel === "Zoom Call";
   const zoomBlocked = isZoomStep && !sampleReceived;
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-muted-foreground">
-        {data.goal}
-      </p>
+      <p className="text-sm text-muted-foreground">{GOAL}</p>
+
+      {/* Improvement Trajectory Card */}
+      {hasRatings && (
+        <div className="rounded-lg border bg-card p-3 space-y-2">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+            Improvement Tracker
+          </p>
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <span>Baseline:</span>
+            <span className="font-bold text-foreground">{baseline}/10</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {ratingsEntries.map(({ dayIndex, rating }) => {
+              const step = FOLLOWUP_SEQUENCE[dayIndex];
+              const dayLabel = step?.day ?? `Day ${dayIndex}`;
+              return (
+                <div
+                  key={dayIndex}
+                  className="flex items-center gap-1.5 rounded-md border px-2 py-1"
+                >
+                  <span className="text-xs text-muted-foreground">{dayLabel}</span>
+                  <span className={cn("text-xs font-bold", getTrendColor(rating, baseline))}>
+                    {rating}/10
+                  </span>
+                  {getTrendIcon(rating, baseline)}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Current action card */}
       {currentStep && !allComplete && (
@@ -96,7 +197,10 @@ export function StepFollowUp({
                     checked={sampleReceived}
                     onCheckedChange={(checked) => onSampleReceived?.(checked === true)}
                   />
-                  <Label htmlFor="sample-received-zoom" className="text-sm font-medium text-amber-800 dark:text-amber-200 flex items-center gap-1.5">
+                  <Label
+                    htmlFor="sample-received-zoom"
+                    className="text-sm font-medium text-amber-800 dark:text-amber-200 flex items-center gap-1.5"
+                  >
                     <Package className="size-3.5" />
                     Samples Received
                   </Label>
@@ -106,24 +210,68 @@ export function StepFollowUp({
           )}
 
           <div className="bg-muted rounded-lg p-3 text-sm relative group whitespace-pre-wrap">
-            {interpolateScript(currentStep.template, contactFirstName)}
+            {getInterpolatedScript(currentStep.template, followUpDay)}
             <ShareCopyButton
-              text={interpolateScript(currentStep.template, contactFirstName)}
+              text={getInterpolatedScript(currentStep.template, followUpDay)}
               className="absolute top-2 right-2 size-9 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
             />
           </div>
 
-          {hasCheckbox && (
+          {currentStep.checkboxLabel && (
             <div className="flex items-center space-x-2 pt-1">
               <Checkbox
                 id="sample-received"
                 checked={sampleReceived}
                 onCheckedChange={(checked) => onSampleReceived?.(checked === true)}
               />
-              <Label htmlFor="sample-received" className="text-sm font-medium flex items-center gap-1.5">
+              <Label
+                htmlFor="sample-received"
+                className="text-sm font-medium flex items-center gap-1.5"
+              >
                 <Package className="size-3.5" />
-                {currentStep.checkbox_label}
+                {currentStep.checkboxLabel}
               </Label>
+            </div>
+          )}
+
+          {/* Rating slider for days that include a rating check */}
+          {currentStep.includesRating && (
+            <div className="rounded-lg border bg-card p-3 space-y-3">
+              <Label className="text-sm font-medium">
+                How would you rate your {categoryLabel} today? (1-10)
+              </Label>
+              <div className="flex items-center gap-4">
+                <Slider
+                  min={1}
+                  max={10}
+                  step={1}
+                  value={[followupRatings[String(followUpDay)] ?? baseline]}
+                  onValueChange={([val]) => onFollowupRatingChange(followUpDay, val)}
+                  className="flex-1"
+                />
+                <span className="text-2xl font-bold tabular-nums min-w-[2.5rem] text-center">
+                  {followupRatings[String(followUpDay)] ?? baseline}
+                </span>
+              </div>
+              {discoveryQualityRating != null && (
+                <div className="flex items-center gap-1.5 text-xs">
+                  {getTrendIcon(
+                    followupRatings[String(followUpDay)] ?? baseline,
+                    baseline
+                  )}
+                  <span
+                    className={getTrendColor(
+                      followupRatings[String(followUpDay)] ?? baseline,
+                      baseline
+                    )}
+                  >
+                    Started at {baseline}/10, now{" "}
+                    {followupRatings[String(followUpDay)] ?? baseline}/10 (
+                    {(followupRatings[String(followUpDay)] ?? baseline) - baseline >= 0 ? "+" : ""}
+                    {(followupRatings[String(followUpDay)] ?? baseline) - baseline})
+                  </span>
+                </div>
+              )}
             </div>
           )}
 
@@ -143,7 +291,9 @@ export function StepFollowUp({
       {allComplete && (
         <div className="rounded-lg border border-green-300 dark:border-green-800 bg-green-50 dark:bg-green-950/30 p-4 text-center space-y-3">
           <CheckCircle className="size-6 mx-auto text-green-600 dark:text-green-400" />
-          <p className="text-sm font-medium text-green-700 dark:text-green-400">All follow-up steps complete</p>
+          <p className="text-sm font-medium text-green-700 dark:text-green-400">
+            All follow-up steps complete
+          </p>
           {onContinue && (
             <Button onClick={onContinue} className="w-full">
               {continueLabel}
@@ -158,29 +308,38 @@ export function StepFollowUp({
         <div className="absolute left-[22px] top-0 bottom-0 w-px bg-border" />
 
         <div className="space-y-4">
-          {data.sequence.map((step, index) => {
+          {FOLLOWUP_SEQUENCE.map((step, index) => {
             const isComplete = index < followUpDay;
             const isCurrent = index === followUpDay;
+            const scriptText = getInterpolatedScript(step.template, index);
             return (
               <div key={index} className="relative flex gap-4">
-                <div className={cn(
-                  "relative z-10 flex size-[44px] shrink-0 items-center justify-center rounded-full border-2 bg-background text-xs font-bold transition-colors",
-                  isCurrent && "border-primary text-primary",
-                  isComplete && "border-green-500 bg-green-500 text-white",
-                  !isCurrent && !isComplete && "border-muted-foreground/30 text-muted-foreground/50"
-                )}>
+                <div
+                  className={cn(
+                    "relative z-10 flex size-[44px] shrink-0 items-center justify-center rounded-full border-2 bg-background text-xs font-bold transition-colors",
+                    isCurrent && "border-primary text-primary",
+                    isComplete && "border-green-500 bg-green-500 text-white",
+                    !isCurrent && !isComplete && "border-muted-foreground/30 text-muted-foreground/50"
+                  )}
+                >
                   {isComplete ? <Check className="size-4" /> : step.day.replace("DAY ", "D")}
                 </div>
 
-                <div className={cn(
-                  "flex-1 border-b border-border/60 pb-4",
-                  isComplete && "opacity-50"
-                )}>
+                <div
+                  className={cn(
+                    "flex-1 border-b border-border/60 pb-4",
+                    isComplete && "opacity-50"
+                  )}
+                >
                   <div className="flex items-center justify-between mb-1">
-                    <p className={cn(
-                      "text-sm font-semibold",
-                      isComplete && "line-through"
-                    )}>{step.action}</p>
+                    <p
+                      className={cn(
+                        "text-sm font-semibold",
+                        isComplete && "line-through"
+                      )}
+                    >
+                      {step.action}
+                    </p>
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       {channelIcons[step.channel] || <MessageSquare className="size-3.5" />}
                       <span>{step.channel}</span>
@@ -189,11 +348,19 @@ export function StepFollowUp({
                   <p className="text-xs text-muted-foreground mb-2">{step.day}</p>
                   {!isComplete && (
                     <div className="bg-muted rounded-lg p-3 text-sm relative group whitespace-pre-wrap">
-                      {interpolateScript(step.template, contactFirstName)}
+                      {scriptText}
                       <ShareCopyButton
-                        text={interpolateScript(step.template, contactFirstName)}
+                        text={scriptText}
                         className="absolute top-2 right-2 size-9 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                       />
+                    </div>
+                  )}
+                  {isComplete && step.includesRating && followupRatings[String(index)] != null && (
+                    <div className="flex items-center gap-1.5 text-xs mt-1">
+                      {getTrendIcon(followupRatings[String(index)], baseline)}
+                      <span className={getTrendColor(followupRatings[String(index)], baseline)}>
+                        Rated {followupRatings[String(index)]}/10
+                      </span>
                     </div>
                   )}
                 </div>
