@@ -20,18 +20,18 @@ import {
   DISCOVERY_CATEGORIES,
   TRIED_BEFORE_OPTIONS,
   DURATION_OPTIONS,
-  getCategoryByKey,
+  joinCategoryLabels,
 } from "@/data/discovery-categories";
 import { HelpCircle, ChevronRight } from "lucide-react";
 
 interface StepDiscoveryV2Props {
-  discoveryCategory: string | null;
+  discoveryCategories: string[];
   discoveryQualityRating: number | null;
   discoveryDuration: string | null;
   discoveryTriedBefore: string[];
   discoveryTriedResult: string | null;
   contactFirstName: string;
-  onCategoryChange: (key: string) => void;
+  onCategoryToggle: (key: string) => void;
   onQualityRatingChange: (rating: number) => void;
   onDurationChange: (duration: string) => void;
   onTriedBeforeChange: (items: string[]) => void;
@@ -50,13 +50,13 @@ function getRatingLabel(value: number): string {
 }
 
 export function StepDiscoveryV2({
-  discoveryCategory,
+  discoveryCategories,
   discoveryQualityRating,
   discoveryDuration,
   discoveryTriedBefore,
   discoveryTriedResult,
   contactFirstName,
-  onCategoryChange,
+  onCategoryToggle,
   onQualityRatingChange,
   onDurationChange,
   onTriedBeforeChange,
@@ -69,10 +69,7 @@ export function StepDiscoveryV2({
     existingOther ? existingOther.replace("Other: ", "") : ""
   );
 
-  const category = discoveryCategory
-    ? getCategoryByKey(discoveryCategory)
-    : null;
-  const categoryLabel = category?.categoryLabel ?? "your quality of life";
+  const categoryLabel = joinCategoryLabels(discoveryCategories);
 
   const q1Script =
     "What's the one thing that could improve your quality of life right now? Is it pain management, improved mobility? Better sleep?";
@@ -104,11 +101,11 @@ export function StepDiscoveryV2({
   };
 
   const canContinue =
-    discoveryCategory !== null && discoveryQualityRating !== null;
+    discoveryCategories.length > 0 && discoveryQualityRating !== null;
 
   return (
     <div className="space-y-4">
-      {/* Question 1: Category Selection */}
+      {/* Question 1: Category Selection (multi-select) */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-sm flex items-center gap-2">
@@ -116,7 +113,7 @@ export function StepDiscoveryV2({
               Q1
             </span>
             <HelpCircle className="size-4" />
-            What area of life?
+            What areas of life?
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -130,21 +127,33 @@ export function StepDiscoveryV2({
               className="absolute top-1 right-1"
             />
           </div>
-          <Select
-            value={discoveryCategory ?? undefined}
-            onValueChange={onCategoryChange}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select their top concern..." />
-            </SelectTrigger>
-            <SelectContent>
-              {DISCOVERY_CATEGORIES.map((cat) => (
-                <SelectItem key={cat.key} value={cat.key}>
-                  {cat.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <p className="text-xs text-muted-foreground">
+            Select all that apply ({discoveryCategories.length} selected)
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+            {DISCOVERY_CATEGORIES.map((cat) => {
+              const checked = discoveryCategories.includes(cat.key);
+              return (
+                <button
+                  key={cat.key}
+                  type="button"
+                  onClick={() => onCategoryToggle(cat.key)}
+                  className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition-all ${
+                    checked
+                      ? "border-primary bg-primary/5 font-medium"
+                      : "border-border hover:bg-muted/50"
+                  }`}
+                >
+                  <Checkbox
+                    checked={checked}
+                    onCheckedChange={() => onCategoryToggle(cat.key)}
+                    className="pointer-events-none"
+                  />
+                  <span className="flex-1 truncate">{cat.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </CardContent>
       </Card>
 

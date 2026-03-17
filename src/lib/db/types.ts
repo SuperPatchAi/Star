@@ -130,7 +130,7 @@ export interface Database {
           sample_followup_done: boolean;
           outcome: ContactOutcome;
           follow_up_day: number | null;
-          discovery_category: string | null;
+          discovery_category: string[];
           discovery_quality_rating: number | null;
           discovery_duration: string | null;
           discovery_tried_before: string[];
@@ -166,7 +166,7 @@ export interface Database {
           sample_followup_done?: boolean;
           outcome?: ContactOutcome;
           follow_up_day?: number | null;
-          discovery_category?: string | null;
+          discovery_category?: string[];
           discovery_quality_rating?: number | null;
           discovery_duration?: string | null;
           discovery_tried_before?: string[];
@@ -200,7 +200,7 @@ export interface Database {
           sample_followup_done?: boolean;
           outcome?: ContactOutcome;
           follow_up_day?: number | null;
-          discovery_category?: string | null;
+          discovery_category?: string[];
           discovery_quality_rating?: number | null;
           discovery_duration?: string | null;
           discovery_tried_before?: string[];

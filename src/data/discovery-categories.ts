@@ -49,3 +49,16 @@ export function getCategoryByKey(key: string): DiscoveryCategory | undefined {
 export function getCategoryByProductId(productId: string): DiscoveryCategory | undefined {
   return DISCOVERY_CATEGORIES.find(c => c.productId === productId);
 }
+
+export function getCategoriesByKeys(keys: string[]): DiscoveryCategory[] {
+  return keys.map(getCategoryByKey).filter(Boolean) as DiscoveryCategory[];
+}
+
+export function joinCategoryLabels(keys: string[]): string {
+  const cats = getCategoriesByKeys(keys);
+  if (cats.length === 0) return "your quality of life";
+  if (cats.length === 1) return cats[0].categoryLabel;
+  const last = cats[cats.length - 1].categoryLabel;
+  const rest = cats.slice(0, -1).map(c => c.categoryLabel);
+  return `${rest.join(", ")} and ${last}`;
+}

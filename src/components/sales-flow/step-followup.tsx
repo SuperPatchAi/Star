@@ -25,7 +25,7 @@ import {
   FOLLOWUP_SEQUENCE,
   interpolateFollowUpTemplate,
 } from "@/data/followup-templates";
-import { getCategoryByKey } from "@/data/discovery-categories";
+import { joinCategoryLabels } from "@/data/discovery-categories";
 import { getProductById } from "@/data/products";
 
 interface StepFollowUpProps {
@@ -37,7 +37,7 @@ interface StepFollowUpProps {
   onSampleReceived?: (received: boolean) => void;
   continueLabel?: string;
   onContinue?: () => void;
-  discoveryCategory: string | null;
+  discoveryCategories: string[];
   discoveryQualityRating: number | null;
   followupRatings: Record<string, number>;
   onFollowupRatingChange: (dayIndex: number, rating: number) => void;
@@ -77,7 +77,7 @@ export function StepFollowUp({
   onSampleReceived,
   continueLabel = "Continue",
   onContinue,
-  discoveryCategory,
+  discoveryCategories,
   discoveryQualityRating,
   followupRatings,
   onFollowupRatingChange,
@@ -85,8 +85,7 @@ export function StepFollowUp({
 }: StepFollowUpProps) {
   const [advancing, setAdvancing] = useState(false);
 
-  const category = discoveryCategory ? getCategoryByKey(discoveryCategory) : null;
-  const categoryLabel = category?.categoryLabel ?? "quality of life";
+  const categoryLabel = joinCategoryLabels(discoveryCategories);
   const firstProduct = sampleProducts.length > 0 ? getProductById(sampleProducts[0]) : null;
   const productName = firstProduct?.name ?? "SuperPatch";
   const baseline = discoveryQualityRating ?? 5;

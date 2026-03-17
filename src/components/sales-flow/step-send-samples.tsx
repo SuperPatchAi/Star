@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { interpolateScript } from "@/lib/interpolate-script";
-import { getCategoryByKey } from "@/data/discovery-categories";
+import { getCategoriesByKeys } from "@/data/discovery-categories";
 import { getProductById } from "@/data/products";
 import Image from "next/image";
 import type { Product } from "@/types";
@@ -46,7 +46,7 @@ interface StepSendSamplesProps {
   onContinue: () => void;
   contactFirstName?: string;
   continueLabel?: string;
-  discoveryCategory: string | null;
+  discoveryCategories: string[];
 }
 
 const SAMPLE_OFFER_SCRIPT = `{{FirstName}}, I have something that might really help with what you're dealing with. I don't share these with everyone — only people who are genuinely open to trying something different. If I sent you some samples, would you try them with me so we can see how they work for you?`;
@@ -64,23 +64,24 @@ export function StepSendSamples({
   onContinue,
   contactFirstName,
   continueLabel = "Continue",
-  discoveryCategory,
+  discoveryCategories,
 }: StepSendSamplesProps) {
   const address = sampleAddress || { line1: "", line2: "", city: "", state: "", zip: "" };
   const offerScript = useMemo(() => interpolateScript(SAMPLE_OFFER_SCRIPT, contactFirstName), [contactFirstName]);
   const commitmentScript = useMemo(() => interpolateScript(COMMITMENT_SCRIPT, contactFirstName), [contactFirstName]);
 
-  const suggestedCategory = discoveryCategory ? getCategoryByKey(discoveryCategory) : null;
-  const suggestedProduct = suggestedCategory ? getProductById(suggestedCategory.productId) : null;
+  const suggestedCategories = getCategoriesByKeys(discoveryCategories);
+  const suggestedProducts = suggestedCategories
+    .map(c => getProductById(c.productId))
+    .filter(Boolean) as Product[];
+  const suggestedProductIds = new Set(suggestedProducts.map(p => p.id));
   const [showAllProducts, setShowAllProducts] = useState(false);
 
   const handleAddressChange = (field: keyof SampleAddress, value: string) => {
     onSetSampleAddress({ ...address, [field]: value });
   };
 
-  const otherProducts = suggestedProduct
-    ? products.filter((p) => p.id !== suggestedProduct.id)
-    : products;
+  const otherProducts = products.filter((p) => !suggestedProductIds.has(p.id));
 
   return (
     <div className="space-y-4">
@@ -132,41 +133,42 @@ export function StepSendSamples({
           <div className="space-y-2">
             <Label>Which products to send?</Label>
 
-            {/* Suggested product card */}
-            {suggestedProduct && (
+            {/* Suggested product cards */}
+            {suggestedProducts.map((sp) => (
               <button
+                key={sp.id}
                 type="button"
-                onClick={() => onToggleSampleProduct(suggestedProduct.id)}
+                onClick={() => onToggleSampleProduct(sp.id)}
                 className={`w-full flex items-center gap-3 p-3 rounded-lg border-2 text-left transition-all ${
-                  sampleProducts.includes(suggestedProduct.id)
+                  sampleProducts.includes(sp.id)
                     ? "ring-2 ring-primary border-primary bg-primary/5"
                     : "border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/30 hover:border-primary/50"
                 }`}
               >
                 <div className="relative size-10 flex-shrink-0 rounded-full overflow-hidden bg-muted">
                   <Image
-                    src={suggestedProduct.image}
-                    alt={suggestedProduct.name}
+                    src={sp.image}
+                    alt={sp.name}
                     fill
                     className="object-cover"
                     sizes="40px"
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="text-sm font-semibold block">{suggestedProduct.name}</span>
+                  <span className="text-sm font-semibold block">{sp.name}</span>
                   <Badge variant="secondary" className="mt-1 text-xs gap-1">
                     <Sparkles className="size-3" />
                     Recommended based on their needs
                   </Badge>
                 </div>
-                {sampleProducts.includes(suggestedProduct.id) && (
+                {sampleProducts.includes(sp.id) && (
                   <Check className="size-4 text-primary shrink-0" />
                 )}
               </button>
-            )}
+            ))}
 
             {/* Collapsible for other products */}
-            {suggestedProduct ? (
+            {suggestedProducts.length > 0 ? (
               <Collapsible open={showAllProducts} onOpenChange={setShowAllProducts}>
                 <CollapsibleTrigger asChild>
                   <button

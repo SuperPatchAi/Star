@@ -23,10 +23,10 @@ import { StepFollowUp } from "./step-followup";
 import { StepPurchaseLinks } from "./step-purchase-links";
 import { StepSendSamples, type SampleAddress } from "./step-send-samples";
 import { ProductTabs } from "./product-tabs";
-import { getCategoryByKey } from "@/data/discovery-categories";
+import { getCategoriesByKeys, joinCategoryLabels } from "@/data/discovery-categories";
 
 export interface DecisionTreeState {
-  discoveryCategory: string | null;
+  discoveryCategories: string[];
   discoveryQualityRating: number | null;
   discoveryDuration: string | null;
   discoveryTriedBefore: string[];
@@ -77,7 +77,7 @@ function getLatestRating(ratings: Record<string, number>): number | undefined {
 
 function contactToState(contact: Contact): DecisionTreeState {
   return {
-    discoveryCategory: contact.discovery_category || null,
+    discoveryCategories: contact.discovery_category ?? [],
     discoveryQualityRating: contact.discovery_quality_rating || null,
     discoveryDuration: contact.discovery_duration || null,
     discoveryTriedBefore: contact.discovery_tried_before || [],
@@ -119,7 +119,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
   );
   const [state, setState] = useState<DecisionTreeState>(() =>
     initialContact ? contactToState(initialContact) : {
-      discoveryCategory: null,
+      discoveryCategories: [],
       discoveryQualityRating: null,
       discoveryDuration: null,
       discoveryTriedBefore: [],
@@ -176,7 +176,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
   const buildSavePayload = useCallback(() => ({
     current_step: currentStep.id,
     product_ids: activeContact?.product_ids || [],
-    discovery_category: state.discoveryCategory,
+    discovery_category: state.discoveryCategories,
     discovery_quality_rating: state.discoveryQualityRating,
     discovery_duration: state.discoveryDuration,
     discovery_tried_before: state.discoveryTriedBefore,
@@ -222,7 +222,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
         updateContact(contactRef.id, {
           current_step: currentStep.id,
           product_ids: contactRef.product_ids || [],
-          discovery_category: state.discoveryCategory,
+          discovery_category: state.discoveryCategories,
           discovery_quality_rating: state.discoveryQualityRating,
           discovery_duration: state.discoveryDuration,
           discovery_tried_before: state.discoveryTriedBefore,
@@ -268,22 +268,30 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
     setFollowUpDay(prev => prev + 1);
   }, [activeContact]);
 
-  const setDiscoveryCategory = useCallback((key: string) => {
-    setState(prev => ({
-      ...prev,
-      discoveryCategory: key,
-      discoveryQualityRating: prev.discoveryQualityRating ?? 5,
-    }));
-    const cat = getCategoryByKey(key);
-    if (cat && activeContact) {
+  const toggleDiscoveryCategory = useCallback((key: string) => {
+    setState(prev => {
+      const next = prev.discoveryCategories.includes(key)
+        ? prev.discoveryCategories.filter(k => k !== key)
+        : [...prev.discoveryCategories, key];
+      return {
+        ...prev,
+        discoveryCategories: next,
+        discoveryQualityRating: prev.discoveryQualityRating ?? 5,
+      };
+    });
+  }, []);
+
+  useEffect(() => {
+    const mapped = getCategoriesByKeys(state.discoveryCategories).map(c => c.productId);
+    if (mapped.length > 0 && activeContact) {
       setActiveContact(prev => {
         if (!prev) return prev;
-        if (prev.product_ids.length === 0) return { ...prev, product_ids: [cat.productId] };
-        const already = prev.product_ids.includes(cat.productId);
-        return already ? prev : { ...prev, product_ids: [cat.productId, ...prev.product_ids] };
+        const merged = [...new Set([...mapped, ...prev.product_ids])];
+        if (merged.length === prev.product_ids.length && merged.every(id => prev.product_ids.includes(id))) return prev;
+        return { ...prev, product_ids: merged };
       });
     }
-  }, [activeContact]);
+  }, [state.discoveryCategories, activeContact]);
 
   const setDiscoveryQualityRating = useCallback((rating: number) => {
     setState(prev => ({ ...prev, discoveryQualityRating: rating }));
@@ -370,13 +378,13 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
       case "discovery":
         return (
           <StepDiscoveryV2
-            discoveryCategory={state.discoveryCategory}
+            discoveryCategories={state.discoveryCategories}
             discoveryQualityRating={state.discoveryQualityRating}
             discoveryDuration={state.discoveryDuration}
             discoveryTriedBefore={state.discoveryTriedBefore}
             discoveryTriedResult={state.discoveryTriedResult}
             contactFirstName={contactFirstName}
-            onCategoryChange={setDiscoveryCategory}
+            onCategoryToggle={toggleDiscoveryCategory}
             onQualityRatingChange={setDiscoveryQualityRating}
             onDurationChange={setDiscoveryDuration}
             onTriedBeforeChange={setDiscoveryTriedBefore}
@@ -398,7 +406,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
             onContinue={goNext}
             contactFirstName={contactFirstName}
             continueLabel={continueLabel}
-            discoveryCategory={state.discoveryCategory}
+            discoveryCategories={state.discoveryCategories}
           />
         );
       case "followup":
@@ -412,7 +420,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
             onSampleReceived={handleSampleReceived}
             continueLabel={continueLabel}
             onContinue={goNext}
-            discoveryCategory={state.discoveryCategory}
+            discoveryCategories={state.discoveryCategories}
             discoveryQualityRating={state.discoveryQualityRating}
             followupRatings={state.followupRatings}
             onFollowupRatingChange={setFollowupRating}
@@ -437,7 +445,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                   contactFirstName={contactFirstName}
                   baseline={state.discoveryQualityRating || undefined}
                   currentRating={getLatestRating(state.followupRatings)}
-                  categoryLabel={getCategoryByKey(state.discoveryCategory || "")?.categoryLabel}
+                  categoryLabel={joinCategoryLabels(state.discoveryCategories)}
                   continueLabel={continueLabel}
                 />
               );

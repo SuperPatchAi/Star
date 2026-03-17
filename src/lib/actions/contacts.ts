@@ -10,6 +10,12 @@ import { updateChecklistItem } from "@/lib/actions/onboarding";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SupabaseAny = any;
 
+function normalizeDiscoveryCategory(val: unknown): string[] {
+  if (Array.isArray(val)) return val as string[];
+  if (typeof val === "string" && val) return [val];
+  return [];
+}
+
 export async function getContacts() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -24,6 +30,7 @@ export async function getContacts() {
   const normalized = (data as Contact[] | null)?.map(c => ({
     ...c,
     current_step: normalizeContactStep(c.current_step),
+    discovery_category: normalizeDiscoveryCategory(c.discovery_category),
   })) ?? null;
   return { data: normalized, error: error?.message || null };
 }
@@ -40,7 +47,12 @@ export async function getContact(id: string) {
     .eq("user_id", user.id)
     .single();
 
-  const contact = data ? { ...data, current_step: normalizeContactStep((data as Contact).current_step) } as Contact : null;
+  const raw = data as Contact | null;
+  const contact = raw ? {
+    ...raw,
+    current_step: normalizeContactStep(raw.current_step),
+    discovery_category: normalizeDiscoveryCategory(raw.discovery_category),
+  } as Contact : null;
   return { data: contact, error: error?.message || null };
 }
 

@@ -35,7 +35,7 @@ import { SALES_STEPS } from "@/types/roadmap";
 import { cn } from "@/lib/utils";
 import { DecisionTree } from "@/components/sales-flow/decision-tree";
 import type { Contact, ContactInsert, ContactStep, ContactOutcome } from "@/lib/db/types";
-import { getCategoryByKey, DURATION_OPTIONS } from "@/data/discovery-categories";
+import { getCategoriesByKeys, DURATION_OPTIONS } from "@/data/discovery-categories";
 
 interface ContactSheetProps {
   open: boolean;
@@ -72,9 +72,7 @@ function getRatingColor(value: number): string {
 }
 
 function DiscoveryInsights({ contact }: { contact: Contact }) {
-  const cat = contact.discovery_category
-    ? getCategoryByKey(contact.discovery_category)
-    : null;
+  const categories = getCategoriesByKeys(contact.discovery_category ?? []);
   const rating = contact.discovery_quality_rating;
   const duration = contact.discovery_duration;
   const durationLabel = DURATION_OPTIONS.find(d => d.value === duration)?.label ?? duration;
@@ -82,7 +80,7 @@ function DiscoveryInsights({ contact }: { contact: Contact }) {
   const triedResult = contact.discovery_tried_result;
 
   const hasAnyDetail = rating !== null || duration || triedBefore.length > 0 || triedResult;
-  if (!cat && !hasAnyDetail) return null;
+  if (categories.length === 0 && !hasAnyDetail) return null;
 
   return (
     <div className="px-4 pb-3">
@@ -98,13 +96,23 @@ function DiscoveryInsights({ contact }: { contact: Contact }) {
           )}
         </div>
 
+        {categories.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground">Focus Areas</p>
+            <div className="flex flex-wrap gap-1">
+              {categories.map((cat) => (
+                <span
+                  key={cat.key}
+                  className="inline-flex items-center rounded-full bg-primary/10 border border-primary/20 px-2 py-0.5 text-xs font-medium"
+                >
+                  {cat.label}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
-          {cat && (
-            <>
-              <span className="text-muted-foreground">Focus Area</span>
-              <span className="font-medium">{cat.label}</span>
-            </>
-          )}
           {rating !== null && (
             <>
               <span className="text-muted-foreground">Quality Rating</span>
@@ -301,7 +309,7 @@ function ViewMode({
         </div>
 
         {/* Discovery Insights */}
-        {localContact.discovery_category && (
+        {(localContact.discovery_category?.length > 0 || localContact.discovery_quality_rating !== null) && (
           <DiscoveryInsights contact={localContact} />
         )}
 
