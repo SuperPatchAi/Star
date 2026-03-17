@@ -35,6 +35,7 @@ import { SALES_STEPS } from "@/types/roadmap";
 import { cn } from "@/lib/utils";
 import { DecisionTree } from "@/components/sales-flow/decision-tree";
 import type { Contact, ContactInsert, ContactStep, ContactOutcome } from "@/lib/db/types";
+import { getCategoryByKey, DURATION_OPTIONS } from "@/data/discovery-categories";
 
 interface ContactSheetProps {
   open: boolean;
@@ -52,6 +53,101 @@ STEP_LABELS["closed"] = "Closed";
 function getStepIndex(step: string): number {
   const idx = SALES_STEPS.findIndex((s) => s.id === step);
   return idx >= 0 ? idx : -1;
+}
+
+function getRatingLabel(value: number): string {
+  if (value <= 2) return "Terrible";
+  if (value <= 4) return "Poor";
+  if (value === 5) return "Okay";
+  if (value <= 7) return "Good";
+  if (value <= 9) return "Great";
+  return "Excellent";
+}
+
+function getRatingColor(value: number): string {
+  if (value <= 3) return "text-red-600 dark:text-red-400";
+  if (value <= 5) return "text-amber-600 dark:text-amber-400";
+  if (value <= 7) return "text-blue-600 dark:text-blue-400";
+  return "text-green-600 dark:text-green-400";
+}
+
+function DiscoveryInsights({ contact }: { contact: Contact }) {
+  const cat = contact.discovery_category
+    ? getCategoryByKey(contact.discovery_category)
+    : null;
+  const rating = contact.discovery_quality_rating;
+  const duration = contact.discovery_duration;
+  const durationLabel = DURATION_OPTIONS.find(d => d.value === duration)?.label ?? duration;
+  const triedBefore = contact.discovery_tried_before ?? [];
+  const triedResult = contact.discovery_tried_result;
+
+  const hasAnyDetail = rating !== null || duration || triedBefore.length > 0 || triedResult;
+  if (!cat && !hasAnyDetail) return null;
+
+  return (
+    <div className="px-4 pb-3">
+      <div className="rounded-lg border bg-muted/30 p-3 space-y-2.5">
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+            Discovery Insights
+          </p>
+          {rating !== null && (
+            <span className={cn("text-xs font-bold", getRatingColor(rating))}>
+              Baseline: {rating}/10
+            </span>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
+          {cat && (
+            <>
+              <span className="text-muted-foreground">Focus Area</span>
+              <span className="font-medium">{cat.label}</span>
+            </>
+          )}
+          {rating !== null && (
+            <>
+              <span className="text-muted-foreground">Quality Rating</span>
+              <span className={cn("font-medium", getRatingColor(rating))}>
+                {rating}/10 &middot; {getRatingLabel(rating)}
+              </span>
+            </>
+          )}
+          {duration && (
+            <>
+              <span className="text-muted-foreground">Duration</span>
+              <span className="font-medium">{durationLabel}</span>
+            </>
+          )}
+        </div>
+
+        {triedBefore.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground">Previously Tried</p>
+            <div className="flex flex-wrap gap-1">
+              {triedBefore.map((item) => (
+                <span
+                  key={item}
+                  className="inline-flex items-center rounded-full bg-background border px-2 py-0.5 text-xs"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {triedResult && (
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground">How It Worked Out</p>
+            <p className="text-sm italic text-foreground/80">
+              &ldquo;{triedResult}&rdquo;
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 function ViewMode({
@@ -203,6 +299,11 @@ function ViewMode({
             )}
           </div>
         </div>
+
+        {/* Discovery Insights */}
+        {localContact.discovery_category && (
+          <DiscoveryInsights contact={localContact} />
+        )}
 
         {/* Divider before sales flow */}
         <div className="border-t mx-4 mb-4" />
