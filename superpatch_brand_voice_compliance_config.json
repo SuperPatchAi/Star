@@ -1,0 +1,169 @@
+{
+  "meta": {
+    "source_file": "superpatch_brand_voice_compliance.md",
+    "version": "1.0",
+    "description": "Configuration derived from Brand Voice & Compliance Guardrails for Email & Newsletter Focus"
+  },
+  "brand_foundation": {
+    "mission": {
+      "statement": "Unlocking Human Potential Through Unrivaled Technology.",
+      "elaboration": "Develop breakthrough tech that leads to safe, all-natural, drug-free, non-invasive wellness solutions."
+    },
+    "core_value_statement": "The Profound Made Simple",
+    "brand_reflections": [
+      "Healthy living",
+      "Unflinching integrity",
+      "Active athleticism",
+      "Holistic wellness",
+      "Inclusive health for all"
+    ]
+  },
+  "brand_promise": {
+    "primary_pillars": [
+      "Safe",
+      "100% Drug-Free",
+      "All-Natural",
+      "Non-Invasive"
+    ],
+    "secondary_pillars": [
+      "Hypo-Allergenic",
+      "Latex-Free",
+      "Gluten-Free",
+      "Non-GMO",
+      "No Parabens"
+    ],
+    "third_party_attributes": [
+      "FDA Recognized",
+      "Skin Safe",
+      "Made in USA"
+    ],
+    "usage_guideline": "Email copy can reference these pillars, but must not exaggerate them or imply medical cures."
+  },
+  "voice_tone_personality": {
+    "voice_attributes": [
+      "Confident",
+      "Supportive",
+      "Informative",
+      "Friendly"
+    ],
+    "tone_attributes": [
+      "Conversational",
+      "Friendly but not overly familiar",
+      "Respectful",
+      "Enthusiastic",
+      "Informative",
+      "Action-oriented"
+    ],
+    "email_specific_tone": "Imagine speaking to a healthcare practitioner who is also a friend – less formal, but still trustworthy and professional.",
+    "personality_adjectives": [
+      "Perceptive",
+      "Approachable",
+      "Caring",
+      "Energetic",
+      "Trustworthy"
+    ],
+    "prohibited_tones": [
+      "Pushy",
+      "Aggressive",
+      "Comedic",
+      "Zany",
+      "Overly familiar"
+    ]
+  },
+  "audience_segmentation": {
+    "primary": [
+      "Super Patch Associates"
+    ],
+    "secondary": [
+      "Health & Wellness Professionals",
+      "Fitness Experts",
+      "Sports Coaches"
+    ],
+    "tertiary": [
+      "Consumers introduced via an Associate",
+      "Consumers discovering the brand via the internet"
+    ]
+  },
+  "language_rules": {
+    "general_principles": [
+      "Use conversational language",
+      "Avoid unnecessary scientific jargon",
+      "Use clear, plain-English explanations for VTT/research",
+      "Prefer active voice over passive",
+      "Clean, correct grammar without being rigid/academic"
+    ],
+    "prohibited_content_types": [
+      "Crude or suggestive",
+      "Sexist",
+      "Racist",
+      "Phobic toward any minority group",
+      "Aggressive",
+      "Demeaning",
+      "Patronizing",
+      "Fear-based language about health/mood/weight/sleep",
+      "Shaming language"
+    ],
+    "lexical_rules": {
+      "super_usage": {
+        "rule": "Avoid using 'Super' as a general adjective. It is reserved for the brand name.",
+        "incorrect_example": "a super powerful patch"
+      },
+      "patch_usage": {
+        "rule": "Never double up the word 'patch'.",
+        "incorrect_example": "Try the Boost Super Patch patch",
+        "correct_example": "Try Boost Super Patch"
+      },
+      "product_name_usage": {
+        "rule": "Never use a product name as a generic noun or adjective.",
+        "incorrect_example": "Feel the freedom from pain with Super Patch.",
+        "correct_example": "Feel more free to move with Liberty Super Patch."
+      },
+      "naming_convention": {
+        "rule": "Use full product names. Do not use unauthorized short forms.",
+        "example": "Focus Super Patch",
+        "note": "Refer to official brand system for names."
+      }
+    }
+  },
+  "legal_compliance": {
+    "trademarks": [
+      "The Super Patch Company",
+      "Super Patch",
+      "Vibrotactile Technology (VTT™)"
+    ],
+    "copyright_policy": "Assume all text is original. If referencing third-party content, do so in text only and avoid copying proprietary phrasing.",
+    "accessibility_focus": [
+      "Clear, descriptive link text (avoid 'click here')",
+      "Clear, understandable language"
+    ],
+    "medical_claims": {
+      "prohibited": [
+        "Unsubstantiated medical or therapeutic claims",
+        "Implying diagnosis, treatment, or cure of specific diseases",
+        "Guaranteed outcomes for all users"
+      ],
+      "permitted_focus": [
+        "Support",
+        "Aid",
+        "Wellness benefits",
+        "Drug-free",
+        "Non-invasive",
+        "All-natural",
+        "Skin-safe",
+        "Approved statistical improvements"
+      ]
+    }
+  },
+  "email_guidelines": {
+    "tone_dos": [
+      "Sound like a caring, informed friend with professional expertise",
+      "Be encouraging, supportive, and practical",
+      "Use short, clear sentences and concrete benefits"
+    ],
+    "tone_donts": [
+      "Sound like a drill sergeant, a hype-man, or a stand-up comic",
+      "Use scare tactics",
+      "Use sarcasm or snark"
+    ]
+  }
+}

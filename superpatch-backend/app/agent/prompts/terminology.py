@@ -13,13 +13,26 @@ import json
 import re
 from pathlib import Path
 
-_PROJECT_ROOT = Path(__file__).resolve().parents[4]
+_BACKEND_ROOT = Path(__file__).resolve().parents[3]
+_MONOREPO_ROOT = _BACKEND_ROOT.parent
+
+
+def _find_config(filename: str) -> Path:
+    """Locate a config file in the monorepo root or the backend root (Render)."""
+    for base in (_MONOREPO_ROOT, _BACKEND_ROOT):
+        candidate = base / filename
+        if candidate.exists():
+            return candidate
+    raise FileNotFoundError(
+        f"{filename} not found in {_MONOREPO_ROOT} or {_BACKEND_ROOT}"
+    )
+
 
 _lexicon_config: dict = json.loads(
-    (_PROJECT_ROOT / "patch_lexicon.config.json").read_text()
+    _find_config("patch_lexicon.config.json").read_text()
 )
 _brand_voice_config: dict = json.loads(
-    (_PROJECT_ROOT / "superpatch_brand_voice_compliance_config.json").read_text()
+    _find_config("superpatch_brand_voice_compliance_config.json").read_text()
 )
 
 # ---------------------------------------------------------------------------

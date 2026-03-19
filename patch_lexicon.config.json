@@ -1,0 +1,622 @@
+{
+  "version": "2025-11-19",
+  "description": "Patch-specific lexicon and exclusivity rules for Super Memo/email generation. Prevents term bleed between patches (e.g., 'clarity' only on FOCUS).",
+  "patchLexicon": {
+    "FOCUS": {
+      "preferredTerms": [
+        "focus",
+        "focused",
+        "concentration",
+        "concentrate",
+        "attention",
+        "attentive",
+        "enhanced concentration",
+        "enhanced attention",
+        "stay on task",
+        "less distraction",
+        "overcome distractions",
+        "mental stamina",
+        "mental performance",
+        "cognitive performance",
+        "memory retention",
+        "productivity",
+        "study with intensity",
+        "work better, not harder"
+      ],
+      "exclusiveTerms": [
+        "clarity",
+        "mental clarity",
+        "clear-headed",
+        "sharpen your focus",
+        "laser-focus",
+        "less distraction. more attention.",
+        "focus your mind",
+        "enhanced concentration & attention",
+        "improved mental focus",
+        "improved cognitive performance",
+        "enhanced memory retention"
+      ],
+      "discouragedTerms": [
+        "immune system",
+        "metabolism",
+        "libido",
+        "minor aches and pains",
+        "pain relief",
+        "complexion",
+        "glowing complexion"
+      ]
+    },
+    "PEACE": {
+      "preferredTerms": [
+        "calm",
+        "calmer",
+        "calmness",
+        "ease",
+        "at ease",
+        "soothed",
+        "grounded",
+        "centered",
+        "relaxed",
+        "less stressed",
+        "stress relief",
+        "reduces feelings of stress",
+        "reduces feelings of anxiety",
+        "emotional balance",
+        "balanced outlook",
+        "sense of calm",
+        "relaxation",
+        "mental quiet",
+        "manage stress",
+        "positive mental state"
+      ],
+      "exclusiveTerms": [
+        "let calmness embrace you",
+        "enjoy a clear mind"
+      ],
+      "discouragedTerms": [
+        "clarity",
+        "mental clarity",
+        "clear-headed",
+        "metabolism",
+        "immune system",
+        "deep sleep",
+        "recovery metrics",
+        "power and strength"
+      ]
+    },
+    "REM": {
+      "preferredTerms": [
+        "sleep",
+        "deep sleep",
+        "restful sleep",
+        "longer, deeper sleep",
+        "sleep patterns",
+        "fall asleep faster",
+        "sleep duration",
+        "stay asleep",
+        "less interrupted sleep",
+        "more regular sleep",
+        "wake up refreshed",
+        "no waking grogginess",
+        "bedtime routine",
+        "nighttime rest",
+        "longer sleep",
+        "deeper sleep"
+      ],
+      "exclusiveTerms": [
+        "sleep made naturally",
+        "give yourself the rest you need",
+        "longer sleep. deeper sleep. no morning grogginess.",
+        "longer, deeper sleep patterns",
+        "50% faster to fall asleep",
+        "25% longer sleep duration",
+        "80% reduction in interrupted sleep",
+        "80% of users report good or very good sleep"
+      ],
+      "discouragedTerms": [
+        "metabolism",
+        "immune system",
+        "pain relief",
+        "clean energy",
+        "athletic power",
+        "libido",
+        "complexion"
+      ]
+    },
+    "IGNITE": {
+      "preferredTerms": [
+        "metabolism",
+        "metabolic",
+        "resting metabolic rate",
+        "RMR",
+        "Max RMR",
+        "burn more calories at rest",
+        "burn calories while at rest",
+        "optimize your resting metabolic rate",
+        "optimize calorie consumption",
+        "optimize the burn",
+        "metabolic function",
+        "energy consumption",
+        "balanced caloric utilization",
+        "metabolic support",
+        "natural weight management",
+        "weight management"
+      ],
+      "exclusiveTerms": [
+        "turn on your metabolism",
+        "natural metabolic overdrive",
+        "burn up to 25% more calories at rest",
+        "burn more calories at rest",
+        "optimize your resting metabolic rate.",
+        "max resting metabolic rate. optimize calorie consumption."
+      ],
+      "discouragedTerms": [
+        "sleep",
+        "deep sleep",
+        "immune system",
+        "pain relief",
+        "libido",
+        "clarity",
+        "minor aches and pains",
+        "complexion"
+      ]
+    },
+    "VICTORY": {
+      "preferredTerms": [
+        "athletic performance",
+        "athletic power",
+        "strength",
+        "power",
+        "speed",
+        "stamina",
+        "endurance",
+        "agility",
+        "physical performance",
+        "better recovery",
+        "recover faster",
+        "training days",
+        "training",
+        "personal bests",
+        "hit those personal bests",
+        "go full out",
+        "more strength, power, stamina"
+      ],
+      "exclusiveTerms": [
+        "more power. more speed. better recovery.",
+        "feel your natural strength",
+        "power up your training",
+        "hit those personal bests"
+      ],
+      "discouragedTerms": [
+        "sleep metrics",
+        "metabolic rate",
+        "immune system",
+        "complexion",
+        "clear skin",
+        "libido",
+        "minor aches and pains"
+      ]
+    },
+    "BOOST": {
+      "preferredTerms": [
+        "clean energy",
+        "energy",
+        "energized",
+        "energy lift",
+        "all-day energy",
+        "all day energy",
+        "sustained energy",
+        "12+ hours of energy",
+        "no crashes",
+        "no slumps",
+        "no jitters",
+        "no stimulants",
+        "alertness",
+        "enhanced alertness",
+        "no sugar",
+        "no caffeine",
+        "no taurine",
+        "no stimulants or jitters",
+        "sustainable energy"
+      ],
+      "exclusiveTerms": [
+        "peak performance clean energy",
+        "no sugar, no caffeine, no taurine",
+        "no stimulants or jitters",
+        "no energy crashes",
+        "12+ hours of increased energy",
+        "+12hr. sustained energy. no slumps. no crashes."
+      ],
+      "discouragedTerms": [
+        "sleep",
+        "deep sleep",
+        "metabolism",
+        "immune system",
+        "pain relief",
+        "complexion",
+        "libido"
+      ]
+    },
+    "DEFEND": {
+      "preferredTerms": [
+        "immune",
+        "immunity",
+        "immune system",
+        "natural resistance",
+        "natural defenses",
+        "defense against environmental stressors",
+        "environmental stressors",
+        "overall health",
+        "overall well-being",
+        "healthy lifestyle support",
+        "bolsters immunity",
+        "supports a healthy immune system",
+        "support for the immune system"
+      ],
+      "exclusiveTerms": [
+        "support your natural resistance",
+        "helps defend against environmental stressors",
+        "feel better about your health"
+      ],
+      "discouragedTerms": [
+        "metabolism",
+        "deep sleep metrics",
+        "libido",
+        "complexion",
+        "clarity",
+        "minor aches and pains",
+        "pain relief"
+      ]
+    },
+    "JOY": {
+      "preferredTerms": [
+        "joy",
+        "joyful",
+        "happiness",
+        "happy",
+        "positivity",
+        "positive moods",
+        "positive thinking",
+        "optimism",
+        "emotional wellness",
+        "emotional wellbeing",
+        "mood-lifting",
+        "natural mood-lifting",
+        "mood support",
+        "carefree days",
+        "more carefree days",
+        "support positivity for happier moods",
+        "you could be more fearless"
+      ],
+      "exclusiveTerms": [
+        "have more carefree days",
+        "be more positively joyful",
+        "support positivity for happier moods."
+      ],
+      "discouragedTerms": [
+        "metabolism",
+        "immune system",
+        "deep sleep",
+        "pain relief",
+        "libido",
+        "balance & stability",
+        "cravings"
+      ]
+    },
+    "LUMI": {
+      "preferredTerms": [
+        "complexion",
+        "skin",
+        "healthy complexion",
+        "healthy skin",
+        "natural glow",
+        "healthy glow",
+        "glowing complexion",
+        "radiant skin",
+        "clear skin",
+        "clear, radiant, healthier skin",
+        "skin hydration",
+        "skin elasticity",
+        "younger looking skin",
+        "less wrinkles",
+        "clean beauty",
+        "skin hydration support",
+        "glowing complexion"
+      ],
+      "exclusiveTerms": [
+        "give your complexion a special glow",
+        "display your natural beauty",
+        "clear, radiant, healthier skin",
+        "skin hydration support. glowing complexion."
+      ],
+      "discouragedTerms": [
+        "metabolism",
+        "immune system",
+        "sleep metrics",
+        "pain relief",
+        "libido",
+        "clarity"
+      ]
+    },
+    "ROCKET": {
+      "preferredTerms": [
+        "men's health",
+        "men’s health",
+        "male vitality",
+        "vigor",
+        "stamina",
+        "endurance",
+        "libido",
+        "drive",
+        "overall vigor",
+        "overall satisfaction",
+        "feel great again",
+        "regain your confidence",
+        "male hormonal support"
+      ],
+      "exclusiveTerms": [
+        "be a natural man",
+        "enhanced health for men",
+        "safely regain your confidence",
+        "take care of all of you",
+        "male hormonal support."
+      ],
+      "discouragedTerms": [
+        "metabolic rate",
+        "immune system",
+        "deep sleep metrics",
+        "complexion",
+        "pain relief",
+        "clarity"
+      ]
+    },
+    "FREEDOM": {
+      "preferredTerms": [
+        "aches and pains",
+        "aches",
+        "pains",
+        "pain",
+        "pain relief",
+        "relief from minor aches and pains",
+        "minor aches and pains",
+        "less discomfort",
+        "comfort",
+        "comfortably active",
+        "24-hour relief",
+        "effective pain relief",
+        "control your aches and pains"
+      ],
+      "exclusiveTerms": [
+        "control your aches and pains",
+        "the benefits of comfort",
+        "72% reduction in pain",
+        "24-hour relief",
+        "all-natural, drug-free relief from minor aches and pains."
+      ],
+      "discouragedTerms": [
+        "metabolism",
+        "immune system",
+        "complexion",
+        "libido",
+        "deep sleep metrics (beyond comfort)",
+        "clarity"
+      ]
+    },
+    "LIBERTY": {
+      "preferredTerms": [
+        "balance",
+        "stability",
+        "balance and stability",
+        "mobility",
+        "move with confidence",
+        "steadiness",
+        "freer movement",
+        "improved mobility",
+        "increased strength",
+        "longevity",
+        "vitality",
+        "balanced life",
+        "enhanced balance & stability",
+        "enhanced balance and stability",
+        "enhanced balance & stability for better movement"
+      ],
+      "exclusiveTerms": [
+        "increase your balance and stability",
+        "enjoy a balanced life",
+        "30% better balance",
+        "enhanced balance & stability for better movement."
+      ],
+      "discouragedTerms": [
+        "metabolism",
+        "immune system",
+        "complexion",
+        "libido",
+        "detailed sleep metrics",
+        "clarity"
+      ]
+    },
+    "KICK IT": {
+      "preferredTerms": [
+        "willpower",
+        "enhanced willpower",
+        "self-control",
+        "impulse control",
+        "control impulses",
+        "control cravings",
+        "cravings",
+        "reduce cravings",
+        "reduces cravings",
+        "healthy habits",
+        "supports healthy habits",
+        "screen time habits",
+        "overcome negative thinking",
+        "overcome negative actions",
+        "positive mindset",
+        "positivity",
+        "reinforce positivity",
+        "the power of positivity",
+        "take control of your life",
+        "take control of your impulses"
+      ],
+      "exclusiveTerms": [
+        "take control of your life",
+        "the power of positivity",
+        "positive mindset to control cravings.",
+        "reduces cravings",
+        "supports healthy habits",
+        "take control of impulses. eat healthy. get less screen time."
+      ],
+      "discouragedTerms": [
+        "clarity",
+        "mental clarity",
+        "attention",
+        "concentration",
+        "deep sleep",
+        "immune system",
+        "metabolic rate",
+        "complexion",
+        "minor aches and pains"
+      ]
+    }
+  },
+  "exclusiveByTerm": {
+    "clarity": ["FOCUS"],
+    "mental clarity": ["FOCUS"],
+    "clear-headed": ["FOCUS"],
+    "focus your mind": ["FOCUS"],
+    "less distraction. more attention.": ["FOCUS"],
+    "enhanced concentration & attention": ["FOCUS"],
+    "improved mental focus": ["FOCUS"],
+    "improved cognitive performance": ["FOCUS"],
+    "enhanced memory retention": ["FOCUS"],
+
+    "enjoy a clear mind": ["PEACE"],
+    "let calmness embrace you": ["PEACE"],
+    "calm your mind": ["PEACE"],
+    "manage stress with calm and clarity": ["PEACE"],
+
+    "sleep made naturally": ["REM"],
+    "give yourself the rest you need": ["REM"],
+    "longer sleep. deeper sleep. no morning grogginess.": ["REM"],
+    "longer, deeper sleep patterns": ["REM"],
+    "50% faster to fall asleep": ["REM"],
+    "25% longer sleep duration": ["REM"],
+    "80% reduction in interrupted sleep": ["REM"],
+    "80% of users report good or very good sleep": ["REM"],
+
+    "resting metabolic rate": ["IGNITE"],
+    "RMR": ["IGNITE"],
+    "max resting metabolic rate": ["IGNITE"],
+    "optimize your resting metabolic rate.": ["IGNITE"],
+    "optimize your resting metabolic rate": ["IGNITE"],
+    "turn on your metabolism": ["IGNITE"],
+    "metabolic overdrive": ["IGNITE"],
+    "natural metabolic overdrive": ["IGNITE"],
+    "burn up to 25% more calories at rest": ["IGNITE"],
+    "burn more calories at rest": ["IGNITE"],
+    "optimize calorie consumption": ["IGNITE"],
+
+    "more power. more speed. better recovery.": ["VICTORY"],
+    "feel your natural strength": ["VICTORY"],
+    "power up your training": ["VICTORY"],
+    "hit those personal bests": ["VICTORY"],
+
+    "peak performance clean energy": ["BOOST"],
+    "+12hr. sustained energy. no slumps. no crashes.": ["BOOST"],
+    "12+ hours of increased energy": ["BOOST"],
+    "no stimulants or jitters": ["BOOST"],
+    "no energy crashes": ["BOOST"],
+
+    "support your natural resistance": ["DEFEND"],
+    "feel better about your health": ["DEFEND"],
+    "bolsters immunity": ["DEFEND"],
+    "helps defend against environmental stressors": ["DEFEND"],
+
+    "have more carefree days": ["JOY"],
+    "be more positively joyful": ["JOY"],
+    "support positivity for happier moods.": ["JOY"],
+    "you could be more fearless": ["JOY"],
+
+    "complexion": ["LUMI"],
+    "healthy complexion": ["LUMI"],
+    "give your complexion a special glow": ["LUMI"],
+    "display your natural beauty": ["LUMI"],
+    "skin hydration support": ["LUMI"],
+    "glowing complexion": ["LUMI"],
+    "natural glow": ["LUMI"],
+    "clear, radiant, healthier skin": ["LUMI"],
+    "younger looking skin": ["LUMI"],
+    "less wrinkles": ["LUMI"],
+
+    "men's health": ["ROCKET"],
+    "men’s health": ["ROCKET"],
+    "male hormonal support": ["ROCKET"],
+    "take care of all of you": ["ROCKET"],
+    "be a natural man": ["ROCKET"],
+    "enhanced health for men": ["ROCKET"],
+    "safely regain your confidence": ["ROCKET"],
+
+    "aches and pains": ["FREEDOM"],
+    "minor aches and pains": ["FREEDOM"],
+    "all-natural, drug-free relief from minor aches and pains.": ["FREEDOM"],
+    "control your aches and pains": ["FREEDOM"],
+    "the benefits of comfort": ["FREEDOM"],
+    "72% reduction in pain": ["FREEDOM"],
+    "24-hour relief": ["FREEDOM"],
+    "24-hour pain relief": ["FREEDOM"],
+
+    "increase your balance and stability": ["LIBERTY"],
+    "enhanced balance & stability for better movement.": ["LIBERTY"],
+    "enjoy a balanced life": ["LIBERTY"],
+    "30% better balance": ["LIBERTY"],
+
+    "cravings": ["KICK IT"],
+    "control cravings": ["KICK IT"],
+    "reduces cravings": ["KICK IT"],
+    "positive mindset to control cravings.": ["KICK IT"],
+    "take control of your life": ["KICK IT"],
+    "the power of positivity": ["KICK IT"],
+    "take control of impulses": ["KICK IT"]
+  },
+  "global": {
+    "sharedSafeTerms": [
+      "non-invasive",
+      "drug-free",
+      "drug free",
+      "100% drug-free",
+      "proprietary VTT technology",
+      "VTT",
+      "mind-to-body connection",
+      "mind to body connection",
+      "ridged contours",
+      "natural",
+      "all-natural",
+      "healthy lifestyle",
+      "be active every day",
+      "eat right",
+      "stay active",
+      "live your best life with Super Patch",
+      "live a healthier life with Super Patch",
+      "live healthier with Super Patch"
+    ],
+    "forbiddenPhrases": [
+      "cure",
+      "treats disease",
+      "treat disease",
+      "diagnose",
+      "heal injury",
+      "clinical cure",
+      "guaranteed results",
+      "permanent cure"
+    ],
+    "rules": {
+      "enforceExclusiveTermsOn": [
+        "subject",
+        "preview",
+        "heroHeader",
+        "sectionBodies"
+      ],
+      "onViolation": "reject_or_rewrite"
+    }
+  }
+}
