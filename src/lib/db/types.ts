@@ -225,3 +225,25 @@ export type UserProfileUpdate = Database['public']['Tables']['user_profiles']['U
 export type Contact = Database['public']['Tables']['d2c_contacts']['Row'];
 export type ContactInsert = Database['public']['Tables']['d2c_contacts']['Insert'];
 export type ContactUpdate = Database['public']['Tables']['d2c_contacts']['Update'];
+
+export interface ChatSession {
+  id: string;
+  user_id: string;
+  title: string;
+  messages: Json;
+  created_at: string;
+  updated_at: string;
+}
+
+export type ChatSessionInsert = {
+  id?: string;
+  user_id: string;
+  title?: string;
+  messages?: Json;
+};
+
+export type ChatSessionUpdate = {
+  title?: string;
+  messages?: Json;
+  updated_at?: string;
+};

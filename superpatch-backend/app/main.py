@@ -69,6 +69,7 @@ class ChatMessage(BaseModel):
 class ChatRequest(BaseModel):
     messages: list[ChatMessage]
     context: ChatContext = Field(default_factory=ChatContext)
+    session_id: str | None = None
 
 
 def _to_langchain_messages(messages: list[ChatMessage]) -> list[Any]:
@@ -112,6 +113,7 @@ async def _stream_agent(
     messages: list[ChatMessage],
     context: ChatContext,
     user_id: str,
+    session_id: str | None = None,
 ) -> AsyncGenerator[str, None]:
     lc_messages = _to_langchain_messages(messages)
 
@@ -122,7 +124,8 @@ async def _stream_agent(
         "selected_contact_id": context.selected_contact_id,
     }
 
-    config = {"configurable": {"thread_id": user_id}}
+    thread_id = session_id or user_id
+    config = {"configurable": {"thread_id": thread_id}}
 
     async def _run_stream():
         graph = await get_compiled_graph()
@@ -227,7 +230,7 @@ async def chat(
     }
     base_headers.update(limiter.headers(user_id))
     return StreamingResponse(
-        _stream_agent(body.messages, body.context, user_id),
+        _stream_agent(body.messages, body.context, user_id, body.session_id),
         media_type="text/event-stream",
         headers=base_headers,
     )

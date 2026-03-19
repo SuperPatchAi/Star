@@ -18,13 +18,15 @@ import {
   MessageSquare,
   BarChart3,
   GraduationCap,
-  Zap,
   Users,
   CalendarCheck,
   ShieldQuestion,
   Target,
-  Package,
   TrendingUp,
+  Handshake,
+  BrainCircuit,
+  Lightbulb,
+  Route,
 } from 'lucide-react'
 import { StickToBottom, useStickToBottomContext } from 'use-stick-to-bottom'
 import { Button } from '@/components/ui/button'
@@ -46,11 +48,13 @@ const SUGGESTIONS: { icon: LucideIcon; label: string; text: string }[] = [
   { icon: Users, label: 'My contacts', text: 'Show me all my contacts' },
   { icon: CalendarCheck, label: 'Follow-up reminders', text: 'What follow-ups are due today?' },
   { icon: ShieldQuestion, label: 'Handle objections', text: 'How do I handle the objection that patches are too expensive?' },
-  { icon: Zap, label: 'Product info', text: 'Tell me about the Freedom patch and its key benefits' },
   { icon: TrendingUp, label: 'Sales analytics', text: 'Show me my sales analytics and conversion rates' },
   { icon: Target, label: 'Coaching progress', text: 'Show my coaching progress' },
   { icon: MessageSquare, label: 'Opening scripts', text: 'What are the best opening scripts for a cold approach?' },
-  { icon: Package, label: 'Compare products', text: 'Compare REM and Freedom patches for me' },
+  { icon: Handshake, label: 'Closing techniques', text: 'What closing techniques work best for warm prospects?' },
+  { icon: BrainCircuit, label: 'Mindset coaching', text: 'Help me build a winning mindset for sales' },
+  { icon: Lightbulb, label: 'Discovery questions', text: 'What discovery questions should I ask a new prospect?' },
+  { icon: Route, label: 'My sales pipeline', text: 'Walk me through my current sales pipeline and next steps' },
 ]
 
 export function ChatMessages({ messages, status, onSuggestionClick, onRetry }: ChatMessagesProps) {

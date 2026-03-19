@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { useChat } from '@ai-sdk/react'
-import { Sparkles, X, RotateCcw } from 'lucide-react'
+import { Sparkles, X, RotateCcw, Clock } from 'lucide-react'
 import {
   Sheet,
   SheetContent,
@@ -15,8 +15,10 @@ import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { useChatContext } from '@/contexts/chat-context'
+import { useChatSessions } from '@/hooks/use-chat-sessions'
 import { ChatMessages } from './chat-messages'
 import { ChatInput, type ChatInputHandle } from './chat-input'
+import { ChatHistory } from './chat-history'
 import { StarAgentTransport } from './transport'
 import type { MyUIMessage } from './types'
 
@@ -25,10 +27,26 @@ const transport = new StarAgentTransport()
 export function ChatWidget() {
   const [open, setOpen] = useState(false)
   const [hasUnread, setHasUnread] = useState(false)
+  const [showHistory, setShowHistory] = useState(false)
   const pathname = usePathname()
   const { selectedContactId } = useChatContext()
   const fabRef = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<ChatInputHandle>(null)
+
+  const {
+    sessions,
+    activeSessionId,
+    createSession,
+    switchSession,
+    saveMessages,
+    deleteSession,
+    getSessionMessages,
+  } = useChatSessions()
+
+  const sessionIdRef = useRef<string | null>(activeSessionId)
+  useEffect(() => {
+    sessionIdRef.current = activeSessionId
+  }, [activeSessionId])
 
   const { messages, sendMessage, setMessages, status, stop } = useChat({
     transport,
@@ -36,6 +54,44 @@ export function ChatWidget() {
       if (!open) setHasUnread(true)
     },
   })
+
+  const hasRestoredRef = useRef(false)
+  useEffect(() => {
+    if (hasRestoredRef.current) return
+    if (activeSessionId) {
+      const stored = getSessionMessages(activeSessionId)
+      if (stored.length > 0) {
+        const uiMessages = stored.map((m) => ({
+          id: m.id,
+          role: m.role as 'user' | 'assistant',
+          parts: [{ type: 'text' as const, text: m.content }],
+          createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
+        }))
+        setMessages(uiMessages)
+        hasRestoredRef.current = true
+      }
+    }
+  }, [activeSessionId, getSessionMessages, setMessages])
+
+  const prevMessagesLenRef = useRef(0)
+  useEffect(() => {
+    if (messages.length === 0 || messages.length === prevMessagesLenRef.current) return
+    prevMessagesLenRef.current = messages.length
+
+    const sid = sessionIdRef.current
+    if (!sid) return
+
+    const serialized = messages.map((m) => ({
+      id: m.id,
+      role: m.role as 'user' | 'assistant',
+      content: m.parts
+        .filter((p): p is { type: 'text'; text: string } => p.type === 'text')
+        .map((p) => p.text)
+        .join(''),
+      createdAt: m.createdAt?.toISOString?.() ?? new Date().toISOString(),
+    }))
+    saveMessages(sid, serialized)
+  }, [messages, saveMessages])
 
   useEffect(() => {
     if (open) {
@@ -46,10 +102,17 @@ export function ChatWidget() {
 
   const handleSend = useCallback(
     (text: string) => {
+      let sid = sessionIdRef.current
+      if (!sid) {
+        sid = createSession(text)
+        sessionIdRef.current = sid
+      }
+
       sendMessage(
         { text },
         {
           body: {
+            session_id: sid,
             context: {
               current_page: pathname,
               selected_contact_id: selectedContactId,
@@ -58,7 +121,7 @@ export function ChatWidget() {
         },
       )
     },
-    [sendMessage, pathname, selectedContactId],
+    [sendMessage, pathname, selectedContactId, createSession],
   )
 
   const handleRetry = useCallback(() => {
@@ -79,12 +142,53 @@ export function ChatWidget() {
 
   const handleNewConversation = useCallback(() => {
     setMessages([])
+    prevMessagesLenRef.current = 0
+    sessionIdRef.current = null
+    setShowHistory(false)
   }, [setMessages])
+
+  const handleSelectSession = useCallback(
+    (sessionId: string) => {
+      const stored = switchSession(sessionId)
+      if (stored.length > 0) {
+        const uiMessages = stored.map((m) => ({
+          id: m.id,
+          role: m.role as 'user' | 'assistant',
+          parts: [{ type: 'text' as const, text: m.content }],
+          createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
+        }))
+        setMessages(uiMessages)
+        prevMessagesLenRef.current = uiMessages.length
+      } else {
+        setMessages([])
+        prevMessagesLenRef.current = 0
+      }
+      sessionIdRef.current = sessionId
+      setShowHistory(false)
+    },
+    [switchSession, setMessages],
+  )
+
+  const handleDeleteSession = useCallback(
+    (sessionId: string) => {
+      deleteSession(sessionId)
+      if (sessionIdRef.current === sessionId) {
+        setMessages([])
+        prevMessagesLenRef.current = 0
+        sessionIdRef.current = null
+      }
+    },
+    [deleteSession, setMessages],
+  )
 
   const handleOpenChange = useCallback(
     (next: boolean) => {
       setOpen(next)
-      if (next) setHasUnread(false)
+      if (next) {
+        setHasUnread(false)
+      } else {
+        setShowHistory(false)
+      }
     },
     [],
   )
@@ -98,7 +202,6 @@ export function ChatWidget() {
           side="right"
           className="flex h-full w-full flex-col gap-0 overflow-hidden p-0 sm:max-w-md md:max-w-lg [&>button:last-child]:hidden"
         >
-          {/* Header */}
           <SheetHeader className="border-b border-b-border/50 bg-gradient-to-b from-background to-muted/30 px-4 py-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
@@ -121,43 +224,70 @@ export function ChatWidget() {
                 </div>
               </div>
 
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-8"
-                    onClick={handleNewConversation}
-                    disabled={messages.length === 0}
-                  >
-                    <RotateCcw className="size-3.5" />
-                    <span className="sr-only">New conversation</span>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">New conversation</TooltipContent>
-              </Tooltip>
+              <div className="flex items-center gap-0.5">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-8"
+                      onClick={() => setShowHistory((v) => !v)}
+                      disabled={isStreaming}
+                    >
+                      <Clock className="size-3.5" />
+                      <span className="sr-only">Chat history</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">Chat history</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-8"
+                      onClick={handleNewConversation}
+                      disabled={messages.length === 0 && !sessionIdRef.current}
+                    >
+                      <RotateCcw className="size-3.5" />
+                      <span className="sr-only">New conversation</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">New conversation</TooltipContent>
+                </Tooltip>
+              </div>
             </div>
           </SheetHeader>
 
-          {/* Messages */}
-          <ChatMessages
-            messages={messages as MyUIMessage[]}
-            status={status}
-            onSuggestionClick={handleSend}
-            onRetry={handleRetry}
-          />
+          {showHistory ? (
+            <ChatHistory
+              sessions={sessions}
+              activeSessionId={sessionIdRef.current}
+              onSelect={handleSelectSession}
+              onDelete={handleDeleteSession}
+              onBack={() => setShowHistory(false)}
+            />
+          ) : (
+            <>
+              <ChatMessages
+                messages={messages as MyUIMessage[]}
+                status={status}
+                onSuggestionClick={handleSend}
+                onRetry={handleRetry}
+              />
 
-          {/* Input */}
-          <ChatInput
-            ref={inputRef}
-            onSend={handleSend}
-            onStop={stop}
-            isStreaming={isStreaming}
-          />
+              <ChatInput
+                ref={inputRef}
+                onSend={handleSend}
+                onStop={stop}
+                isStreaming={isStreaming}
+              />
+            </>
+          )}
         </SheetContent>
       </Sheet>
 
-      {/* FAB */}
       <Button
         ref={fabRef}
         size="icon-lg"
