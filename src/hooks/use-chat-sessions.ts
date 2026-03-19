@@ -132,7 +132,7 @@ export function useChatSessions(): UseChatSessionsReturn {
       setActiveSessionId(sessionId)
       const session = sessions.find((s) => s.id === sessionId)
       if (!session) return []
-      return (session.messages as SerializedMessage[]) ?? []
+      return (session.messages as unknown as SerializedMessage[]) ?? []
     },
     [sessions],
   )
@@ -173,7 +173,7 @@ export function useChatSessions(): UseChatSessionsReturn {
       debounceTimers.current.set(
         sessionId,
         setTimeout(() => {
-          upsertChatSession(sessionId, sessionTitle, serialized).catch(() => {})
+          upsertChatSession(sessionId, sessionTitle, serialized as unknown as import('@/lib/db/types').Json).catch(() => {})
           debounceTimers.current.delete(sessionId)
         }, 2000),
       )
@@ -201,7 +201,7 @@ export function useChatSessions(): UseChatSessionsReturn {
     (sessionId: string): SerializedMessage[] => {
       const session = sessions.find((s) => s.id === sessionId)
       if (!session) return []
-      return (session.messages as SerializedMessage[]) ?? []
+      return (session.messages as unknown as SerializedMessage[]) ?? []
     },
     [sessions],
   )

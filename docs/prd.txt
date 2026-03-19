@@ -1,0 +1,63 @@
+Title: Business Coaching Launch
+Version: 1.0
+Status: Draft
+Owner: Jay Dhaliwal
+
+1. OVERVIEW
+--------------------------------------------------------------------------------
+We are launching a high-ticket business coaching business leveraged on the personal brand and operational success of Jay Dhaliwal (CEO, The Super Patch Company). The goal is to attract high-net-worth individuals, executives, and entrepreneurs seeking to build generational wealth and scalable assets.
+
+2. OBJECTIVES
+--------------------------------------------------------------------------------
+- Establish a premium brand identity centered on "The Operator's Coach" (Active CEO vs. Theorist).
+- Launch a "Founder's Cohort" (Beta group) to validate curriculum and generate case studies.
+- Build a high-ticket sales funnel (Lead Magnet -> Application -> Discovery Call).
+- Achieve $1M in revenue within the first 12 months.
+
+3. TARGET AUDIENCE
+--------------------------------------------------------------------------------
+- High-Net-Worth Individuals (HNWIs)
+- C-Level Executives
+- Established Entrepreneurs looking to scale
+- Niche: Health, Wellness, Tech, Direct Sales leaders
+
+4. PRODUCT / OFFERING
+--------------------------------------------------------------------------------
+- **Format:** Hybrid Model
+    - 1-on-1 Mentorship (Premium Tier)
+    - Small Group Cohorts (Core Tier)
+    - Digital Assets/SOPs (Foundation)
+- **Unique Value Proposition (UVP):** 
+    - Proven frameworks from The Super Patch Company ($0 to $100M+ in 2 years).
+    - Focus on "Generational Wealth" and "Seeing Around the Corner."
+    - Drug-free/Wellness-centric business philosophy.
+- **Pricing:** High Ticket ($10k - $50k+ packages).
+
+5. KEY WORKSTREAMS & TASKS
+--------------------------------------------------------------------------------
+5.1. Strategy & Positioning
+    - Define specific "Founder's Offer" pricing and deliverables.
+    - Create the "Jay Dhaliwal" coaching brand guideline (distinct from but aligned with Super Patch).
+    - Competitor benchmarking (Tony Robbins, Grant Cardone, but for the "Quiet Professional").
+
+5.2. Marketing & Lead Gen
+    - Develop the "CEO's Log" content strategy (LinkedIn/Video).
+    - Build the Lead Magnet (e.g., "The $100M Blueprint" whitepaper/video).
+    - Set up the email marketing automation (ActiveCampaign/HubSpot).
+
+5.3. Sales & Operations
+    - Create the High-Ticket Application Form (Qualifying questions).
+    - Develop the Sales Script/Framework for Discovery Calls.
+    - Select and set up the hosting platform (Circle.so, Kajabi, or GoHighLevel).
+
+5.4. Curriculum Development
+    - Outline the 12-week "Generational Wealth" syllabus.
+    - Extract key frameworks from Jay's current operations (e.g., VTT product launch, CapEx program).
+    - Create initial worksheets and decision matrices.
+
+6. SUCCESS METRICS
+--------------------------------------------------------------------------------
+- Number of qualified applications per week.
+- Conversion rate from Discovery Call to Sale (Target: 20%+).
+- NPS (Net Promoter Score) of the first cohort.
+

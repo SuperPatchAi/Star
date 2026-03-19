@@ -3,6 +3,8 @@
 import { createClient } from '@/lib/supabase/server'
 import type { ChatSession, ChatSessionUpdate, Json } from '@/lib/db/types'
 
+type SupabaseAny = any;
+
 export async function getChatSessions(): Promise<ChatSession[]> {
   const supabase = await createClient()
   const {
@@ -10,7 +12,7 @@ export async function getChatSessions(): Promise<ChatSession[]> {
   } = await supabase.auth.getUser()
   if (!user) return []
 
-  const { data, error } = await supabase
+  const { data, error } = await (supabase as SupabaseAny)
     .from('d2c_chat_sessions')
     .select('*')
     .eq('user_id', user.id)
@@ -32,7 +34,7 @@ export async function getChatSession(sessionId: string): Promise<ChatSession | n
   } = await supabase.auth.getUser()
   if (!user) return null
 
-  const { data, error } = await supabase
+  const { data, error } = await (supabase as SupabaseAny)
     .from('d2c_chat_sessions')
     .select('*')
     .eq('id', sessionId)
@@ -54,7 +56,7 @@ export async function upsertChatSession(
   } = await supabase.auth.getUser()
   if (!user) return null
 
-  const { data, error } = await supabase
+  const { data, error } = await (supabase as SupabaseAny)
     .from('d2c_chat_sessions')
     .upsert(
       {
@@ -87,7 +89,7 @@ export async function updateChatSession(
   } = await supabase.auth.getUser()
   if (!user) return
 
-  await supabase
+  await (supabase as SupabaseAny)
     .from('d2c_chat_sessions')
     .update({ ...updates, updated_at: new Date().toISOString() })
     .eq('id', sessionId)
@@ -101,7 +103,7 @@ export async function deleteChatSession(sessionId: string): Promise<void> {
   } = await supabase.auth.getUser()
   if (!user) return
 
-  await supabase
+  await (supabase as SupabaseAny)
     .from('d2c_chat_sessions')
     .delete()
     .eq('id', sessionId)

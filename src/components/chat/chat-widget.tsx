@@ -65,7 +65,6 @@ export function ChatWidget() {
           id: m.id,
           role: m.role as 'user' | 'assistant',
           parts: [{ type: 'text' as const, text: m.content }],
-          createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
         }))
         setMessages(uiMessages)
         hasRestoredRef.current = true
@@ -88,7 +87,7 @@ export function ChatWidget() {
         .filter((p): p is { type: 'text'; text: string } => p.type === 'text')
         .map((p) => p.text)
         .join(''),
-      createdAt: m.createdAt?.toISOString?.() ?? new Date().toISOString(),
+      createdAt: new Date().toISOString(),
     }))
     saveMessages(sid, serialized)
   }, [messages, saveMessages])
@@ -155,7 +154,6 @@ export function ChatWidget() {
           id: m.id,
           role: m.role as 'user' | 'assistant',
           parts: [{ type: 'text' as const, text: m.content }],
-          createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
         }))
         setMessages(uiMessages)
         prevMessagesLenRef.current = uiMessages.length
