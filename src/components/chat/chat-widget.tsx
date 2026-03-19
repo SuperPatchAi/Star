@@ -3,9 +3,10 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { useChat } from '@ai-sdk/react'
-import { Sparkles, X, RotateCcw, Clock } from 'lucide-react'
+import { Sparkles, X, SquarePen, Clock } from 'lucide-react'
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -248,11 +249,27 @@ export function ChatWidget() {
                       onClick={handleNewConversation}
                       disabled={messages.length === 0 && !sessionIdRef.current}
                     >
-                      <RotateCcw className="size-3.5" />
-                      <span className="sr-only">New conversation</span>
+                      <SquarePen className="size-3.5" />
+                      <span className="sr-only">New chat</span>
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom">New conversation</TooltipContent>
+                  <TooltipContent side="bottom">New chat</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <SheetClose asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-8"
+                      >
+                        <X className="size-3.5" />
+                        <span className="sr-only">Close chat</span>
+                      </Button>
+                    </SheetClose>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">Close</TooltipContent>
                 </Tooltip>
               </div>
             </div>
