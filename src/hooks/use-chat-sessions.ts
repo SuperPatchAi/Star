@@ -9,11 +9,28 @@ import {
 } from '@/lib/actions/chat-sessions'
 import type { ChatSession } from '@/lib/db/types'
 
-interface SerializedMessage {
+interface SerializedToolPart {
+  type: 'dynamic-tool'
+  toolName: string
+  toolCallId: string
+  state: string
+  input?: unknown
+  output?: unknown
+}
+
+interface SerializedTextPart {
+  type: 'text'
+  text: string
+}
+
+type SerializedPart = SerializedTextPart | SerializedToolPart | { type: string; [key: string]: unknown }
+
+export interface SerializedMessage {
   id: string
   role: 'user' | 'assistant' | 'system'
-  content: string
-  createdAt?: string
+  parts: SerializedPart[]
+  /** @deprecated kept for backward compat with old sessions */
+  content?: string
 }
 
 interface UseChatSessionsReturn {
@@ -46,12 +63,11 @@ function setLocalSessions(userId: string, sessions: ChatSession[]): void {
   }
 }
 
-function extractTextContent(messages: SerializedMessage[]): SerializedMessage[] {
+function serializeMessages(messages: SerializedMessage[]): SerializedMessage[] {
   return messages.map((m) => ({
     id: m.id,
     role: m.role,
-    content: m.content,
-    createdAt: m.createdAt,
+    parts: m.parts,
   }))
 }
 
@@ -132,7 +148,12 @@ export function useChatSessions(): UseChatSessionsReturn {
       setActiveSessionId(sessionId)
       const session = sessions.find((s) => s.id === sessionId)
       if (!session) return []
-      return (session.messages as unknown as SerializedMessage[]) ?? []
+      const raw = (session.messages as unknown as SerializedMessage[]) ?? []
+      return raw.map((m) => {
+        if (m.parts) return m
+        const text = (m as unknown as { content?: string }).content ?? ''
+        return { ...m, parts: [{ type: 'text' as const, text }] }
+      })
     },
     [sessions],
   )
@@ -141,16 +162,24 @@ export function useChatSessions(): UseChatSessionsReturn {
     (sessionId: string, messages: SerializedMessage[], title?: string) => {
       if (!userId) return
 
-      const serialized = extractTextContent(messages)
+      const serialized = serializeMessages(messages)
       const session = sessions.find((s) => s.id === sessionId)
       const now = new Date().toISOString()
+
+      const firstUserText = (msg: SerializedMessage): string => {
+        if (msg.parts) {
+          const tp = msg.parts.find((p): p is SerializedTextPart => p.type === 'text')
+          return tp?.text ?? ''
+        }
+        return msg.content ?? ''
+      }
 
       const sessionTitle =
         title ??
         (session?.title === 'New conversation' && messages.length > 0
           ? (() => {
               const firstUser = messages.find((m) => m.role === 'user')
-              const text = firstUser?.content ?? ''
+              const text = firstUser ? firstUserText(firstUser) : ''
               return text.slice(0, 50) + (text.length > 50 ? '...' : '')
             })()
           : undefined) ??
@@ -201,7 +230,12 @@ export function useChatSessions(): UseChatSessionsReturn {
     (sessionId: string): SerializedMessage[] => {
       const session = sessions.find((s) => s.id === sessionId)
       if (!session) return []
-      return (session.messages as unknown as SerializedMessage[]) ?? []
+      const raw = (session.messages as unknown as SerializedMessage[]) ?? []
+      return raw.map((m) => {
+        if (m.parts) return m
+        const text = (m as unknown as { content?: string }).content ?? ''
+        return { ...m, parts: [{ type: 'text' as const, text }] }
+      })
     },
     [sessions],
   )

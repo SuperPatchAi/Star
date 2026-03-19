@@ -65,9 +65,23 @@ export function ChatWidget() {
         const uiMessages = stored.map((m) => ({
           id: m.id,
           role: m.role as 'user' | 'assistant',
-          parts: [{ type: 'text' as const, text: m.content }],
+          parts: m.parts.map((p) => {
+            if (p.type === 'text') return { type: 'text' as const, text: (p as { text: string }).text }
+            if (p.type === 'dynamic-tool') {
+              const tp = p as { toolName: string; toolCallId: string; input?: unknown; output?: unknown }
+              return {
+                type: 'dynamic-tool' as const,
+                toolName: tp.toolName,
+                toolCallId: tp.toolCallId,
+                state: 'result',
+                input: tp.input ?? {},
+                output: tp.output,
+              }
+            }
+            return p
+          }),
         }))
-        setMessages(uiMessages)
+        setMessages(uiMessages as MyUIMessage[])
         hasRestoredRef.current = true
       }
     }
@@ -84,11 +98,21 @@ export function ChatWidget() {
     const serialized = messages.map((m) => ({
       id: m.id,
       role: m.role as 'user' | 'assistant',
-      content: m.parts
-        .filter((p): p is { type: 'text'; text: string } => p.type === 'text')
-        .map((p) => p.text)
-        .join(''),
-      createdAt: new Date().toISOString(),
+      parts: m.parts.map((p) => {
+        if (p.type === 'text') return { type: 'text' as const, text: (p as { text: string }).text }
+        if (p.type === 'dynamic-tool') {
+          const tp = p as { toolName: string; toolCallId: string; state: string; input?: unknown; output?: unknown }
+          return {
+            type: 'dynamic-tool' as const,
+            toolName: tp.toolName,
+            toolCallId: tp.toolCallId,
+            state: tp.state,
+            input: tp.input ?? {},
+            output: tp.output,
+          }
+        }
+        return { type: (p as { type: string }).type, ...(p as Record<string, unknown>) }
+      }),
     }))
     saveMessages(sid, serialized)
   }, [messages, saveMessages])
@@ -154,9 +178,23 @@ export function ChatWidget() {
         const uiMessages = stored.map((m) => ({
           id: m.id,
           role: m.role as 'user' | 'assistant',
-          parts: [{ type: 'text' as const, text: m.content }],
+          parts: m.parts.map((p) => {
+            if (p.type === 'text') return { type: 'text' as const, text: (p as { text: string }).text }
+            if (p.type === 'dynamic-tool') {
+              const tp = p as { toolName: string; toolCallId: string; input?: unknown; output?: unknown }
+              return {
+                type: 'dynamic-tool' as const,
+                toolName: tp.toolName,
+                toolCallId: tp.toolCallId,
+                state: 'result',
+                input: tp.input ?? {},
+                output: tp.output,
+              }
+            }
+            return p
+          }),
         }))
-        setMessages(uiMessages)
+        setMessages(uiMessages as MyUIMessage[])
         prevMessagesLenRef.current = uiMessages.length
       } else {
         setMessages([])

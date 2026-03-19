@@ -36,10 +36,13 @@ function formatRelativeTime(dateStr: string): string {
 }
 
 function messagePreview(session: ChatSession): string {
-  const msgs = session.messages as { role: string; content: string }[]
+  const msgs = session.messages as { role: string; content?: string; parts?: { type: string; text?: string }[] }[]
   if (!Array.isArray(msgs) || msgs.length === 0) return 'Empty conversation'
   const last = msgs[msgs.length - 1]
-  const text = last?.content ?? ''
+  const text =
+    last?.parts?.find((p) => p.type === 'text')?.text ??
+    last?.content ??
+    ''
   return text.slice(0, 80) + (text.length > 80 ? '...' : '')
 }
 
