@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: superpatch-backend
+    runtime: python
+    region: oregon
+    plan: starter
+    rootDir: superpatch-backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13.2"
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: SUPABASE_DB_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: "https://star-seven-sigma.vercel.app"

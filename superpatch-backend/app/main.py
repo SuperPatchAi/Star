@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from typing import Any, AsyncGenerator
 
 from dotenv import load_dotenv
@@ -21,14 +22,18 @@ from app.rate_limit import RateLimiter
 
 logger = logging.getLogger(__name__)
 
+_DEFAULT_ORIGINS = [
+    "https://star-seven-sigma.vercel.app",
+    "http://localhost:3000",
+]
+_env_origins = os.environ.get("ALLOWED_ORIGINS", "")
+CORS_ORIGINS = [o.strip() for o in _env_origins.split(",") if o.strip()] or _DEFAULT_ORIGINS
+
 app = FastAPI(title="SuperPatch S.T.A.R. Agent", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://star-seven-sigma.vercel.app",
-        "http://localhost:3000",
-    ],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
