@@ -17,6 +17,8 @@ import {
   Trophy,
   Search,
   FlaskConical,
+  Circle,
+  Play,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
@@ -748,6 +750,16 @@ function ScoreResultRenderer({ output, state }: ToolRendererProps) {
   return <ErrorBanner message={`Unknown scoring type: ${type}`} />
 }
 
+interface ChecklistSkill {
+  skill_id: string
+  name: string
+  phase: number
+  week: number
+  status: 'completed' | 'in_progress' | 'not_started'
+  questions_answered?: number | null
+  questions_total?: number | null
+}
+
 function CoachingProgressRenderer({ output, state }: ToolRendererProps) {
   if (state !== 'output-available' && state !== 'result') {
     return <LoadingShell label="Loading progress..." />
@@ -756,34 +768,108 @@ function CoachingProgressRenderer({ output, state }: ToolRendererProps) {
   const data = parseOutput(output) as Record<string, unknown> | null
   if (!data) return null
   if (data.error) return <ErrorBanner message={String(data.error)} />
-  if (data.message && (data.completed_skills as string[])?.length === 0) {
-    return (
-      <div className="my-2 flex items-center gap-2 rounded-xl border bg-card p-3 text-xs shadow-sm text-muted-foreground">
-        <BookOpen className="size-4" />
-        {String(data.message)}
-      </div>
-    )
+
+  const program = String(data.program ?? '100m_blueprint')
+  const checklist = (data.checklist ?? []) as ChecklistSkill[]
+  const completed = (data.completed_skills as string[]) ?? []
+  const currentSkill = data.current_skill as string | null
+  const qIdx = (data.current_question_index as number) ?? 0
+  const qTotal = (data.total_questions as number) ?? 0
+
+  const totalSkills = checklist.length || 1
+  const completedCount = completed.length
+  const pct = Math.round((completedCount / totalSkills) * 100)
+
+  const grouped = new Map<number, ChecklistSkill[]>()
+  for (const s of checklist) {
+    const arr = grouped.get(s.phase) ?? []
+    arr.push(s)
+    grouped.set(s.phase, arr)
   }
 
-  const program = String(data.program ?? '')
-  const phase = data.current_phase as number | null
-  const completed = (data.completed_skills as string[]) ?? []
-  const skillOutputs = (data.skill_outputs ?? {}) as Record<string, unknown>
-  const totalSkills = Object.keys(skillOutputs).length || completed.length || 1
-  const pct = Math.round((completed.length / Math.max(totalSkills, completed.length)) * 100)
-
   return (
-    <div className="my-2 rounded-xl border bg-card p-3 shadow-sm">
-      <div className="flex items-center gap-2 mb-2">
-        <BookOpen className="size-4 text-primary" />
-        <span className="text-sm font-semibold">{program.replace(/_/g, ' ')}</span>
-        {phase != null && <Badge variant="secondary" className="text-[9px]">Phase {phase}</Badge>}
+    <div className="my-2 rounded-xl border bg-card shadow-sm">
+      <div className="border-b p-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
+              <BookOpen className="size-4 text-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold capitalize">{program.replace(/_/g, ' ')}</p>
+              <p className="text-[10px] text-muted-foreground">
+                {completedCount} of {totalSkills} skills completed
+              </p>
+            </div>
+          </div>
+          <span className="text-lg font-bold text-primary">{pct}%</span>
+        </div>
+        <Progress value={pct} className="mt-2 h-2" />
       </div>
-      <div className="flex items-baseline gap-2 mb-1.5">
-        <span className="text-lg font-bold">{pct}%</span>
-        <span className="text-xs text-muted-foreground">{completed.length} skills completed</span>
+
+      {currentSkill && (
+        <div className="flex items-center gap-2 border-b bg-amber-500/5 px-3 py-2">
+          <Play className="size-3 text-amber-600 dark:text-amber-400" />
+          <span className="text-[11px] font-medium text-amber-700 dark:text-amber-400">
+            In progress: {checklist.find((s) => s.skill_id === currentSkill)?.name ?? currentSkill}
+          </span>
+          {qTotal > 0 && (
+            <Badge variant="secondary" className="ml-auto text-[9px]">
+              {qIdx}/{qTotal} questions
+            </Badge>
+          )}
+        </div>
+      )}
+
+      <div className="max-h-64 overflow-y-auto">
+        {[...grouped.entries()].map(([phase, skills]) => (
+          <div key={phase}>
+            <div className="sticky top-0 bg-muted/50 px-3 py-1.5">
+              <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                Phase {phase}
+              </span>
+            </div>
+            <div className="divide-y">
+              {skills.map((s) => (
+                <div
+                  key={s.skill_id}
+                  className={cn(
+                    'flex items-center gap-2.5 px-3 py-2 text-xs',
+                    s.status === 'in_progress' && 'bg-amber-500/5',
+                  )}
+                >
+                  {s.status === 'completed' ? (
+                    <CheckCircle2 className="size-3.5 shrink-0 text-emerald-500" />
+                  ) : s.status === 'in_progress' ? (
+                    <Play className="size-3.5 shrink-0 text-amber-500" />
+                  ) : (
+                    <Circle className="size-3.5 shrink-0 text-muted-foreground/30" />
+                  )}
+                  <span
+                    className={cn(
+                      'flex-1 truncate',
+                      s.status === 'completed' && 'text-muted-foreground line-through',
+                      s.status === 'in_progress' && 'font-medium',
+                    )}
+                  >
+                    {s.name}
+                  </span>
+                  {s.status === 'in_progress' && s.questions_answered != null && s.questions_total != null && (
+                    <span className="shrink-0 text-[10px] text-amber-600 dark:text-amber-400">
+                      {s.questions_answered}/{s.questions_total}
+                    </span>
+                  )}
+                  {s.status === 'completed' && (
+                    <Badge variant="outline" className="shrink-0 text-[9px] text-emerald-600 dark:text-emerald-400">
+                      Done
+                    </Badge>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
-      <Progress value={pct} className="h-2" />
     </div>
   )
 }
@@ -876,6 +962,11 @@ function SearchResultItem({ item }: { item: Record<string, unknown> }) {
   )
 }
 
+function PartialProgressRenderer({ state }: ToolRendererProps) {
+  if (state !== 'output-available' && state !== 'result') return null
+  return null
+}
+
 // ---------------------------------------------------------------------------
 // Wire all renderers
 // ---------------------------------------------------------------------------
@@ -895,4 +986,5 @@ export const TOOL_RENDERERS: Record<string, ComponentType<ToolRendererProps>> = 
   compute_assessment_score: ScoreResultRenderer,
   get_coaching_progress: CoachingProgressRenderer,
   save_skill_completion: SkillCompletionRenderer,
+  save_partial_progress: PartialProgressRenderer,
 }

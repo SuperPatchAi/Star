@@ -220,10 +220,12 @@ def get_coaching_progress(
 ) -> dict:
     """Get the user's coaching progress across all programs or a specific one.
 
-    Returns completed skills, current phase/week, and skill outputs
-    (answers, scores, action items) from d2c_coaching_progress.
+    Returns completed skills, in-progress skill info, current phase/week,
+    skill outputs, and the full skill catalog with status for each skill.
     """
     try:
+        from app.coaching.registry import get_skills_for_program as _get_skills
+
         sb = get_supabase_client()
         query = (
             sb.table("d2c_coaching_progress")
@@ -236,20 +238,55 @@ def get_coaching_progress(
 
         result = query.execute()
 
+        prog = program or "100m_blueprint"
+
         if not result.data:
+            all_skills = _get_skills(prog)
+            checklist = [
+                {"skill_id": s.id, "name": s.name, "phase": s.phase,
+                 "week": s.week, "status": "not_started"}
+                for s in (all_skills or [])
+            ]
             return {
                 "user_id": user_id,
-                "program": program,
+                "program": prog,
                 "completed_skills": [],
+                "current_skill": None,
+                "current_question_index": 0,
+                "total_questions": 0,
                 "current_phase": None,
                 "current_week": None,
                 "skill_outputs": {},
-                "message": "No coaching progress found for this user.",
+                "checklist": checklist,
+                "message": "No coaching progress yet. Let's get started!",
             }
 
-        if program:
-            return result.data[0]
+        row = result.data[0] if program else result.data[0]
+        completed = row.get("completed_skills") or []
+        current = row.get("current_skill")
+        q_idx = row.get("current_question_index") or 0
+        q_total = row.get("total_questions") or 0
 
-        return {"user_id": user_id, "programs": result.data}
+        all_skills = _get_skills(row.get("program") or prog)
+        checklist = []
+        for s in (all_skills or []):
+            if s.id in completed:
+                status = "completed"
+            elif s.id == current:
+                status = "in_progress"
+            else:
+                status = "not_started"
+            checklist.append({
+                "skill_id": s.id,
+                "name": s.name,
+                "phase": s.phase,
+                "week": s.week,
+                "status": status,
+                "questions_answered": q_idx if s.id == current else None,
+                "questions_total": q_total if s.id == current else None,
+            })
+
+        row["checklist"] = checklist
+        return row
     except Exception as exc:
         return {"error": f"Failed to get coaching progress: {exc}"}

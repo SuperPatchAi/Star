@@ -12,7 +12,7 @@ from app.agent.tools.coaching_read import (
     compute_assessment_score,
     load_skill_definition,
 )
-from app.agent.tools.coaching_write import save_skill_completion
+from app.agent.tools.coaching_write import save_partial_progress, save_skill_completion
 from app.agent.tools.sales_read import get_dashboard_stats, get_sales_analytics
 from app.coaching.registry import get_skills_for_program
 
@@ -47,6 +47,12 @@ Use `compute_assessment_score` to score and `save_skill_completion` to persist.
    - After each answer, acknowledge briefly with a coaching insight, then move
      to the next question.
    - If there is a case study, weave it in naturally when it connects.
+   - **IMPORTANT**: After EVERY user answer, call `save_partial_progress` with:
+     user_id: "{user_id}", program: "{program}", skill_id (the current skill),
+     answers_so_far (dict of question_id -> answer for all questions answered
+     so far), current_question_index (1-based number of last answered question),
+     and total_questions (total number of questions in the skill definition).
+     This persists progress so the user can resume later.
 
 4. **When ALL questions are answered**:
    - Summarize their key insights
@@ -132,6 +138,7 @@ async def skill_executor(state: UnifiedAgentState, config: RunnableConfig) -> di
     tools = [
         compute_assessment_score,
         save_skill_completion,
+        save_partial_progress,
         get_dashboard_stats,
         get_sales_analytics,
     ]
