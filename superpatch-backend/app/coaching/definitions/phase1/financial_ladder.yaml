@@ -1,0 +1,109 @@
+id: financial_ladder_assessment
+name: Financial Ladder Self-Assessment
+program: 100m_blueprint
+phase: 1
+week: 1
+frameworks:
+  - Financial Ladder
+worksheet_path: docs/worksheets/week-01a-financial-ladder-assessment.md
+prerequisites: []
+questions:
+  - id: q1
+    text: What is your current monthly income?
+    type: choice
+    options:
+      - value: "$0_5000"
+        label: "$0 - $5,000"
+      - value: "$5001_10000"
+        label: "$5,001 - $10,000"
+      - value: "$10001_20000"
+        label: "$10,001 - $20,000"
+      - value: "$20001_50000"
+        label: "$20,001 - $50,000"
+      - value: "$50001_100000"
+        label: "$50,001 - $100,000"
+      - value: "$100000_plus"
+        label: "$100,000+"
+  - id: q2
+    text: What percentage of your income is "active" (stops if you stop working)?
+    type: choice
+    options:
+      - value: "90_100_active"
+        label: "90-100% active"
+      - value: "70_89_active"
+        label: "70-89% active"
+      - value: "50_69_active"
+        label: "50-69% active"
+      - value: "30_49_active"
+        label: "30-49% active"
+      - value: "0_29_active"
+        label: "0-29% active"
+  - id: q3
+    text: Which statement best describes your current mindset?
+    type: choice
+    options:
+      - value: level_1
+        label: "I'm worried about making ends meet this month."
+      - value: level_2
+        label: "I want nicer things and recognition for my success."
+      - value: level_3
+        label: "I want my time back. Money is no longer the issue."
+      - value: level_4
+        label: "I want to build something that outlasts me."
+  - id: q4
+    text: Based on the above, what is your current Financial Ladder level?
+    type: fill_in
+  - id: q5
+    text: Evidence Collection — your current financial situation
+    type: table
+    max_items: 7
+  - id: q6
+    text: What does the NEXT level look like for you?
+    type: table
+    max_items: 5
+  - id: q7
+    text: What would change in your daily life if you moved up one level?
+    type: open_ended
+  - id: q8
+    text: What are the TOP 3 things keeping you at your current level?
+    type: table
+    max_items: 3
+  - id: q9
+    text: For each barrier, what is ONE action you could take this week?
+    type: table
+    max_items: 3
+  - id: q10
+    text: "Commitment Statement: complete the sentence about your level, barrier, and action"
+    type: fill_in
+  - id: q11
+    text: Who will you share this assessment with?
+    type: table
+    max_items: 1
+scoring:
+  type: ladder
+  levels:
+    - name: Survival
+      range_label: "$0 - $5,000"
+      population_pct: 66.0
+    - name: Status
+      range_label: "$5,000 - $20,000"
+      population_pct: 25.0
+    - name: Freedom
+      range_label: "$20,000 - $100,000"
+      population_pct: 7.0
+    - name: Purpose
+      range_label: "$100,000+"
+      population_pct: 2.0
+case_study:
+  title: "Jay's Journey"
+  content: >
+    Survival (1990s): Young immigrant, starting from zero in a new country.
+    Status (2000s): Built successful IT consultancy, material rewards, but trading time for money.
+    Freedom (2010s): Exited businesses, had "enough," but felt unfulfilled.
+    Purpose (2020s): Super Patch — building something that outlasts him, impacting millions.
+    Key Insight: "You can't skip levels. I had to earn each rung."
+actions:
+  - Identify your current Financial Ladder level with evidence
+  - Write down what "the next level" looks like for you
+  - Identify 1-3 barriers keeping you at your current level
+  - Share your assessment with an accountability partner

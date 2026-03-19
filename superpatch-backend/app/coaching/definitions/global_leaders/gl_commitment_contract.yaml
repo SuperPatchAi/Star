@@ -1,0 +1,64 @@
+id: gl_commitment_contract
+name: 2026 Commitment Contract and Accountability Pledge
+program: global_leaders
+phase: 3
+week: 8
+frameworks: []
+worksheet_path: ../docs/worksheets/gl-08-commitment-contract.md
+prerequisites: []
+questions:
+- id: q1
+  text: 'Part 1: My Declaration'
+  type: fill_in
+- id: q2
+  text: My 2026 Vision Statement
+  type: fill_in
+- id: q3
+  text: 'Part 2: My 2026 Commitments Summary'
+  type: checkbox
+  options:
+  - value: commitment_area
+    label: Commitment Area
+  - value: target_rank_by_december_31,_2026
+    label: Target Rank by December 31, 2026
+  - value: annual_income_goal
+    label: Annual Income Goal
+  - value: annual_new_enrollment_target
+    label: Annual New Enrollment Target
+  - value: annual_new_customer_target
+    label: Annual New Customer Target
+  - value: daily_demosample_commitment
+    label: Daily Demo/Sample Commitment
+  - value: monthly_investment_commitment
+    label: Monthly Investment Commitment
+  - value: live_events_per_month
+    label: Live Events per Month
+  - value: weekly_ipa_standards
+    label: Weekly IPA Standards
+  - value: 90-day_sprint_target_rank
+    label: 90-Day Sprint Target Rank
+  - value: accountability_partner_assigned
+    label: Accountability Partner Assigned
+- id: q4
+  text: 'Part 3: My Non-Negotiables'
+  type: table
+  max_items: 10
+- id: q5
+  text: Primary Accountability Partner
+  type: table
+  max_items: 4
+- id: q6
+  text: Check-In Schedule
+  type: checkbox
+- id: q7
+  text: Upline Leader
+  type: table
+  max_items: 4
+- id: q8
+  text: Company Resources I Will Leverage
+  type: checkbox
+- id: q9
+  text: 'Part 5: Quarterly Check-In Dates'
+  type: table
+  max_items: 5
+actions: []

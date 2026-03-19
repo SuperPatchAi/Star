@@ -1,0 +1,140 @@
+id: first_48_hours
+name: First 48 Hours Checklist
+program: 100m_blueprint
+phase: 3
+week: 7
+frameworks:
+- First 48 Hours
+worksheet_path: ../docs/worksheets/week-07c-first-48-hours.md
+prerequisites: []
+questions:
+- id: q1
+  text: 'Hour 0-2: Lock In the Commitment'
+  type: checkbox
+  options:
+  - value: action
+    label: Action
+  - value: welcome_callmessage
+    label: Welcome call/message
+  - value: confirm_contact_info
+    label: Confirm contact info
+  - value: set_expectations
+    label: Set expectations
+  - value: schedule_first_interaction
+    label: Schedule first interaction
+- id: q2
+  text: 'Hour 2-12: Reduce Buyer''s Remorse'
+  type: checkbox
+  options:
+  - value: action
+    label: Action
+  - value: send_onboarding_materials
+    label: Send onboarding materials
+  - value: welcome_email_sequence
+    label: Welcome email sequence
+  - value: social_proof_delivery
+    label: Social proof delivery
+  - value: introduce_to_community
+    label: Introduce to community
+- id: q3
+  text: 'Hour 12-24: Mine Their Network (Taprooting)'
+  type: checkbox
+  options:
+  - value: action
+    label: Action
+  - value: identify_top_5_connections
+    label: Identify top 5 connections
+  - value: offer_to_help_introduce
+    label: Offer to help introduce
+  - value: referral_incentive
+    label: Referral incentive
+  - value: request_testimonial
+    label: Request testimonial
+- id: q4
+  text: 'Hour 24-48: Secure a Quick Win'
+  type: checkbox
+  options:
+  - value: action
+    label: Action
+  - value: first_result
+    label: First result
+  - value: celebrate_publicly
+    label: Celebrate publicly
+  - value: document_the_win
+    label: Document the win
+  - value: set_next_milestone
+    label: Set next milestone
+- id: q5
+  text: The Taprooting Script
+  type: checkbox
+  options:
+  - value: '1'
+    label: '1'
+  - value: '2'
+    label: '2'
+  - value: '3'
+    label: '3'
+  - value: '4'
+    label: '4'
+  - value: '5'
+    label: '5'
+- id: q6
+  text: What's a "Quick Win" for your business?
+  type: table
+  max_items: 5
+- id: q7
+  text: 'My Quick Win:'
+  type: table
+  max_items: 4
+- id: q8
+  text: 'Email 1: Welcome (Hour 0-2)'
+  type: table
+  max_items: 4
+- id: q9
+  text: 'Email 2: Quick Start (Hour 6-12)'
+  type: table
+  max_items: 4
+- id: q10
+  text: 'Email 3: Social Proof (Hour 24-36)'
+  type: table
+  max_items: 4
+- id: q11
+  text: 'Customize for your business:'
+  type: checkbox
+- id: q12
+  text: What can be automated?
+  type: checkbox
+  options:
+  - value: task
+    label: Task
+  - value: welcome_email
+    label: Welcome email
+  - value: onboarding_sequence
+    label: Onboarding sequence
+  - value: community_invite
+    label: Community invite
+  - value: calendar_booking
+    label: Calendar booking
+  - value: first_check-in
+    label: First check-in
+  - value: taprooting_call
+    label: Taprooting call
+- id: q13
+  text: 'Tools to consider:'
+  type: open_ended
+- id: q14
+  text: 'Track for each new customer:'
+  type: table
+  max_items: 6
+- id: q15
+  text: 'Weekly Dashboard:'
+  type: table
+  max_items: 4
+- id: q16
+  text: When will you implement this?
+  type: table
+  max_items: 6
+- id: q17
+  text: 'Commitment:'
+  type: fill_in
+actions: []

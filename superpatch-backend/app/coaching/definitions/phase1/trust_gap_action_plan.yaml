@@ -1,0 +1,131 @@
+id: trust_gap_action_plan
+name: Trust Gap Action Plan
+program: 100m_blueprint
+phase: 1
+week: 2
+frameworks: []
+worksheet_path: ../docs/worksheets/week-02b-trust-gap-action-plan.md
+prerequisites: []
+questions:
+- id: q1
+  text: 'From your Trust Factor Assessment:'
+  type: scale
+  scale_min: 1
+  scale_max: 10
+- id: q2
+  text: 'My #1 Trust Gap is: ☐ Trust in Me  ☐ Trust in Vehicle  ☐ Trust in Self'
+  type: open_ended
+- id: q3
+  text: Why does this gap exist?
+  type: table
+  max_items: 4
+- id: q4
+  text: The 5 Whys Exercise
+  type: table
+  max_items: 5
+- id: q5
+  text: If Your Gap is "TRUST IN YOU"
+  type: checkbox
+  options:
+  - value: action
+    label: Action
+  - value: build_social_proof_collect_5_new_testimonials
+    label: 'Build Social Proof: Collect 5 new testimonials'
+  - value: increase_visibility_post_content_3xweek
+    label: 'Increase Visibility: Post content 3x/week'
+  - value: share_your_story_write_your_founders_journey
+    label: 'Share Your Story: Write your founder''s journey'
+  - value: get_press_pitch_to_3_industry_publications
+    label: 'Get Press: Pitch to 3 industry publications'
+  - value: speak_apply_to_2_podcasts_or_events
+    label: 'Speak: Apply to 2 podcasts or events'
+- id: q6
+  text: If Your Gap is "TRUST IN VEHICLE"
+  type: checkbox
+  options:
+  - value: action
+    label: Action
+  - value: create_demo_design_30-second_proof
+    label: 'Create Demo: Design 30-second proof'
+  - value: case_studies_document_3_customer_successes
+    label: 'Case Studies: Document 3 customer successes'
+  - value: get_certified_obtain_relevant_certifications
+    label: 'Get Certified: Obtain relevant certifications'
+  - value: partner_up_align_with_credible_brand
+    label: 'Partner Up: Align with credible brand'
+  - value: guarantee_create_risk-reversal_offer
+    label: 'Guarantee: Create risk-reversal offer'
+- id: q7
+  text: If Your Gap is "TRUST IN SELF"
+  type: checkbox
+  options:
+  - value: action
+    label: Action
+  - value: simplify_onboarding_reduce_steps_to_first_win
+    label: 'Simplify Onboarding: Reduce steps to first win'
+  - value: quick_win_system_guarantee_result_in_48_hrs
+    label: 'Quick Win System: Guarantee result in 48 hrs'
+  - value: community_create_peer_support_group
+    label: 'Community: Create peer support group'
+  - value: templates_provide_done-for-you_resources
+    label: 'Templates: Provide done-for-you resources'
+  - value: office_hours_weekly_support_calls
+    label: 'Office Hours: Weekly support calls'
+- id: q8
+  text: Week-by-Week Breakdown
+  type: table
+  max_items: 4
+- id: q9
+  text: Daily Actions (15-30 min/day)
+  type: table
+  max_items: 5
+- id: q10
+  text: What do you need to execute this plan?
+  type: checkbox
+  options:
+  - value: resource
+    label: Resource
+  - value: time
+    label: Time
+  - value: budget
+    label: Budget
+  - value: skills
+    label: Skills
+  - value: tools
+    label: Tools
+  - value: help
+    label: Help
+- id: q11
+  text: Who can help?
+  type: table
+  max_items: 0
+- id: q12
+  text: What might stop you?
+  type: checkbox
+  options:
+  - value: obstacle
+    label: Obstacle
+  - value: '1'
+    label: '1.'
+  - value: '2'
+    label: '2.'
+  - value: '3'
+    label: '3.'
+- id: q13
+  text: How will you know it's working?
+  type: scale
+  scale_min: 1
+  scale_max: 10
+- id: q14
+  text: Who will hold you accountable?
+  type: checkbox
+  options:
+  - value: partner
+    label: Partner
+- id: q15
+  text: 'Weekly Check-in Questions:'
+  type: open_ended
+- id: q16
+  text: 'Part 9: Commitment Statement'
+  type: fill_in
+actions: []

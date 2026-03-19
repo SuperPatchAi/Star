@@ -1,0 +1,115 @@
+id: demo_planning
+name: D.E.M.O. Planning Worksheet
+program: 100m_blueprint
+phase: 2
+week: 5
+frameworks: []
+worksheet_path: ../docs/worksheets/week-05b-demo-planning.md
+prerequisites: []
+questions:
+- id: q1
+  text: What does your customer's problem LOOK like?
+  type: table
+  max_items: 4
+- id: q2
+  text: 'Describe the "before" scene:'
+  type: fill_in
+- id: q3
+  text: How can you SHOW this in 10 seconds?
+  type: table
+  max_items: 4
+- id: q4
+  text: What does your solution LOOK like?
+  type: table
+  max_items: 4
+- id: q5
+  text: 'Describe the "after" scene:'
+  type: fill_in
+- id: q6
+  text: How can you SHOW this in 10 seconds?
+  type: table
+  max_items: 4
+- id: q7
+  text: 'Generate 5 demo ideas:'
+  type: checkbox
+  options:
+  - value: '1'
+    label: '1'
+  - value: '2'
+    label: '2'
+  - value: '3'
+    label: '3'
+  - value: '4'
+    label: '4'
+  - value: '5'
+    label: '5'
+- id: q8
+  text: 'Scoring Criteria:'
+  type: checkbox
+  options:
+  - value: criteria
+    label: Criteria
+  - value: visual_impact_1-10
+    label: Visual impact (1-10)
+  - value: speed_30_sec
+    label: Speed (<30 sec)
+  - value: repeatability
+    label: Repeatability
+  - value: no_special_equipment
+    label: No special equipment
+  - value: total
+    label: TOTAL
+- id: q9
+  text: 'Write each section:'
+  type: table
+  max_items: 14
+- id: q10
+  text: What do you need for your demo?
+  type: checkbox
+  options:
+  - value: item
+    label: Item
+- id: q11
+  text: 'Setup Requirements:'
+  type: table
+  max_items: 5
+- id: q12
+  text: 'Record your practice attempts:'
+  type: table
+  max_items: 5
+- id: q13
+  text: 'Test with 3+ people and record:'
+  type: table
+  max_items: 3
+- id: q14
+  text: 'Common Feedback Themes:'
+  type: fill_in
+- id: q15
+  text: 'Adjustments to Make:'
+  type: fill_in
+- id: q16
+  text: 'Recording Checklist:'
+  type: checkbox
+  options:
+  - value: element
+    label: Element
+  - value: camera
+    label: Camera
+  - value: lighting
+    label: Lighting
+  - value: audio
+    label: Audio
+  - value: background
+    label: Background
+  - value: props
+    label: Props
+  - value: script_memorized
+    label: Script memorized
+- id: q17
+  text: 'Distribution Plan:'
+  type: table
+  max_items: 6
+- id: q18
+  text: 'Complete 30-Second Script:'
+  type: fill_in
+actions: []

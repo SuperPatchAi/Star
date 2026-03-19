@@ -1,0 +1,80 @@
+id: gl_vision_and_goals
+name: 2026 Vision and Goal Setting
+program: global_leaders
+phase: 1
+week: 1
+frameworks:
+- Financial Ladder
+worksheet_path: ../docs/worksheets/gl-01-vision-and-goals.md
+prerequisites: []
+questions:
+- id: q1
+  text: 'Part 1: Where I Am Today'
+  type: table
+  max_items: 9
+- id: q2
+  text: Rank Advancement Target
+  type: table
+  max_items: 10
+- id: q3
+  text: Income Goal Breakdown
+  type: table
+  max_items: 9
+- id: q4
+  text: Target Metrics
+  type: table
+  max_items: 4
+- id: q5
+  text: 'Part 3: Quarterly Milestones'
+  type: table
+  max_items: 7
+- id: q6
+  text: Financial Ladder Positioning
+  type: table
+  max_items: 4
+- id: q7
+  text: What does achieving this goal mean for my family?
+  type: fill_in
+- id: q8
+  text: What does my life look like on December 31, 2026?
+  type: fill_in
+- id: q9
+  text: Who am I becoming through this journey?
+  type: fill_in
+- id: q10
+  text: Current vs. Target Gap
+  type: table
+  max_items: 6
+- id: q11
+  text: Top 3 Barriers
+  type: checkbox
+  options:
+  - value: '1'
+    label: '1'
+  - value: '2'
+    label: '2'
+  - value: '3'
+    label: '3'
+- id: q12
+  text: Resources Needed to Close the Gap
+  type: table
+  max_items: 0
+- id: q13
+  text: 'Part 6: Commitment Statement'
+  type: fill_in
+actions: []
+scoring:
+  type: ladder
+  levels:
+  - name: Survival
+    range_label: $0 - $5,000
+    population_pct: 66.0
+  - name: Status
+    range_label: $5,000 - $20,000
+    population_pct: 25.0
+  - name: Freedom
+    range_label: $20,000 - $100,000
+    population_pct: 7.0
+  - name: Purpose
+    range_label: $100,000+
+    population_pct: 2.0

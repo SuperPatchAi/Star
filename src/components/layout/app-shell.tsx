@@ -21,7 +21,9 @@ import { AppSidebar } from "./app-sidebar";
 import { BottomNav } from "./bottom-nav";
 import { NotificationBell } from "@/components/follow-ups/notification-bell";
 import { AuthProvider } from "@/contexts/auth-context";
+import { ChatContextProvider } from "@/contexts/chat-context";
 import { TourProvider } from "@/components/onboarding/tour-provider";
+import { ChatWidget } from "@/components/chat/chat-widget";
 import { InstallPrompt } from "@/components/pwa/install-prompt";
 import { products } from "@/data/products";
 import type { UserProfile } from "@/lib/db/types";
@@ -74,6 +76,7 @@ export function AppShell({ children, user, profile }: AppShellProps) {
 
   return (
     <AuthProvider initialUser={user} initialProfile={profile}>
+      <ChatContextProvider>
       <SidebarProvider>
         <TourProvider onboardingStep={profile?.onboarding_step}>
         <AppSidebar user={user} profile={profile} />
@@ -109,9 +112,11 @@ export function AppShell({ children, user, profile }: AppShellProps) {
           </main>
         </SidebarInset>
         <BottomNav />
+        {user && <ChatWidget />}
         <InstallPrompt onboardingStep={profile?.onboarding_step} />
         </TourProvider>
       </SidebarProvider>
+      </ChatContextProvider>
     </AuthProvider>
   );
 }

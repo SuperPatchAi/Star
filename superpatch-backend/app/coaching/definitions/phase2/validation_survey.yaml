@@ -1,0 +1,169 @@
+id: validation_survey
+name: Willingness to Pay Survey Template
+program: 100m_blueprint
+phase: 2
+week: 4
+frameworks:
+- Validation Survey
+worksheet_path: ../docs/worksheets/week-04-validation-survey.md
+prerequisites: []
+questions:
+- id: q1
+  text: Define Your Hypothesis
+  type: table
+  max_items: 5
+- id: q2
+  text: Survey Goals
+  type: table
+  max_items: 4
+- id: q3
+  text: Pain Point Identification
+  type: checkbox
+  options:
+  - value: response_options
+    label: Response Options
+  - value: option_a_specific_frustration
+    label: '☐ Option A: [specific frustration]'
+  - value: option_b_specific_frustration
+    label: '☐ Option B: [specific frustration]'
+  - value: option_c_specific_frustration
+    label: '☐ Option C: [specific frustration]'
+  - value: option_d_specific_frustration
+    label: '☐ Option D: [specific frustration]'
+  - value: other_please_specify________
+    label: '☐ Other (please specify): _______'
+- id: q4
+  text: Current Solution
+  type: checkbox
+  options:
+  - value: response_options
+    label: Response Options
+  - value: i_dont_solve_it_i_just_deal_with_it
+    label: ☐ I don't solve it (I just deal with it)
+  - value: i_use_competitor_a_-_i_spend_$___
+    label: ☐ I use [Competitor A] - I spend $___
+  - value: i_use_competitor_b_-_i_spend_$___
+    label: ☐ I use [Competitor B] - I spend $___
+  - value: i_use_a_diyfree_solution
+    label: ☐ I use a DIY/free solution
+  - value: other________
+    label: '☐ Other: _______'
+- id: q5
+  text: Interest Level
+  type: checkbox
+  options:
+  - value: response_options
+    label: Response Options
+  - value: not_at_all_interested
+    label: ☐ Not at all interested
+  - value: slightly_interested
+    label: ☐ Slightly interested
+  - value: moderately_interested
+    label: ☐ Moderately interested
+  - value: very_interested
+    label: ☐ Very interested
+  - value: extremely_interested_-_i_would_buy_immediately
+    label: ☐ Extremely interested - I would buy immediately
+- id: q6
+  text: Willingness to Pay (The Key Question)
+  type: checkbox
+  options:
+  - value: response_options
+    label: Response Options
+  - value: $0-$x_low_range
+    label: ☐ $0-$X (Low range)
+  - value: $x-$xx_mid-low_range
+    label: ☐ $X-$XX (Mid-low range)
+  - value: $xx-$xxx_mid_range
+    label: ☐ $XX-$XXX (Mid range)
+  - value: $xxx-$xxxx_mid-high_range
+    label: ☐ $XXX-$XXXX (Mid-high range)
+  - value: $xxxx+_high_range
+    label: ☐ $XXXX+ (High range)
+- id: q7
+  text: Objection Discovery
+  type: checkbox
+  options:
+  - value: response_options
+    label: Response Options
+  - value: price_is_too_high
+    label: ☐ Price is too high
+  - value: i_dont_believe_it_would_work
+    label: ☐ I don't believe it would work
+  - value: i_dont_have_time_to_implement
+    label: ☐ I don't have time to implement
+  - value: ive_tried_similar_things_before_and_failed
+    label: ☐ I've tried similar things before and failed
+  - value: i_need_to_see_proofresults_first
+    label: ☐ I need to see proof/results first
+  - value: other________
+    label: '☐ Other: _______'
+- id: q8
+  text: Purchase Timing
+  type: checkbox
+  options:
+  - value: response_options
+    label: Response Options
+  - value: immediately
+    label: ☐ Immediately
+  - value: within_1_month
+    label: ☐ Within 1 month
+  - value: within_3_months
+    label: ☐ Within 3 months
+  - value: within_6_months
+    label: ☐ Within 6 months
+  - value: not_in_the_next_12_months
+    label: ☐ Not in the next 12 months
+- id: q9
+  text: Feature Priority
+  type: table
+  max_items: 5
+- id: q10
+  text: Follow-Up Permission
+  type: checkbox
+  options:
+  - value: response
+    label: Response
+  - value: yes_please_enter_email________
+    label: '☐ Yes (please enter email: _______)'
+  - value: no_thank_you
+    label: ☐ No thank you
+- id: q11
+  text: Where will you distribute this survey?
+  type: table
+  max_items: 7
+- id: q12
+  text: Survey Tools to Consider
+  type: table
+  max_items: 4
+- id: q13
+  text: 'After collecting responses, analyze:'
+  type: table
+  max_items: 5
+- id: q14
+  text: Pricing Decision Matrix
+  type: table
+  max_items: 4
+- id: q15
+  text: 'After completing your survey, fill in:'
+  type: table
+  max_items: 5
+- id: q16
+  text: Go/No-Go Decision
+  type: checkbox
+  options:
+  - value: criteria
+    label: Criteria
+  - value: interest_score_60%
+    label: Interest score >60%
+  - value: wtp_supports_target_margin
+    label: WTP supports target margin
+  - value: objections_are_addressable
+    label: Objections are addressable
+  - value: overall_proceed_with_launch
+    label: 'OVERALL: Proceed with launch?'
+- id: q17
+  text: 'Based on survey results:'
+  type: table
+  max_items: 3
+actions: []

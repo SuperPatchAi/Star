@@ -1,0 +1,67 @@
+id: gl_live_meetings_plan
+name: 2026 Live Meetings and Events Action Plan
+program: global_leaders
+phase: 2
+week: 4
+frameworks:
+- First 48 Hours
+worksheet_path: ../docs/worksheets/gl-04-live-meetings-plan.md
+prerequisites: []
+questions:
+- id: q1
+  text: Meeting Types I Will Commit To
+  type: checkbox
+  options:
+  - value: meeting_type
+    label: Meeting Type
+  - value: weekly_team_calls
+    label: Weekly Team Calls
+  - value: monthly_local_meetups
+    label: Monthly Local Meetups
+  - value: quarterly_regional_events
+    label: Quarterly Regional Events
+  - value: product_demosample_days
+    label: Product Demo/Sample Days
+  - value: business_opportunity_presentations_bops
+    label: Business Opportunity Presentations (BOPs)
+  - value: new_member_onboarding_sessions
+    label: New Member Onboarding Sessions
+  - value: leadership_development_sessions
+    label: Leadership Development Sessions
+- id: q2
+  text: 'Part 2: Weekly Meeting Rhythm'
+  type: table
+  max_items: 7
+- id: q3
+  text: Meeting Format Templates
+  type: table
+  max_items: 14
+- id: q4
+  text: 'Part 3: Monthly Events Calendar — 2026'
+  type: table
+  max_items: 12
+- id: q5
+  text: Q1 Regional Event (January – March)
+  type: table
+  max_items: 8
+- id: q6
+  text: Q2 Regional Event (April – June)
+  type: table
+  max_items: 8
+- id: q7
+  text: Q3 Regional Event (July – September)
+  type: table
+  max_items: 8
+- id: q8
+  text: Q4 Regional Event (October – December)
+  type: table
+  max_items: 8
+- id: q9
+  text: 'Part 6: Event Investment Budget'
+  type: table
+  max_items: 6
+- id: q10
+  text: ROI Calculation
+  type: table
+  max_items: 5
+actions: []

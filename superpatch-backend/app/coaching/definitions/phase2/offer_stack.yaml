@@ -1,0 +1,160 @@
+id: offer_stack
+name: 3-Tier Offer Stack Template
+program: 100m_blueprint
+phase: 2
+week: 6
+frameworks:
+- Offer Stack
+worksheet_path: ../docs/worksheets/week-06-offer-stack.md
+prerequisites: []
+questions:
+- id: q1
+  text: The 3-Tier Philosophy
+  type: table
+  max_items: 3
+- id: q2
+  text: 'Tier 1: ENTRY (Starter / Essentials)'
+  type: checkbox
+  options:
+  - value: element
+    label: Element
+  - value: tier_name
+    label: Tier Name
+  - value: price
+    label: Price
+  - value: tagline
+    label: Tagline
+  - value: primary_deliverable
+    label: Primary Deliverable
+  - value: access_level
+    label: Access Level
+  - value: duration
+    label: Duration
+  - value: target_outcome
+    label: Target Outcome
+- id: q3
+  text: 'Tier 2: CORE (Professional / Growth)'
+  type: checkbox
+  options:
+  - value: element
+    label: Element
+  - value: tier_name
+    label: Tier Name
+  - value: price
+    label: Price
+  - value: tagline
+    label: Tagline
+  - value: primary_deliverable
+    label: Primary Deliverable
+  - value: access_level
+    label: Access Level
+  - value: duration
+    label: Duration
+  - value: target_outcome
+    label: Target Outcome
+- id: q4
+  text: 'Tier 3: PREMIUM (VIP / Enterprise)'
+  type: checkbox
+  options:
+  - value: element
+    label: Element
+  - value: tier_name
+    label: Tier Name
+  - value: price
+    label: Price
+  - value: tagline
+    label: Tagline
+  - value: primary_deliverable
+    label: Primary Deliverable
+  - value: access_level
+    label: Access Level
+  - value: duration
+    label: Duration
+  - value: target_outcome
+    label: Target Outcome
+- id: q5
+  text: 'Part 3: Offer Comparison Table'
+  type: checkbox
+  options:
+  - value: feature
+    label: Feature
+  - value: core_trainingproduct
+    label: Core Training/Product
+  - value: community_access
+    label: Community Access
+  - value: group_calls
+    label: Group Calls
+  - value: email_support
+    label: Email Support
+  - value: 1-on-1_calls
+    label: 1-on-1 Calls
+  - value: priority_access
+    label: Priority Access
+  - value: done-for-you
+    label: Done-for-You
+  - value: custom_strategy
+    label: Custom Strategy
+  - value: guarantee
+    label: Guarantee
+- id: q6
+  text: Survey Data Input (From Week 4)
+  type: table
+  max_items: 3
+- id: q7
+  text: Pricing Calculation
+  type: table
+  max_items: 11
+- id: q8
+  text: Price Anchoring Strategy
+  type: table
+  max_items: 3
+- id: q9
+  text: 'For each tier, stack the value:'
+  type: table
+  max_items: 9
+- id: q10
+  text: What REAL urgency/scarcity can you create?
+  type: checkbox
+  options:
+  - value: type
+    label: Type
+  - value: time-based
+    label: Time-based
+  - value: quantity-based
+    label: Quantity-based
+  - value: price-based
+    label: Price-based
+  - value: bonus-based
+    label: Bonus-based
+- id: q11
+  text: What guarantee will you offer?
+  type: table
+  max_items: 3
+- id: q12
+  text: 'Complete this summary for your CORE offer:'
+  type: open_ended
+- id: q13
+  text: How will you present the tiers?
+  type: table
+  max_items: 5
+- id: q14
+  text: 'Part 10: Implementation Checklist'
+  type: checkbox
+  options:
+  - value: task
+    label: Task
+  - value: defined_all_3_tiers
+    label: Defined all 3 tiers
+  - value: priced_based_on_survey_data
+    label: Priced based on survey data
+  - value: created_value_stack
+    label: Created value stack
+  - value: added_real_urgencyscarcity
+    label: Added real urgency/scarcity
+  - value: created_guarantee
+    label: Created guarantee
+  - value: built_one-page_summary
+    label: Built one-page summary
+  - value: practiced_sales_conversation
+    label: Practiced sales conversation
+actions: []

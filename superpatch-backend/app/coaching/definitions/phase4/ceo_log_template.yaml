@@ -1,0 +1,100 @@
+id: ceo_log_template
+name: CEO's Log Entry Template
+program: 100m_blueprint
+phase: 4
+week: 12
+frameworks:
+- Financial Ladder
+- Trust Factors
+- Talent Density
+- Inventory Moat
+- Anti-Fragility
+- Transformation Summary
+worksheet_path: ../docs/worksheets/week-12-ceo-log-template.md
+prerequisites: []
+questions:
+- id: q1
+  text: The Decision
+  type: fill_in
+- id: q2
+  text: The Context
+  type: fill_in
+- id: q3
+  text: The Framework
+  type: checkbox
+- id: q4
+  text: The Outcome
+  type: fill_in
+- id: q5
+  text: The Lesson
+  type: fill_in
+- id: q6
+  text: 'Before posting your CEO''s Log:'
+  type: checkbox
+  options:
+  - value: checkpoint
+    label: Checkpoint
+  - value: does_it_document_a_real_decision_not_theory
+    label: Does it document a REAL decision (not theory)?
+  - value: is_sensitive_information_removedsanitized
+    label: Is sensitive information removed/sanitized?
+  - value: is_the_framework_application_clear
+    label: Is the framework application clear?
+  - value: is_the_outcome_honest_not_just_wins
+    label: Is the outcome honest (not just wins)?
+  - value: is_the_lesson_transferable
+    label: Is the lesson transferable?
+  - value: is_it_under_300_words
+    label: Is it under 300 words?
+  - value: does_it_have_a_compelling_opening_hook
+    label: Does it have a compelling opening hook?
+- id: q7
+  text: Headline Hook (First Line)
+  type: fill_in
+- id: q8
+  text: Full Post
+  type: open_ended
+- id: q9
+  text: 'Plan your next 4 entries:'
+  type: table
+  max_items: 4
+- id: q10
+  text: 'Content Pillars to Rotate:'
+  type: table
+  max_items: 4
+- id: q11
+  text: 'After posting, engage for 30 minutes:'
+  type: table
+  max_items: 3
+- id: q12
+  text: 'Track engagement:'
+  type: table
+  max_items: 6
+- id: q13
+  text: 'For your final cohort presentation:'
+  type: fill_in
+- id: q14
+  text: 'Post-Cohort Commitments:'
+  type: table
+  max_items: 4
+- id: q15
+  text: '90-Day Check-In Schedule:'
+  type: table
+  max_items: 3
+- id: q16
+  text: How will you stay connected?
+  type: table
+  max_items: 5
+- id: q17
+  text: 'The CEO''s Log Pledge:'
+  type: fill_in
+- id: q18
+  text: 'Example 1: The A/B Decision'
+  type: open_ended
+- id: q19
+  text: 'Example 2: The Trust Gap'
+  type: open_ended
+actions: []
+scoring:
+  type: ratio
+  target_ratio: 80/15/5

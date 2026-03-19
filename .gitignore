@@ -38,3 +38,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 supabase/.temp/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+superpatch-backend/.env

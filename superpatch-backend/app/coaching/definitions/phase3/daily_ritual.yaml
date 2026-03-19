@@ -1,0 +1,147 @@
+id: daily_ritual
+name: Daily Success Ritual Template
+program: 100m_blueprint
+phase: 3
+week: 7
+frameworks:
+- Daily Ritual
+worksheet_path: ../docs/worksheets/week-07b-daily-ritual.md
+prerequisites: []
+questions:
+- id: q1
+  text: Morning Ritual (10 minutes, before work)
+  type: table
+  max_items: 4
+- id: q2
+  text: Evening Ritual (10 minutes, after work)
+  type: table
+  max_items: 4
+- id: q3
+  text: 3 Wins from Yesterday
+  type: table
+  max_items: 3
+- id: q4
+  text: 1 Goal for Today
+  type: fill_in
+- id: q5
+  text: 1 Gratitude
+  type: fill_in
+- id: q6
+  text: Visualization (Optional)
+  type: table
+  max_items: 3
+- id: q7
+  text: Goal Achievement Check
+  type: checkbox
+  options:
+  - value: question
+    label: Question
+  - value: did_i_hit_my_1_goal
+    label: Did I hit my 1 goal?
+  - value: if_no,_what_blocked_me
+    label: If no, what blocked me?
+  - value: what_will_i_do_differently_tomorrow
+    label: What will I do differently tomorrow?
+- id: q8
+  text: What Did I Learn?
+  type: table
+  max_items: 3
+- id: q9
+  text: 'Tomorrow''s #1 Priority'
+  type: fill_in
+- id: q10
+  text: Energy Audit
+  type: checkbox
+  options:
+  - value: energy_source
+    label: Energy Source
+  - value: person
+    label: 'Person:'
+  - value: activity
+    label: 'Activity:'
+  - value: environment
+    label: 'Environment:'
+- id: q11
+  text: 'Week of: _____________'
+  type: checkbox
+  options:
+  - value: day
+    label: Day
+  - value: mon
+    label: Mon
+  - value: tue
+    label: Tue
+  - value: wed
+    label: Wed
+  - value: thu
+    label: Thu
+  - value: fri
+    label: Fri
+  - value: sat
+    label: Sat
+  - value: sun
+    label: Sun
+- id: q12
+  text: 'Weekly Stats:'
+  type: fill_in
+- id: q13
+  text: 'Track your streak:'
+  type: checkbox
+  options:
+  - value: week
+    label: Week
+  - value: '1'
+    label: '1'
+  - value: '2'
+    label: '2'
+  - value: '3'
+    label: '3'
+  - value: '4'
+    label: '4'
+- id: q14
+  text: 'Streak Rewards:'
+  type: table
+  max_items: 4
+- id: q15
+  text: 'Customize your timing:'
+  type: table
+  max_items: 2
+- id: q16
+  text: 'Customize your triggers:'
+  type: table
+  max_items: 3
+- id: q17
+  text: 'Customize your format:'
+  type: checkbox
+  options:
+  - value: format
+    label: Format
+  - value: written_journal
+    label: Written (journal)
+  - value: digital_appnotes
+    label: Digital (app/notes)
+  - value: voice_memo
+    label: Voice memo
+  - value: with_partnerteam
+    label: With partner/team
+- id: q18
+  text: What might stop you?
+  type: table
+  max_items: 4
+- id: q19
+  text: 'Your backup plan:'
+  type: fill_in
+- id: q20
+  text: Who will hold you accountable?
+  type: table
+  max_items: 1
+- id: q21
+  text: 'Accountability questions:'
+  type: open_ended
+- id: q22
+  text: 'Part 9: Daily Ritual Quick Reference Card'
+  type: open_ended
+- id: q23
+  text: 'Part 10: Commitment'
+  type: fill_in
+actions: []

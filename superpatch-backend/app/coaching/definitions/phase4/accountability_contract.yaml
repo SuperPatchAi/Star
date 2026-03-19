@@ -1,0 +1,172 @@
+id: accountability_contract
+name: Ongoing Accountability Contract
+program: 100m_blueprint
+phase: 4
+week: 12
+frameworks:
+- Financial Ladder
+- Daily Ritual
+- Talent Density
+- Accountability Contract
+worksheet_path: ../docs/worksheets/week-12c-accountability-contract.md
+prerequisites: []
+questions:
+- id: q1
+  text: 'Commitment 1: CEO''s Log'
+  type: checkbox
+  options:
+  - value: element
+    label: Element
+  - value: platform
+    label: Platform
+  - value: frequency
+    label: Frequency
+  - value: day_of_week
+    label: Day of Week
+  - value: minimum_length
+    label: Minimum Length
+- id: q2
+  text: 'Commitment 2: Daily Success Ritual'
+  type: table
+  max_items: 3
+- id: q3
+  text: 'Commitment 3: 80/15/5 Calendar'
+  type: table
+  max_items: 3
+- id: q4
+  text: 'Commitment 4: Metrics Tracking'
+  type: checkbox
+  options:
+  - value: metric
+    label: Metric
+  - value: revenue
+    label: Revenue
+  - value: ltvcac
+    label: LTV:CAC
+  - value: talent_density
+    label: Talent Density
+  - value: financial_ladder_position
+    label: Financial Ladder Position
+- id: q5
+  text: Goal 1
+  type: table
+  max_items: 5
+- id: q6
+  text: Goal 2
+  type: table
+  max_items: 5
+- id: q7
+  text: Goal 3
+  type: table
+  max_items: 5
+- id: q8
+  text: Partner 1 (Peer from Cohort)
+  type: checkbox
+  options:
+  - value: element
+    label: Element
+  - value: name
+    label: Name
+  - value: contact
+    label: Contact
+  - value: check-in_frequency
+    label: Check-in frequency
+  - value: check-in_method
+    label: Check-in method
+  - value: check-in_daytime
+    label: Check-in day/time
+- id: q9
+  text: Partner 2 (Outside Cohort)
+  type: checkbox
+  options:
+  - value: element
+    label: Element
+  - value: name
+    label: Name
+  - value: relationship
+    label: Relationship
+  - value: contact
+    label: Contact
+  - value: check-in_frequency
+    label: Check-in frequency
+  - value: check-in_method
+    label: Check-in method
+- id: q10
+  text: Coach/Mentor
+  type: checkbox
+  options:
+  - value: element
+    label: Element
+  - value: name
+    label: Name
+  - value: check-in_frequency
+    label: Check-in frequency
+  - value: next_scheduled_check-in
+    label: Next scheduled check-in
+- id: q11
+  text: Weekly Check-In Questions (Self)
+  type: checkbox
+  options:
+  - value: question
+    label: Question
+  - value: did_i_complete_my_daily_success_ritual_every_day
+    label: Did I complete my Daily Success Ritual every day?
+  - value: did_i_publish_my_ceos_log
+    label: Did I publish my CEO's Log?
+  - value: what_was_my_80155_ratio_this_week
+    label: What was my 80/15/5 ratio this week?
+  - value: am_i_on_track_for_my_90-day_goals
+    label: Am I on track for my 90-day goals?
+  - value: whats_my_1_focus_next_week
+    label: 'What''s my #1 focus next week?'
+- id: q12
+  text: Weekly Check-In Questions (With Partner)
+  type: table
+  max_items: 5
+- id: q13
+  text: Monthly Scorecard
+  type: table
+  max_items: 3
+- id: q14
+  text: 90-Day Review Questions
+  type: table
+  max_items: 4
+- id: q15
+  text: If I Break My Commitments
+  type: table
+  max_items: 4
+- id: q16
+  text: If I Honor My Commitments
+  type: table
+  max_items: 4
+- id: q17
+  text: If I'm Struggling
+  type: table
+  max_items: 3
+- id: q18
+  text: Support Resources
+  type: table
+  max_items: 3
+- id: q19
+  text: After 90 Days
+  type: table
+  max_items: 3
+- id: q20
+  text: 'Contract Renewal Date: _______________________'
+  type: fill_in
+- id: q21
+  text: 'I, _________________________, commit to:'
+  type: fill_in
+- id: q22
+  text: 'If I break these commitments:'
+  type: open_ended
+- id: q23
+  text: 'If I honor these commitments:'
+  type: open_ended
+- id: q24
+  text: This contract is effective from __________ to __________.
+  type: fill_in
+actions: []
+scoring:
+  type: ratio
+  target_ratio: 80/15/5

@@ -1,0 +1,69 @@
+id: gl_customer_acquisition_plan
+name: 2026 Customer Acquisition and Retention Plan
+program: global_leaders
+phase: 1
+week: 3
+frameworks:
+- Re-Engagement
+worksheet_path: ../docs/worksheets/gl-03-customer-acquisition-plan.md
+prerequisites: []
+questions:
+- id: q1
+  text: Annual Targets
+  type: table
+  max_items: 4
+- id: q2
+  text: Current vs. Target Comparison
+  type: table
+  max_items: 7
+- id: q3
+  text: Demo/Sample Tier Selection
+  type: checkbox
+  options:
+  - value: tier
+    label: Tier
+  - value: average
+    label: Average
+  - value: pro
+    label: Pro
+  - value: elite
+    label: Elite
+- id: q4
+  text: Weekly Demo/Sample Schedule
+  type: table
+  max_items: 8
+- id: q5
+  text: 4-Week Demo/Sample Tracking Log
+  type: checkbox
+  options:
+  - value: demosample
+    label: Demo/Sample
+- id: q6
+  text: SmartShip Follow-Up Cadence
+  type: checkbox
+  options:
+  - value: touchpoint
+    label: Touchpoint
+  - value: welcome
+    label: Welcome
+  - value: check-in
+    label: Check-In
+  - value: pre-renewal
+    label: Pre-Renewal
+  - value: renewal_confirmation
+    label: Renewal Confirmation
+  - value: cross-sell
+    label: Cross-Sell
+- id: q7
+  text: Re-Engagement Plan for Lapsed Customers
+  type: table
+  max_items: 4
+- id: q8
+  text: Product Recommendation Matrix
+  type: table
+  max_items: 12
+- id: q9
+  text: 'Part 4: Customer Volume Tracker'
+  type: table
+  max_items: 13
+actions: []

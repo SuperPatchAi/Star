@@ -1,0 +1,84 @@
+id: gl_leadership_expectations
+name: Global Leaders — Leadership Expectations and Standards
+program: global_leaders
+phase: 2
+week: 5
+frameworks:
+- First 48 Hours
+worksheet_path: ../docs/worksheets/gl-05-leadership-expectations.md
+prerequisites: []
+questions:
+- id: q1
+  text: 'Part 1: What It Means to Be a Global Leader'
+  type: fill_in
+- id: q2
+  text: Leadership Self-Assessment
+  type: scale
+  scale_min: 1
+  scale_max: 10
+- id: q3
+  text: Daily Non-Negotiables
+  type: checkbox
+- id: q4
+  text: Weekly Non-Negotiables
+  type: checkbox
+- id: q5
+  text: Monthly Non-Negotiables
+  type: checkbox
+- id: q6
+  text: My Top 5 Leaders — Development Plan
+  type: checkbox
+  options:
+  - value: '1'
+    label: '1'
+  - value: '2'
+    label: '2'
+  - value: '3'
+    label: '3'
+  - value: '4'
+    label: '4'
+  - value: '5'
+    label: '5'
+- id: q7
+  text: Taprooting Commitment
+  type: fill_in
+- id: q8
+  text: Duplication Standard
+  type: fill_in
+- id: q9
+  text: 'Part 4: Accountability Framework'
+  type: checkbox
+  options:
+  - value: accountability_partner_name
+    label: Accountability Partner Name
+  - value: their_rank
+    label: Their Rank
+  - value: their_phone__contact
+    label: Their Phone / Contact
+  - value: check-in_frequency
+    label: Check-in Frequency
+- id: q10
+  text: Key Metrics We Will Review Together
+  type: checkbox
+- id: q11
+  text: 30-Day Accountability Check-In Schedule
+  type: table
+  max_items: 4
+- id: q12
+  text: 'I will create a team culture that values:'
+  type: table
+  max_items: 5
+- id: q13
+  text: Recognition Plan
+  type: fill_in
+- id: q14
+  text: Communication Plan
+  type: table
+  max_items: 4
+- id: q15
+  text: Code of Conduct Commitments
+  type: checkbox
+actions: []
+scoring:
+  type: ratio
+  target_ratio: 80/15/5

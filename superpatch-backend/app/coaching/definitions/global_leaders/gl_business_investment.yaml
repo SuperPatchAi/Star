@@ -1,0 +1,29 @@
+id: gl_business_investment
+name: 2026 Business Investment and Financial Planning
+program: global_leaders
+phase: 2
+week: 6
+frameworks: []
+worksheet_path: ../docs/worksheets/gl-06-business-investment.md
+prerequisites: []
+questions:
+- id: q1
+  text: 'Part 1: The Mindset of Investment'
+  type: fill_in
+- id: q2
+  text: 'Part 2: Current Business Investment Assessment'
+  type: table
+  max_items: 9
+- id: q3
+  text: 'Part 3: Funding Sources'
+  type: table
+  max_items: 7
+- id: q4
+  text: Reinvestment Commitment
+  type: table
+  max_items: 3
+- id: q5
+  text: 'Part 4: Quarterly Investment Review'
+  type: table
+  max_items: 6
+actions: []

@@ -1,0 +1,104 @@
+id: pricing_calculator
+name: Pricing Calculator
+program: 100m_blueprint
+phase: 2
+week: 6
+frameworks: []
+worksheet_path: ../docs/worksheets/week-06b-pricing-calculator.md
+prerequisites: []
+questions:
+- id: q1
+  text: Direct Costs (per unit/customer)
+  type: table
+  max_items: 7
+- id: q2
+  text: Fixed Costs (monthly)
+  type: table
+  max_items: 8
+- id: q3
+  text: The Margin Formula
+  type: open_ended
+- id: q4
+  text: 'Industry Benchmarks:'
+  type: table
+  max_items: 5
+- id: q5
+  text: 'Method 1: Cost-Plus Pricing'
+  type: table
+  max_items: 3
+- id: q6
+  text: 'Method 2: Value-Based Pricing'
+  type: table
+  max_items: 4
+- id: q7
+  text: 'Method 3: Market-Based Pricing'
+  type: table
+  max_items: 4
+- id: q8
+  text: 'Method 4: Survey-Based Pricing (From Week 4)'
+  type: table
+  max_items: 3
+- id: q9
+  text: 'Compare all methods:'
+  type: table
+  max_items: 5
+- id: q10
+  text: 'Sanity Checks:'
+  type: checkbox
+  options:
+  - value: check
+    label: Check
+  - value: price_covers_direct_costs
+    label: Price covers direct costs
+  - value: price_achieves_target_margin
+    label: Price achieves target margin
+  - value: price_is_competitive
+    label: Price is competitive
+  - value: customers_indicated_willingness
+    label: Customers indicated willingness
+  - value: price_allows_for_discountspromos
+    label: Price allows for discounts/promos
+- id: q11
+  text: 'Calculate each tier:'
+  type: table
+  max_items: 14
+- id: q12
+  text: 'Tier Ratio Check:'
+  type: table
+  max_items: 2
+- id: q13
+  text: How many sales to break even?
+  type: table
+  max_items: 3
+- id: q14
+  text: 'At different volumes:'
+  type: table
+  max_items: 4
+- id: q15
+  text: 'Planned discounts:'
+  type: table
+  max_items: 4
+- id: q16
+  text: 'Discount limits:'
+  type: table
+  max_items: 3
+- id: q17
+  text: 'A/B Test Strategy:'
+  type: table
+  max_items: 3
+- id: q18
+  text: 'Price Change Protocol:'
+  type: table
+  max_items: 4
+- id: q19
+  text: 'Your Final Pricing:'
+  type: table
+  max_items: 3
+- id: q20
+  text: 'Revenue Projection:'
+  type: table
+  max_items: 4
+- id: q21
+  text: 'Part 10: Price Positioning Statement'
+  type: fill_in
+actions: []

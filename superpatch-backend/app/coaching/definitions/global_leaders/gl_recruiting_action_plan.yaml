@@ -1,0 +1,99 @@
+id: gl_recruiting_action_plan
+name: 2026 Recruiting and Enrollment Action Plan
+program: global_leaders
+phase: 1
+week: 2
+frameworks:
+- First 48 Hours
+worksheet_path: ../docs/worksheets/gl-02-recruiting-action-plan.md
+prerequisites: []
+questions:
+- id: q1
+  text: 'Part 1: Annual Recruiting Goals'
+  type: table
+  max_items: 5
+- id: q2
+  text: Current Pipeline Assessment
+  type: table
+  max_items: 5
+- id: q3
+  text: Social Media Prospecting Plan
+  type: table
+  max_items: 5
+- id: q4
+  text: Demo/Sample Commitment Level
+  type: checkbox
+  options:
+  - value: tier
+    label: Tier
+  - value: average
+    label: Average
+  - value: pro
+    label: Pro
+  - value: elite
+    label: Elite
+- id: q5
+  text: Weekly Demo/Sample Schedule
+  type: table
+  max_items: 7
+- id: q6
+  text: Taprooting Goals
+  type: checkbox
+  options:
+  - value: metric
+    label: Metric
+  - value: referrals_requested_per_new_enrollee
+    label: Referrals requested per new enrollee
+  - value: top_5_contacts_identified_per_new_enrollee_first_48_hours
+    label: Top 5 contacts identified per new enrollee (First 48 Hours)
+  - value: 3-way_calls_scheduled_within_first_week
+    label: 3-way calls scheduled within first week
+- id: q7
+  text: Kit Options Reference
+  type: table
+  max_items: 3
+- id: q8
+  text: My Kit Strategy
+  type: table
+  max_items: 5
+- id: q9
+  text: Duplication Targets
+  type: table
+  max_items: 4
+- id: q10
+  text: Leg Development Plan
+  type: table
+  max_items: 5
+- id: q11
+  text: First 48 Hours Protocol — My Commitment
+  type: table
+  max_items: 5
+- id: q12
+  text: 'Part 5: Monthly Recruiting Tracker'
+  type: table
+  max_items: 13
+- id: q13
+  text: 'Part 6: Prospecting Pipeline'
+  type: checkbox
+  options:
+  - value: '1'
+    label: '1'
+  - value: '2'
+    label: '2'
+  - value: '3'
+    label: '3'
+  - value: '4'
+    label: '4'
+  - value: '5'
+    label: '5'
+  - value: '6'
+    label: '6'
+  - value: '7'
+    label: '7'
+  - value: '8'
+    label: '8'
+  - value: '9'
+    label: '9'
+  - value: '10'
+    label: '10'
+actions: []

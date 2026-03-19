@@ -1,0 +1,118 @@
+id: calendar_audit
+name: Calendar Audit
+program: 100m_blueprint
+phase: 3
+week: 7
+frameworks:
+- Calendar Audit
+worksheet_path: ../docs/worksheets/week-07-calendar-audit.md
+prerequisites: []
+questions:
+- id: q1
+  text: 'Level 1: ACTION (80% Target)'
+  type: table
+  max_items: 7
+- id: q2
+  text: 'Level 2: NURTURE (15% Target)'
+  type: table
+  max_items: 6
+- id: q3
+  text: 'Level 3: TRAINING (5% Target)'
+  type: table
+  max_items: 6
+- id: q4
+  text: NOT Classified (Operational / Waste)
+  type: table
+  max_items: 5
+- id: q5
+  text: 'Log every hour from the past week:'
+  type: table
+  max_items: 7
+- id: q6
+  text: 'Sum up the hours:'
+  type: table
+  max_items: 6
+- id: q7
+  text: 'Your Current Ratio: _____ / _____ / _____'
+  type: fill_in
+- id: q8
+  text: 'Target Ratio: 80 / 15 / 5'
+  type: open_ended
+- id: q9
+  text: 'Gap Analysis:'
+  type: table
+  max_items: 3
+- id: q10
+  text: What are your TOP 3 "Time Vampires"?
+  type: table
+  max_items: 3
+- id: q11
+  text: 'For each Time Vampire, can you:'
+  type: checkbox
+  options:
+  - value: time_vampire
+    label: Time Vampire
+  - value: '1'
+    label: '1.'
+  - value: '2'
+    label: '2.'
+  - value: '3'
+    label: '3.'
+- id: q12
+  text: New Weekly Schedule (80/15/5 Compliant)
+  type: table
+  max_items: 7
+- id: q13
+  text: 'Color Code:'
+  type: open_ended
+- id: q14
+  text: 'New Time Allocation:'
+  type: table
+  max_items: 3
+- id: q15
+  text: Morning Ritual (Before Work)
+  type: table
+  max_items: 3
+- id: q16
+  text: Evening Ritual (After Work)
+  type: table
+  max_items: 3
+- id: q17
+  text: 'My Daily Success Ritual Schedule:'
+  type: table
+  max_items: 2
+- id: q18
+  text: What activities MUST happen every week?
+  type: table
+  max_items: 0
+- id: q19
+  text: What will you STOP doing?
+  type: table
+  max_items: 0
+- id: q20
+  text: How will you track your 80/15/5 compliance?
+  type: checkbox
+  options:
+  - value: method
+    label: Method
+  - value: daily_time_log
+    label: Daily time log
+  - value: weekly_review
+    label: Weekly review
+  - value: accountability_partner
+    label: Accountability partner
+  - value: calendar_blocking
+    label: Calendar blocking
+  - value: time_tracking_app_toggl,_rescuetime
+    label: Time tracking app (Toggl, RescueTime)
+- id: q21
+  text: 'My accountability partner:'
+  type: table
+  max_items: 0
+- id: q22
+  text: 'Part 10: Commitment'
+  type: fill_in
+actions: []
+scoring:
+  type: ratio
+  target_ratio: 80/15/5

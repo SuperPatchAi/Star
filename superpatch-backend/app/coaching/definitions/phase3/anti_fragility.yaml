@@ -1,0 +1,183 @@
+id: anti_fragility
+name: Anti-Fragility Audit
+program: 100m_blueprint
+phase: 3
+week: 9
+frameworks:
+- Inventory Moat
+- Anti-Fragility
+worksheet_path: ../docs/worksheets/week-09b-anti-fragility.md
+prerequisites: []
+questions:
+- id: q1
+  text: The Fragility Spectrum
+  type: table
+  max_items: 3
+- id: q2
+  text: Business Translation
+  type: table
+  max_items: 3
+- id: q3
+  text: 'Rate your business (1-10) on each factor:'
+  type: scale
+  scale_min: 1
+  scale_max: 10
+- id: q4
+  text: 'Scoring Guide:'
+  type: table
+  max_items: 4
+- id: q5
+  text: 'Scenario 1: Major Customer Loss'
+  type: checkbox
+  options:
+  - value: impact_area
+    label: Impact Area
+  - value: revenue
+    label: Revenue
+  - value: cash_flow
+    label: Cash flow
+  - value: team_morale
+    label: Team morale
+  - value: operations
+    label: Operations
+- id: q6
+  text: 'Scenario 2: Economic Recession'
+  type: checkbox
+  options:
+  - value: impact_area
+    label: Impact Area
+  - value: revenue
+    label: Revenue
+  - value: ability_to_cut_costs
+    label: Ability to cut costs
+  - value: customer_behavior
+    label: Customer behavior
+  - value: competitor_behavior
+    label: Competitor behavior
+- id: q7
+  text: 'Scenario 3: Key Person Leaves'
+  type: checkbox
+  options:
+  - value: impact_area
+    label: Impact Area
+  - value: knowledge_loss
+    label: Knowledge loss
+  - value: customer_relationships
+    label: Customer relationships
+  - value: team_stability
+    label: Team stability
+  - value: operations
+    label: Operations
+- id: q8
+  text: 'Scenario 4: Supply Chain Disruption'
+  type: checkbox
+  options:
+  - value: impact_area
+    label: Impact Area
+  - value: product_availability
+    label: Product availability
+  - value: customer_satisfaction
+    label: Customer satisfaction
+  - value: cost_increase
+    label: Cost increase
+  - value: alternative_suppliers
+    label: Alternative suppliers
+- id: q9
+  text: 'Scenario 5: Competitive Attack'
+  type: checkbox
+  options:
+  - value: impact_area
+    label: Impact Area
+  - value: market_share
+    label: Market share
+  - value: pricing_pressure
+    label: Pricing pressure
+  - value: customer_retention
+    label: Customer retention
+  - value: team_poaching
+    label: Team poaching
+- id: q10
+  text: What breaks if these fail?
+  type: checkbox
+  options:
+  - value: element
+    label: Element
+  - value: top_customer
+    label: Top customer
+  - value: key_employee
+    label: Key employee
+  - value: main_supplier
+    label: Main supplier
+  - value: primary_product
+    label: Primary product
+  - value: core_technology
+    label: Core technology
+  - value: bankfunding
+    label: Bank/funding
+  - value: physical_location
+    label: Physical location
+- id: q11
+  text: 'Your #1 SPOF:'
+  type: fill_in
+- id: q12
+  text: 'Plan to eliminate it:'
+  type: fill_in
+- id: q13
+  text: How could you GAIN from crisis?
+  type: table
+  max_items: 5
+- id: q14
+  text: '"Dry Powder" Assessment:'
+  type: table
+  max_items: 4
+- id: q15
+  text: Quick Wins (Do This Month)
+  type: table
+  max_items: 4
+- id: q16
+  text: Strategic Moves (This Quarter)
+  type: table
+  max_items: 4
+- id: q17
+  text: Long-Term Plays (This Year)
+  type: table
+  max_items: 4
+- id: q18
+  text: 'For each major decision, ask:'
+  type: table
+  max_items: 5
+- id: q19
+  text: 'Decision Types:'
+  type: table
+  max_items: 4
+- id: q20
+  text: 'Part 8: 90-Day Anti-Fragility Plan'
+  type: checkbox
+  options:
+  - value: priority
+    label: Priority
+  - value: '1'
+    label: '1'
+  - value: '2'
+    label: '2'
+  - value: '3'
+    label: '3'
+  - value: '4'
+    label: '4'
+  - value: '5'
+    label: '5'
+- id: q21
+  text: 'Monthly Check-In:'
+  type: scale
+  scale_min: 1
+  scale_max: 10
+- id: q22
+  text: 'If crisis hits, our response is:'
+  type: table
+  max_items: 5
+- id: q23
+  text: 'Part 10: Commitment'
+  type: scale
+  scale_min: 1
+  scale_max: 10
+actions: []

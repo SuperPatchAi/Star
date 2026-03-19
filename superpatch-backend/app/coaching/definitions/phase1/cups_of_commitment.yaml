@@ -1,0 +1,133 @@
+id: cups_of_commitment_audit
+name: Cups of Commitment Audit
+program: 100m_blueprint
+phase: 1
+week: 1
+frameworks:
+  - Cups of Commitment
+worksheet_path: docs/worksheets/week-01b-cups-of-commitment-audit.md
+prerequisites:
+  - financial_ladder_assessment
+questions:
+  - id: q1
+    text: How many hours per week do you dedicate to your PRIMARY business/goal?
+    type: choice
+    options:
+      - value: "0_5_sometime"
+        label: "0-5 hours (Sometime)"
+      - value: "6_10_sometime_plus"
+        label: "6-10 hours (Sometime+)"
+      - value: "11_20_part_time"
+        label: "11-20 hours (Part-Time)"
+      - value: "21_30_part_time_plus"
+        label: "21-30 hours (Part-Time+)"
+      - value: "31_40_full_time"
+        label: "31-40 hours (Full-Time)"
+      - value: "40_plus_full_time_plus"
+        label: "40+ hours (Full-Time+)"
+  - id: q2
+    text: 'Do you have a "backup plan" or alternative income source?'
+    type: choice
+    options:
+      - value: full_time_job_side_project
+        label: "Yes, I have a full-time job and this is a side project."
+      - value: savings_not_all_in
+        label: "Yes, I have savings/runway but I'm not all-in yet."
+      - value: spouse_covers_expenses
+        label: "Yes, my spouse/partner covers our expenses."
+      - value: primary_only_income
+        label: "No, this is my primary and only income source."
+  - id: q3
+    text: Which statement best describes your mental commitment?
+    type: choice
+    options:
+      - value: sometime
+        label: "I'll give this a try and see what happens."
+      - value: part_time
+        label: "I'm committed, but I need to keep my options open."
+      - value: full_time
+        label: "I've burned the boats. There is no Plan B."
+  - id: q4
+    text: "Based on the above, what is your current Cup?"
+    type: choice
+    options:
+      - value: sometime
+        label: Sometime
+      - value: part_time
+        label: Part-Time
+      - value: full_time
+        label: Full-Time
+  - id: q5
+    text: "Time Audit — where does your time actually go? (last 7 days)"
+    type: table
+    max_items: 9
+  - id: q6
+    text: "Hours on primary business out of 168 total"
+    type: fill_in
+  - id: q7
+    text: "Results at your current commitment level (last 90 days)"
+    type: table
+    max_items: 3
+  - id: q8
+    text: "Results you COULD achieve at Full-Time commitment (next 90 days)"
+    type: table
+    max_items: 3
+  - id: q9
+    text: "Opportunity cost of staying at your current cup"
+    type: open_ended
+  - id: q10
+    text: "What's preventing you from going Full-Time?"
+    type: checkbox
+    options:
+      - value: financial_security
+        label: Financial security
+      - value: family_obligations
+        label: Family obligations
+      - value: fear_of_failure
+        label: Fear of failure
+      - value: lack_of_clarity
+        label: Lack of clarity
+  - id: q11
+    text: "For your #1 barrier, what would need to be true for it to no longer be a barrier?"
+    type: open_ended
+  - id: q12
+    text: "If you HAD to go Full-Time in 90 days, what would you do?"
+    type: table
+    max_items: 4
+  - id: q13
+    text: "What is your minimum monthly survival income?"
+    type: table
+    max_items: 6
+  - id: q14
+    text: "How many months of runway do you have at survival level?"
+    type: fill_in
+  - id: q15
+    text: "Commitment Decision — what do you choose?"
+    type: choice
+    options:
+      - value: stay_sometime
+        label: "Stay at Sometime — accept slower results, revisit in 90 days"
+      - value: move_part_time
+        label: "Move to Part-Time — block 15+ hours/week, eliminate waste"
+      - value: go_full_time
+        label: "Go Full-Time — set a burn-the-boats date, create survival plan"
+  - id: q16
+    text: "Design your ideal week at your NEW commitment level"
+    type: table
+    max_items: 6
+scoring:
+  type: ladder
+  levels:
+    - name: Sometime
+      range_label: "0-5 hrs/week"
+    - name: Part-Time
+      range_label: "10-20 hrs/week"
+    - name: Full-Time
+      range_label: "40+ hrs/week"
+actions:
+  - Assess your current Cup honestly using the three questions
+  - Complete the time audit for the last 7 days
+  - Calculate the opportunity cost of staying at your current level
+  - Identify your number one barrier to going Full-Time
+  - Make a commitment decision and set a target date
+  - Design your ideal weekly time block at your new commitment level

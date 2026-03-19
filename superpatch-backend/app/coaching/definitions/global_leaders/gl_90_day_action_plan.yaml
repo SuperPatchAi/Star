@@ -1,0 +1,46 @@
+id: gl_90_day_action_plan
+name: 90-Day Sprint Action Plan
+program: global_leaders
+phase: 3
+week: 7
+frameworks:
+- First 48 Hours
+worksheet_path: ../docs/worksheets/gl-07-90-day-action-plan.md
+prerequisites: []
+questions:
+- id: q1
+  text: 'Part 1: My 90-Day North Star'
+  type: table
+  max_items: 6
+- id: q2
+  text: Week-by-Week Breakdown
+  type: table
+  max_items: 11
+- id: q3
+  text: Month 1 Non-Negotiables
+  type: checkbox
+- id: q4
+  text: Week-by-Week Breakdown
+  type: table
+  max_items: 11
+- id: q5
+  text: Month 2 Non-Negotiables
+  type: checkbox
+- id: q6
+  text: Week-by-Week Breakdown
+  type: table
+  max_items: 11
+- id: q7
+  text: Month 3 Non-Negotiables
+  type: checkbox
+- id: q8
+  text: 'Part 5: Weekly IPA Tracker — 13 Weeks'
+  type: scale
+  scale_min: 1
+  scale_max: 10
+- id: q9
+  text: 'Week _____ Reflection (Date: _____________)'
+  type: scale
+  scale_min: 1
+  scale_max: 10
+actions: []
