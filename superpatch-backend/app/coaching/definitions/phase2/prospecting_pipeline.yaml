@@ -1,0 +1,76 @@
+id: prospecting_pipeline
+name: Daily Prospecting Pipeline
+program: 100m_blueprint
+phase: 2
+week: 4
+frameworks:
+  - FORM Method
+  - 3-Foot Rule
+worksheet_path: docs/worksheets/week-04a-prospecting-pipeline.md
+prerequisites:
+  - warm_market_100
+questions:
+  - id: q1
+    text: "How many new people are you reaching out to per day right now?"
+    type: choice
+    options:
+      - value: "0"
+        label: "0 — I haven't started yet"
+      - value: "1_2"
+        label: "1-2 per day"
+      - value: "3_5"
+        label: "3-5 per day"
+      - value: "5_10"
+        label: "5-10 per day"
+      - value: "10_plus"
+        label: "10+ per day"
+  - id: q2
+    text: "What percentage of your prospecting is WARM MARKET vs. COLD MARKET vs. SOCIAL MEDIA?"
+    type: open_ended
+  - id: q3
+    text: "Describe your current opening message or conversation starter when reaching out to someone."
+    type: open_ended
+  - id: q4
+    text: "Using the FORM method (Family, Occupation, Recreation, Motivation) — write a natural conversation flow that leads to SuperPatch."
+    type: open_ended
+  - id: q5
+    text: "What is your '3-Foot Rule' strategy? How do you start conversations with strangers?"
+    type: open_ended
+  - id: q6
+    text: "How many of your last 10 conversations led to a sample being sent or a demo being scheduled?"
+    type: choice
+    options:
+      - value: "0"
+        label: "0 — none"
+      - value: "1_2"
+        label: "1-2"
+      - value: "3_5"
+        label: "3-5"
+      - value: "6_plus"
+        label: "6+"
+  - id: q7
+    text: "What is the #1 reason prospects say NO to you? Be honest."
+    type: open_ended
+  - id: q8
+    text: "Write your daily prospecting plan: how many reaches, through what channels, at what times."
+    type: open_ended
+  - id: q9
+    text: "Rate your confidence in starting conversations with strangers."
+    type: scale
+    scale_min: 1
+    scale_max: 10
+  - id: q10
+    text: "What would have to change for you to consistently reach out to 5+ people per day?"
+    type: open_ended
+scoring:
+  type: ratio
+  dimensions:
+    - warm_market
+    - cold_market
+    - social_media
+  target_ratio: "40/30/30"
+actions:
+  - Set a daily prospecting target (minimum 5 new conversations)
+  - Write out your FORM conversation flow and practice it
+  - Track your daily reaches for 7 days straight
+  - Identify your weakest prospecting channel and commit to improving it

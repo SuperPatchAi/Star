@@ -1,0 +1,90 @@
+id: social_media_blueprint
+name: Social Media Attraction Blueprint
+program: 100m_blueprint
+phase: 2
+week: 4
+frameworks:
+  - Attraction Marketing
+  - Value-First Content
+worksheet_path: docs/worksheets/week-04b-social-media-blueprint.md
+prerequisites: []
+questions:
+  - id: q1
+    text: "Which platforms are you currently active on? (Instagram, Facebook, TikTok, YouTube, etc.)"
+    type: open_ended
+  - id: q2
+    text: "How often are you posting content related to SuperPatch or your business?"
+    type: choice
+    options:
+      - value: never
+        label: "Never — I haven't started"
+      - value: rarely
+        label: "Rarely — once a week or less"
+      - value: sometimes
+        label: "A few times a week"
+      - value: daily
+        label: "Daily"
+  - id: q3
+    text: "What percentage of your posts are VALUE (tips, stories, lifestyle) vs. SELLING (product posts, links, promos)?"
+    type: choice
+    options:
+      - value: all_selling
+        label: "90%+ selling"
+      - value: mostly_selling
+        label: "60-90% selling"
+      - value: balanced
+        label: "About 50/50"
+      - value: mostly_value
+        label: "60-90% value"
+      - value: all_value
+        label: "90%+ value"
+  - id: q4
+    text: "Write 5 content ideas that share VALUE without directly selling (lifestyle, testimonials, curiosity posts, education, behind-the-scenes)."
+    type: open_ended
+  - id: q5
+    text: "Write 3 'curiosity posts' that make people ask YOU about SuperPatch instead of you pitching them."
+    type: open_ended
+  - id: q6
+    text: "How are you using Stories and Reels to show your daily life and product use?"
+    type: open_ended
+  - id: q7
+    text: "What is your strategy for engaging with OTHER people's content to build relationships?"
+    type: open_ended
+  - id: q8
+    text: "Rate your comfort level with going live or posting video content."
+    type: scale
+    scale_min: 1
+    scale_max: 10
+  - id: q9
+    text: "Write your weekly content calendar: what you will post each day of the week."
+    type: open_ended
+  - id: q10
+    text: "How many DM conversations is your content generating per week?"
+    type: choice
+    options:
+      - value: "0"
+        label: "0 — nobody reaches out"
+      - value: "1_3"
+        label: "1-3 per week"
+      - value: "4_10"
+        label: "4-10 per week"
+      - value: "10_plus"
+        label: "10+ per week"
+scoring:
+  type: scale
+  dimensions:
+    - consistency
+    - value_ratio
+    - engagement
+  levels:
+    - name: Invisible
+      range_label: "1-3"
+    - name: Growing
+      range_label: "4-6"
+    - name: Magnetic
+      range_label: "7-10"
+actions:
+  - Post at least 1 piece of value content daily for 7 days
+  - Write and schedule 5 curiosity posts this week
+  - Engage with 10 people's content daily (comment, like, share)
+  - Go live or post a video at least once this week

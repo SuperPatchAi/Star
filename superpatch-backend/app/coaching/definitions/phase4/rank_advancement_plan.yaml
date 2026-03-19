@@ -1,0 +1,62 @@
+id: rank_advancement_plan
+name: Rank Advancement Plan
+program: 100m_blueprint
+phase: 4
+week: 11
+frameworks:
+  - Rank Metrics
+  - Gap Analysis
+worksheet_path: docs/worksheets/week-11a-rank-advancement-plan.md
+prerequisites:
+  - team_building_blueprint
+questions:
+  - id: q1
+    text: "What is your current rank in SuperPatch?"
+    type: fill_in
+  - id: q2
+    text: "What is the NEXT rank you are targeting?"
+    type: fill_in
+  - id: q3
+    text: "What are the specific requirements for that next rank? (Personal volume, team volume, active legs, qualified builders, etc.)"
+    type: open_ended
+  - id: q4
+    text: "Where do you currently stand against each of those requirements? What is your GAP?"
+    type: open_ended
+  - id: q5
+    text: "Which requirement is FURTHEST from being met? What's your plan to close that gap?"
+    type: open_ended
+  - id: q6
+    text: "How many new personal enrollments do you need per month to maintain your volume targets?"
+    type: open_ended
+  - id: q7
+    text: "Which legs in your organization are the weakest? What support do they need?"
+    type: open_ended
+  - id: q8
+    text: "What is your target date for hitting the next rank?"
+    type: fill_in
+  - id: q9
+    text: "Break it down: What needs to happen THIS MONTH to stay on track?"
+    type: open_ended
+  - id: q10
+    text: "Who on your team needs to advance for YOU to advance? Are they on the same page?"
+    type: open_ended
+scoring:
+  type: ladder
+  levels:
+    - name: Starting Out
+      range_label: "New Rep — First Rank"
+      population_pct: 60.0
+    - name: Building Momentum
+      range_label: "Mid-Level Rank"
+      population_pct: 25.0
+    - name: Leadership
+      range_label: "Senior Rank"
+      population_pct: 10.0
+    - name: Top Tier
+      range_label: "Executive / Top Rank"
+      population_pct: 5.0
+actions:
+  - Write your specific rank requirements and current standing
+  - Identify the #1 gap and create a 30-day plan to close it
+  - Talk to the key team members whose growth you depend on
+  - Set a target date and post it where you see it daily

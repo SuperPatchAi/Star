@@ -1,118 +1,77 @@
 id: calendar_audit
-name: Calendar Audit
+name: Calendar Audit — Income-Producing Activities
 program: 100m_blueprint
 phase: 3
 week: 7
 frameworks:
-- Calendar Audit
-worksheet_path: ../docs/worksheets/week-07-calendar-audit.md
+  - 80/15/5 Rule
+  - Income-Producing Activities
+worksheet_path: docs/worksheets/week-07a-calendar-audit.md
 prerequisites: []
 questions:
-- id: q1
-  text: 'Level 1: ACTION (80% Target)'
-  type: table
-  max_items: 7
-- id: q2
-  text: 'Level 2: NURTURE (15% Target)'
-  type: table
-  max_items: 6
-- id: q3
-  text: 'Level 3: TRAINING (5% Target)'
-  type: table
-  max_items: 6
-- id: q4
-  text: NOT Classified (Operational / Waste)
-  type: table
-  max_items: 5
-- id: q5
-  text: 'Log every hour from the past week:'
-  type: table
-  max_items: 7
-- id: q6
-  text: 'Sum up the hours:'
-  type: table
-  max_items: 6
-- id: q7
-  text: 'Your Current Ratio: _____ / _____ / _____'
-  type: fill_in
-- id: q8
-  text: 'Target Ratio: 80 / 15 / 5'
-  type: open_ended
-- id: q9
-  text: 'Gap Analysis:'
-  type: table
-  max_items: 3
-- id: q10
-  text: What are your TOP 3 "Time Vampires"?
-  type: table
-  max_items: 3
-- id: q11
-  text: 'For each Time Vampire, can you:'
-  type: checkbox
-  options:
-  - value: time_vampire
-    label: Time Vampire
-  - value: '1'
-    label: '1.'
-  - value: '2'
-    label: '2.'
-  - value: '3'
-    label: '3.'
-- id: q12
-  text: New Weekly Schedule (80/15/5 Compliant)
-  type: table
-  max_items: 7
-- id: q13
-  text: 'Color Code:'
-  type: open_ended
-- id: q14
-  text: 'New Time Allocation:'
-  type: table
-  max_items: 3
-- id: q15
-  text: Morning Ritual (Before Work)
-  type: table
-  max_items: 3
-- id: q16
-  text: Evening Ritual (After Work)
-  type: table
-  max_items: 3
-- id: q17
-  text: 'My Daily Success Ritual Schedule:'
-  type: table
-  max_items: 2
-- id: q18
-  text: What activities MUST happen every week?
-  type: table
-  max_items: 0
-- id: q19
-  text: What will you STOP doing?
-  type: table
-  max_items: 0
-- id: q20
-  text: How will you track your 80/15/5 compliance?
-  type: checkbox
-  options:
-  - value: method
-    label: Method
-  - value: daily_time_log
-    label: Daily time log
-  - value: weekly_review
-    label: Weekly review
-  - value: accountability_partner
-    label: Accountability partner
-  - value: calendar_blocking
-    label: Calendar blocking
-  - value: time_tracking_app_toggl,_rescuetime
-    label: Time tracking app (Toggl, RescueTime)
-- id: q21
-  text: 'My accountability partner:'
-  type: table
-  max_items: 0
-- id: q22
-  text: 'Part 10: Commitment'
-  type: fill_in
-actions: []
+  - id: q1
+    text: "How many hours per week are you currently working your SuperPatch business?"
+    type: choice
+    options:
+      - value: "0_5"
+        label: "0-5 hours"
+      - value: "5_10"
+        label: "5-10 hours"
+      - value: "10_20"
+        label: "10-20 hours"
+      - value: "20_40"
+        label: "20-40 hours"
+      - value: "40_plus"
+        label: "40+ hours"
+  - id: q2
+    text: "Of those hours, what percentage is spent on INCOME-PRODUCING activities? (Prospecting, presenting, following up, closing, training team)"
+    type: scale
+    scale_min: 1
+    scale_max: 10
+  - id: q3
+    text: "What percentage is spent on TEAM SUPPORT? (3-way calls, recognition, answering questions, team trainings)"
+    type: scale
+    scale_min: 1
+    scale_max: 10
+  - id: q4
+    text: "What percentage is spent on PERSONAL DEVELOPMENT? (Reading, listening to training, attending events, self-improvement)"
+    type: scale
+    scale_min: 1
+    scale_max: 10
+  - id: q5
+    text: "What are your biggest TIME VAMPIRES — activities that feel productive but don't produce income? (Social media scrolling, reorganizing tools, overthinking scripts, etc.)"
+    type: open_ended
+  - id: q6
+    text: "Write out your ideal daily schedule for a workday. Block time for prospecting, follow-ups, presentations, and team support."
+    type: open_ended
+  - id: q7
+    text: "What is the ONE activity that, if you doubled it, would have the biggest impact on your income?"
+    type: open_ended
+  - id: q8
+    text: "Do you have a set 'power hour' — a non-negotiable daily block dedicated to reaches and follow-ups?"
+    type: choice
+    options:
+      - value: "no"
+        label: "No — I fit it in when I can"
+      - value: "sometimes"
+        label: "Sometimes — it's not consistent"
+      - value: "yes"
+        label: "Yes — same time every day"
+  - id: q9
+    text: "What would your week look like if you followed the 80/15/5 rule? (80% income-producing, 15% team support, 5% personal development)"
+    type: open_ended
+  - id: q10
+    text: "What is the first thing you will STOP doing to free up time for income-producing activities?"
+    type: open_ended
 scoring:
   type: ratio
-  target_ratio: 80/15/5
+  dimensions:
+    - income_producing
+    - team_support
+    - personal_development
+  target_ratio: "80/15/5"
+actions:
+  - Track your actual time for 3 days and categorize each activity
+  - Eliminate your top 2 time vampires starting today
+  - Block a daily "power hour" for prospecting and follow-ups
+  - Restructure your weekly schedule to hit the 80/15/5 target

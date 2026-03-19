@@ -1,140 +1,99 @@
 id: first_48_hours
-name: First 48 Hours Checklist
+name: First 48 Hours — New Team Member Launch
 program: 100m_blueprint
 phase: 3
-week: 7
+week: 8
 frameworks:
-- First 48 Hours
-worksheet_path: ../docs/worksheets/week-07c-first-48-hours.md
-prerequisites: []
+  - First 48 Hours
+  - Taprooting
+worksheet_path: docs/worksheets/week-08b-first-48-hours.md
+prerequisites:
+  - recruiting_conversation
 questions:
-- id: q1
-  text: 'Hour 0-2: Lock In the Commitment'
-  type: checkbox
-  options:
-  - value: action
-    label: Action
-  - value: welcome_callmessage
-    label: Welcome call/message
-  - value: confirm_contact_info
-    label: Confirm contact info
-  - value: set_expectations
-    label: Set expectations
-  - value: schedule_first_interaction
-    label: Schedule first interaction
-- id: q2
-  text: 'Hour 2-12: Reduce Buyer''s Remorse'
-  type: checkbox
-  options:
-  - value: action
-    label: Action
-  - value: send_onboarding_materials
-    label: Send onboarding materials
-  - value: welcome_email_sequence
-    label: Welcome email sequence
-  - value: social_proof_delivery
-    label: Social proof delivery
-  - value: introduce_to_community
-    label: Introduce to community
-- id: q3
-  text: 'Hour 12-24: Mine Their Network (Taprooting)'
-  type: checkbox
-  options:
-  - value: action
-    label: Action
-  - value: identify_top_5_connections
-    label: Identify top 5 connections
-  - value: offer_to_help_introduce
-    label: Offer to help introduce
-  - value: referral_incentive
-    label: Referral incentive
-  - value: request_testimonial
-    label: Request testimonial
-- id: q4
-  text: 'Hour 24-48: Secure a Quick Win'
-  type: checkbox
-  options:
-  - value: action
-    label: Action
-  - value: first_result
-    label: First result
-  - value: celebrate_publicly
-    label: Celebrate publicly
-  - value: document_the_win
-    label: Document the win
-  - value: set_next_milestone
-    label: Set next milestone
-- id: q5
-  text: The Taprooting Script
-  type: checkbox
-  options:
-  - value: '1'
-    label: '1'
-  - value: '2'
-    label: '2'
-  - value: '3'
-    label: '3'
-  - value: '4'
-    label: '4'
-  - value: '5'
-    label: '5'
-- id: q6
-  text: What's a "Quick Win" for your business?
-  type: table
-  max_items: 5
-- id: q7
-  text: 'My Quick Win:'
-  type: table
-  max_items: 4
-- id: q8
-  text: 'Email 1: Welcome (Hour 0-2)'
-  type: table
-  max_items: 4
-- id: q9
-  text: 'Email 2: Quick Start (Hour 6-12)'
-  type: table
-  max_items: 4
-- id: q10
-  text: 'Email 3: Social Proof (Hour 24-36)'
-  type: table
-  max_items: 4
-- id: q11
-  text: 'Customize for your business:'
-  type: checkbox
-- id: q12
-  text: What can be automated?
-  type: checkbox
-  options:
-  - value: task
-    label: Task
-  - value: welcome_email
-    label: Welcome email
-  - value: onboarding_sequence
-    label: Onboarding sequence
-  - value: community_invite
-    label: Community invite
-  - value: calendar_booking
-    label: Calendar booking
-  - value: first_check-in
-    label: First check-in
-  - value: taprooting_call
-    label: Taprooting call
-- id: q13
-  text: 'Tools to consider:'
-  type: open_ended
-- id: q14
-  text: 'Track for each new customer:'
-  type: table
-  max_items: 6
-- id: q15
-  text: 'Weekly Dashboard:'
-  type: table
-  max_items: 4
-- id: q16
-  text: When will you implement this?
-  type: table
-  max_items: 6
-- id: q17
-  text: 'Commitment:'
-  type: fill_in
-actions: []
+  - id: q1
+    text: "When you enroll someone new, what do you do in the FIRST 2 HOURS? List your exact steps."
+    type: open_ended
+  - id: q2
+    text: "Do you have a written 'Getting Started' checklist you give to new team members?"
+    type: choice
+    options:
+      - value: "no"
+        label: "No — I wing it each time"
+      - value: "informal"
+        label: "Kind of — I tell them verbally"
+      - value: "yes"
+        label: "Yes — I have a step-by-step document or video"
+  - id: q3
+    text: "In the first 48 hours, do you help your new rep make their contact list of 20+ names?"
+    type: choice
+    options:
+      - value: "no"
+        label: "No — I leave that to them"
+      - value: "sometimes"
+        label: "Sometimes"
+      - value: "always"
+        label: "Yes — we do it together on a call"
+  - id: q4
+    text: "Do you help your new rep send their FIRST SAMPLE within 48 hours of enrolling?"
+    type: choice
+    options:
+      - value: "no"
+        label: "No"
+      - value: "sometimes"
+        label: "Sometimes"
+      - value: "always"
+        label: "Yes — that's the goal every time"
+  - id: q5
+    text: "What does 'taprooting' mean to you? How do you help your new rep get THEIR first enrollment?"
+    type: open_ended
+  - id: q6
+    text: "Do you schedule your new rep onto the next team call or training within their first 48 hours?"
+    type: choice
+    options:
+      - value: "no"
+        label: "No"
+      - value: "sometimes"
+        label: "Sometimes"
+      - value: "always"
+        label: "Yes — always"
+  - id: q7
+    text: "What is your biggest challenge with new team member activation? Where do they stall?"
+    type: open_ended
+  - id: q8
+    text: "Write your ideal First 48 Hours launch plan — hour by hour, what happens."
+    type: open_ended
+  - id: q9
+    text: "Rate how effectively you launch new team members right now."
+    type: scale
+    scale_min: 1
+    scale_max: 10
+  - id: q10
+    text: "What ONE thing would you change about your current onboarding process?"
+    type: open_ended
+scoring:
+  type: scale
+  dimensions:
+    - speed_to_first_action
+    - support_quality
+    - duplication_readiness
+  levels:
+    - name: Slow Start
+      range_label: "1-3"
+    - name: Solid
+      range_label: "4-6"
+    - name: Launch Pad
+      range_label: "7-10"
+case_study:
+  title: "48 Hours or Bust"
+  content: >
+    Jay's philosophy: "The first 48 hours determine whether someone builds
+    a business or becomes a statistic. If they don't take action in the
+    first 48 hours, the excitement dies. The doubt creeps in. The spouse
+    starts asking questions. You have a 48-hour window to get them a win.
+    A win is simple: their first sample goes out, their first person says
+    'wow,' and they realize they can do this."
+actions:
+  - Create your written First 48 Hours checklist
+  - Launch your next new team member using the full checklist
+  - Help them build their Top 20 list on Day 1
+  - Help them send their first sample by Day 2

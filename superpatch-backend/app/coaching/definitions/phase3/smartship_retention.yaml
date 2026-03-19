@@ -1,0 +1,80 @@
+id: smartship_retention
+name: SmartShip & Customer Retention
+program: 100m_blueprint
+phase: 3
+week: 9
+frameworks:
+  - 3-Touchpoint Retention
+  - SmartShip System
+worksheet_path: docs/worksheets/week-09b-smartship-retention.md
+prerequisites:
+  - sample_to_close_system
+questions:
+  - id: q1
+    text: "What percentage of your customers are currently on SmartShip (auto-reorder)?"
+    type: choice
+    options:
+      - value: "0_10"
+        label: "0-10%"
+      - value: "10_30"
+        label: "10-30%"
+      - value: "30_50"
+        label: "30-50%"
+      - value: "50_plus"
+        label: "50%+"
+  - id: q2
+    text: "At what point in the sale do you introduce SmartShip? Before or after the first purchase?"
+    type: choice
+    options:
+      - value: never
+        label: "I don't mention it"
+      - value: after_purchase
+        label: "After their first order"
+      - value: during_close
+        label: "During the close — I include it in the offer"
+      - value: at_followup
+        label: "During the follow-up when they reorder"
+  - id: q3
+    text: "Write the script you use (or should use) to introduce SmartShip. Why would a customer WANT auto-reorder?"
+    type: open_ended
+  - id: q4
+    text: "The 3-Touchpoint Retention system: What do you do on Day 3 (after their first order)?"
+    type: open_ended
+  - id: q5
+    text: "What do you do on Day 7 (they've been using the product for a week)?"
+    type: open_ended
+  - id: q6
+    text: "What do you do on Day 14 (before they run out / decision time)?"
+    type: open_ended
+  - id: q7
+    text: "How do you handle a customer who wants to cancel their SmartShip?"
+    type: open_ended
+  - id: q8
+    text: "Do you ask for REFERRALS from happy customers? If so, when and how?"
+    type: open_ended
+  - id: q9
+    text: "Rate your current customer retention and follow-up game."
+    type: scale
+    scale_min: 1
+    scale_max: 10
+  - id: q10
+    text: "How many of your current customers could you contact this week to enroll on SmartShip or get a referral?"
+    type: open_ended
+scoring:
+  type: scale
+  dimensions:
+    - smartship_rate
+    - follow_up_consistency
+    - referral_system
+  levels:
+    - name: Leaking
+      range_label: "1-3"
+    - name: Steady
+      range_label: "4-6"
+    - name: Locked In
+      range_label: "7-10"
+actions:
+  - Contact every customer not on SmartShip and present it this week
+  - Write your 3-Touchpoint follow-up sequence (Day 3, 7, 14)
+  - Ask 5 happy customers for referrals this week
+  - Track your SmartShip enrollment rate monthly

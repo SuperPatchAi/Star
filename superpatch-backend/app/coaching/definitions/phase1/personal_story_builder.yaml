@@ -1,0 +1,71 @@
+id: personal_story_builder
+name: Personal Story Builder
+program: 100m_blueprint
+phase: 1
+week: 3
+frameworks:
+  - Story Selling
+  - Attraction Marketing
+worksheet_path: docs/worksheets/week-03a-personal-story-builder.md
+prerequisites: []
+questions:
+  - id: q1
+    text: What was your life like BEFORE SuperPatch? Be specific — what were you struggling with physically, financially, or emotionally?
+    type: open_ended
+  - id: q2
+    text: How did you first hear about SuperPatch? Who introduced you and what caught your attention?
+    type: open_ended
+  - id: q3
+    text: What was your personal experience with the product? What did you feel or notice?
+    type: open_ended
+  - id: q4
+    text: What is your life like NOW since using SuperPatch and/or building the business?
+    type: open_ended
+  - id: q5
+    text: "Rate your story on these elements:"
+    type: scale
+    scale_min: 1
+    scale_max: 10
+  - id: q6
+    text: Who is your IDEAL prospect? Describe the person your story will resonate with most.
+    type: open_ended
+  - id: q7
+    text: Write your 60-second elevator version — the story you tell when someone asks "What do you do?"
+    type: open_ended
+  - id: q8
+    text: Write your 3-minute version — the story you tell in a one-on-one or on a Zoom.
+    type: open_ended
+  - id: q9
+    text: What objections does your story naturally overcome? (e.g., "Does it really work?" → your personal result)
+    type: open_ended
+  - id: q10
+    text: Who are 3 people you will share your story with this week?
+    type: table
+    max_items: 3
+scoring:
+  type: scale
+  dimensions:
+    - authenticity
+    - specificity
+    - emotional_hook
+  levels:
+    - name: Weak
+      range_label: "1-3"
+    - name: Developing
+      range_label: "4-6"
+    - name: Compelling
+      range_label: "7-10"
+case_study:
+  title: "Jay's SuperPatch Story"
+  content: >
+    Jay doesn't pitch. He tells what happened. "I was skeptical. I'm a tech
+    guy — I don't do wellness products. Then someone put a patch on me and
+    asked me to do the Push Test. I couldn't deny what I felt. That was the
+    moment. I didn't need to be sold — my body sold me." Your story doesn't
+    need to be dramatic. It needs to be REAL. People don't buy products. They
+    buy transformations they can see themselves having.
+actions:
+  - Write your Before/After story in your own words
+  - Practice your 60-second version out loud 5 times
+  - Share your story with at least 3 people this week
+  - Record a video of your story for social media

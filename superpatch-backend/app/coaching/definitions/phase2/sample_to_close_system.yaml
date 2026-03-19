@@ -1,0 +1,90 @@
+id: sample_to_close_system
+name: Sample-to-Close Pipeline
+program: 100m_blueprint
+phase: 2
+week: 5
+frameworks:
+  - S.T.A.R. Sales Flow
+  - 7-Day Follow-Up Sequence
+worksheet_path: docs/worksheets/week-05a-sample-to-close.md
+prerequisites:
+  - prospecting_pipeline
+questions:
+  - id: q1
+    text: "How many samples have you sent out in the last 30 days?"
+    type: choice
+    options:
+      - value: "0"
+        label: "0"
+      - value: "1_5"
+        label: "1-5"
+      - value: "6_15"
+        label: "6-15"
+      - value: "16_30"
+        label: "16-30"
+      - value: "30_plus"
+        label: "30+"
+  - id: q2
+    text: "Of those samples, how many turned into a purchase or enrollment?"
+    type: open_ended
+  - id: q3
+    text: "Walk me through your current process from the moment someone says 'I'll try it' to the moment you ask for the sale."
+    type: open_ended
+  - id: q4
+    text: "Are you getting a VERBAL COMMITMENT before sending samples? If not, what are you saying instead?"
+    type: open_ended
+  - id: q5
+    text: "Describe your follow-up sequence after sending a sample. What do you do on Day 1? Day 3? Day 7?"
+    type: open_ended
+  - id: q6
+    text: "What is your biggest bottleneck? Where do prospects fall off in your pipeline?"
+    type: choice
+    options:
+      - value: getting_interest
+        label: "Getting initial interest"
+      - value: getting_commitment
+        label: "Getting a commitment to try"
+      - value: sending_sample
+        label: "Actually sending the sample"
+      - value: following_up
+        label: "Following up after they receive it"
+      - value: asking_for_sale
+        label: "Asking for the sale / closing"
+  - id: q7
+    text: "Write your sample offer script — what you say to get someone to commit to trying a sample."
+    type: open_ended
+  - id: q8
+    text: "Write your 'sample arrived' check-in message — what you send when you know it's been delivered."
+    type: open_ended
+  - id: q9
+    text: "Write your close message — what you say after they've tried it and had a positive experience."
+    type: open_ended
+  - id: q10
+    text: "What is your goal for samples sent this month? How many closes would that produce?"
+    type: open_ended
+scoring:
+  type: scale
+  dimensions:
+    - pipeline_volume
+    - follow_up_consistency
+    - close_rate
+  levels:
+    - name: Stalled
+      range_label: "1-3"
+    - name: Moving
+      range_label: "4-6"
+    - name: Machine
+      range_label: "7-10"
+case_study:
+  title: "The Numbers Don't Lie"
+  content: >
+    Jay's rule: "If you're not sending 10 samples a week, you don't have a
+    business — you have a hobby." The math is simple. Send 10 samples. 6-7
+    will try it. 3-4 will have a positive experience. 2-3 will buy. 1 might
+    join the business. That's the funnel. You can't close what you don't
+    send. Activity creates results. Not thinking about activity. ACTIVITY.
+actions:
+  - Set a weekly sample target (minimum 5 per week)
+  - Write your 3 key scripts (offer, check-in, close)
+  - Follow up with every outstanding sample within 48 hours
+  - Track your pipeline numbers weekly (sent → tried → bought → enrolled)
