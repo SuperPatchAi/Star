@@ -13,6 +13,7 @@ from app.agent.tools.coaching_read import (
     load_skill_definition,
 )
 from app.agent.tools.coaching_write import save_skill_completion
+from app.agent.tools.sales_read import get_dashboard_stats, get_sales_analytics
 from app.coaching.registry import get_skills_for_program
 
 MAX_HISTORY = 20
@@ -55,6 +56,26 @@ Use `compute_assessment_score` to score and `save_skill_completion` to persist.
    - Call `save_skill_completion` to persist the results with:
      user_id, program, skill_id, answers dict, scores dict (or empty), and
      the action items list from the skill definition
+
+## Using Real Sales Data in Coaching
+
+You have access to `get_dashboard_stats` and `get_sales_analytics`. Use them
+strategically during coaching to ground your insights in the user's REAL numbers:
+
+- **When to pull stats**: When the user's answer involves time commitment,
+  results, performance, effort level, income-producing activities, or
+  conversion — call `get_dashboard_stats` (pass user_id: "{user_id}").
+  For pattern analysis, also call `get_sales_analytics` (pass user_id: "{user_id}").
+- **How to frame stats**: ALWAYS connect the data back to their coaching answer.
+  Example: "You said you spend 20% of your time on income-producing activities.
+  Let's look at what that actually means — you've got 4 contacts in your
+  pipeline and a 0% win rate. That's what 20% effort produces. The math
+  doesn't lie."
+- **Pattern**: Show the data → deliver the coaching insight → ask the next
+  question. Never show stats without connecting them to the coaching context.
+- Do NOT call stats tools on every turn — only when the user's answer reveals
+  something about their effort, results, or commitment that real data can
+  reinforce or challenge.
 
 ## Critical Rules
 
@@ -108,7 +129,12 @@ def _trim_messages(msgs: list, max_count: int) -> list:
 
 async def skill_executor(state: UnifiedAgentState, config: RunnableConfig) -> dict:
     """Facilitate an interactive coaching skill session using tool-augmented LLM."""
-    tools = [compute_assessment_score, save_skill_completion]
+    tools = [
+        compute_assessment_score,
+        save_skill_completion,
+        get_dashboard_stats,
+        get_sales_analytics,
+    ]
     tool_map = {t.name: t for t in tools}
 
     model = ChatGoogleGenerativeAI(
@@ -159,13 +185,19 @@ async def skill_executor(state: UnifiedAgentState, config: RunnableConfig) -> di
             tool_call_id="preload_skill",
         ))
 
+    skill_completed = False
     max_iterations = 5
     for iteration in range(max_iterations):
         response = await model.ainvoke(messages, config=config)
         if not response.tool_calls:
-            return {"messages": [response]}
+            return {
+                "messages": [response],
+                "current_skill": None if skill_completed else skill_id,
+            }
         messages.append(response)
         for tc in response.tool_calls:
+            if tc["name"] == "save_skill_completion":
+                skill_completed = True
             tool_fn = tool_map.get(tc["name"])
             if not tool_fn:
                 messages.append(ToolMessage(
@@ -177,4 +209,7 @@ async def skill_executor(state: UnifiedAgentState, config: RunnableConfig) -> di
             messages.append(
                 ToolMessage(content=json.dumps(result, default=str), tool_call_id=tc["id"])
             )
-    return {"messages": [response]}
+    return {
+        "messages": [response],
+        "current_skill": None if skill_completed else skill_id,
+    }

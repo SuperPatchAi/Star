@@ -42,8 +42,28 @@ Use the following context signals to help classify:
 """
 
 
+_EXIT_PHRASES = frozenset({
+    "stop", "exit", "cancel", "quit", "nevermind", "never mind",
+    "go back", "end session", "leave", "done with this",
+})
+
+
 async def classify_intent(state: UnifiedAgentState) -> dict:
-    """Classify the user's message intent using structured LLM output."""
+    """Classify the user's message intent using structured LLM output.
+
+    When a coaching skill is active, stay in skill_executor unless
+    the user explicitly asks to leave the session.
+    """
+    if state.get("current_skill"):
+        last_msg = (
+            state["messages"][-1].content.strip().lower()
+            if state.get("messages")
+            else ""
+        )
+        if not any(phrase in last_msg for phrase in _EXIT_PHRASES):
+            return {"intent": "skill_executor"}
+        return {"intent": "general_chat", "current_skill": None}
+
     model = ChatGoogleGenerativeAI(
         model="gemini-2.0-flash",
         google_api_key=os.environ["GOOGLE_API_KEY"],
@@ -51,11 +71,10 @@ async def classify_intent(state: UnifiedAgentState) -> dict:
     structured_model = model.with_structured_output(IntentClassification)
 
     has_contact = "yes" if state.get("selected_contact_id") else "no"
-    has_skill = "yes" if state.get("current_skill") else "no"
 
     system_msg = SYSTEM_PROMPT.format(
         has_contact=has_contact,
-        has_skill=has_skill,
+        has_skill="no",
     )
 
     messages = state["messages"]
