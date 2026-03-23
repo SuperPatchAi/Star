@@ -70,13 +70,13 @@ export function StepDiscoveryV2({
   );
 
   const categoryLabel = joinCategoryLabels(discoveryCategories);
+  const name = contactFirstName || "friend";
 
-  const q1Script =
-    "What's the one thing that could improve your quality of life right now? Is it pain management, improved mobility? Better sleep?";
-  const q2Script = `On a scale of 1-10, how would you rate ${categoryLabel} right now?`;
-  const q3Script = "How long have you been dealing with this?";
-  const q4Script = `What else have you tried or done to deal with ${categoryLabel}?`;
-  const q5Script = "How did that work out for you?";
+  const q1Script = `So ${name}, if you could just snap your fingers and fix one thing about how you feel — what would it be? Like sleep, pain, energy... what's the big one for you?`;
+  const q2Script = `Okay so ${categoryLabel} — honestly ${name}, where are you at with that right now? Like if 1 is miserable and 10 is crushing it, what's your number?`;
+  const q3Script = `How long has the ${categoryLabel} thing been going on? Like is this recent or has it been dragging on for a while?`;
+  const q4Script = `Have you tried anything for the ${categoryLabel}? Meds, supplements, random stuff people recommended... anything?`;
+  const q5Script = `Did any of that actually help with the ${categoryLabel}? Or was it kind of a waste?`;
 
   const isOtherChecked =
     discoveryTriedBefore.includes("Other") ||
@@ -123,7 +123,6 @@ export function StepDiscoveryV2({
             </p>
             <ShareCopyButton
               text={q1Script}
-              title="Discovery Question"
               className="absolute top-1 right-1"
             />
           </div>
@@ -175,7 +174,6 @@ export function StepDiscoveryV2({
             </p>
             <ShareCopyButton
               text={q2Script}
-              title="Discovery Question"
               className="absolute top-1 right-1"
             />
           </div>
@@ -220,7 +218,6 @@ export function StepDiscoveryV2({
             </p>
             <ShareCopyButton
               text={q3Script}
-              title="Discovery Question"
               className="absolute top-1 right-1"
             />
           </div>
@@ -260,7 +257,6 @@ export function StepDiscoveryV2({
             </p>
             <ShareCopyButton
               text={q4Script}
-              title="Discovery Question"
               className="absolute top-1 right-1"
             />
           </div>
@@ -319,7 +315,6 @@ export function StepDiscoveryV2({
             </p>
             <ShareCopyButton
               text={q5Script}
-              title="Discovery Question"
               className="absolute top-1 right-1"
             />
           </div>

@@ -67,7 +67,6 @@ export function StepRapport({
             </p>
             <ShareCopyButton
               text={personalizedStory}
-              title="Rapport Story"
               className="absolute top-2 right-2"
             />
           </div>
@@ -119,7 +118,6 @@ export function StepRapport({
             </p>
             <ShareCopyButton
               text={personalizedTransition}
-              title="Discovery Transition"
               className="absolute top-2 right-2"
             />
           </div>
