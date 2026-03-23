@@ -8,6 +8,8 @@ import { Share2, Download, Loader2, Check } from "lucide-react";
 interface ShareCardButtonProps {
   cardRef: RefObject<HTMLDivElement | null>;
   displayName: string;
+  shareUrl?: string;
+  shareText?: string;
 }
 
 async function convertImagesToDataUrls(node: HTMLElement) {
@@ -31,7 +33,7 @@ async function convertImagesToDataUrls(node: HTMLElement) {
   );
 }
 
-export function ShareCardButton({ cardRef, displayName }: ShareCardButtonProps) {
+export function ShareCardButton({ cardRef, displayName, shareUrl, shareText }: ShareCardButtonProps) {
   const [status, setStatus] = useState<"idle" | "capturing" | "done">("idle");
 
   const handleShare = useCallback(async () => {
@@ -50,11 +52,14 @@ export function ShareCardButton({ cardRef, displayName }: ShareCardButtonProps) 
       const blob = await res.blob();
       const file = new File([blob], "superpatch-card.png", { type: "image/png" });
 
+      const defaultText = `Connect with ${displayName}, an independent SuperPatch representative.`;
+
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
         await navigator.share({
           files: [file],
           title: `${displayName} — SuperPatch`,
-          text: `Connect with ${displayName}, an independent SuperPatch representative.`,
+          text: shareText ?? defaultText,
+          ...(shareUrl && { url: shareUrl }),
         });
       } else {
         const link = document.createElement("a");
@@ -72,7 +77,6 @@ export function ShareCardButton({ cardRef, displayName }: ShareCardButtonProps) 
       }
       setStatus("idle");
 
-      // Fallback: try download without share
       try {
         if (!cardRef.current) return;
         const dataUrl = await toPng(cardRef.current, { pixelRatio: 2 });
@@ -84,7 +88,7 @@ export function ShareCardButton({ cardRef, displayName }: ShareCardButtonProps) 
         // Silent fail
       }
     }
-  }, [cardRef, displayName]);
+  }, [cardRef, displayName, shareUrl, shareText]);
 
   const canShare =
     typeof navigator !== "undefined" && !!navigator.share;

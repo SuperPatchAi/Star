@@ -94,11 +94,20 @@ export interface RoadmapFollowUp {
   sequence: RoadmapFollowUpStep[];
 }
 
+export interface RoadmapRapportStory {
+  title: string;
+  description: string;
+  personal_story: string;
+  talking_points: string[];
+  transition_to_discovery: string;
+}
+
 export interface RoadmapV2 {
   metadata: RoadmapMetadata;
   sections: {
     "1_customer_profile": RoadmapCustomerProfile;
     "2_opening_approaches": RoadmapOpeningApproaches;
+    "2b_rapport_story": RoadmapRapportStory;
     "3_discovery_questions": RoadmapDiscovery;
     "4_presentation": RoadmapPresentation;
     "5_objection_handling": RoadmapObjectionHandling;
@@ -109,6 +118,7 @@ export interface RoadmapV2 {
 
 export type SalesStep =
   | "add_contact"
+  | "rapport"
   | "discovery"
   | "samples"
   | "followup"
@@ -117,9 +127,10 @@ export type SalesStep =
 
 export const SALES_STEPS: { id: SalesStep; label: string; number: number }[] = [
   { id: "add_contact", label: "Add Contact", number: 1 },
-  { id: "discovery", label: "Discovery", number: 2 },
-  { id: "samples", label: "Send Samples", number: 3 },
-  { id: "followup", label: "Follow-Up", number: 4 },
-  { id: "close", label: "Close", number: 5 },
-  { id: "purchase_links", label: "Purchase Links", number: 6 },
+  { id: "rapport", label: "Rapport", number: 2 },
+  { id: "discovery", label: "Discovery", number: 3 },
+  { id: "samples", label: "Send Samples", number: 4 },
+  { id: "followup", label: "Follow-Up", number: 5 },
+  { id: "close", label: "Close", number: 6 },
+  { id: "purchase_links", label: "Purchase Links", number: 7 },
 ];

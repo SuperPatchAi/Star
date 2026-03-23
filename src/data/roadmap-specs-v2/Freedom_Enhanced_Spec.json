@@ -64,6 +64,19 @@
         }
       ]
     },
+    "2b_rapport_story": {
+      "title": "\ud83e\udec2 BUILD RAPPORT",
+      "description": "Share your personal story to build trust",
+      "personal_story": "Look, I used to live on ibuprofen. Three, four pills a day just to get through work without my back screaming at me. A friend handed me a Freedom patch and honestly? I thought it was ridiculous. A sticker for pain? But I tried it, and within a couple hours the tension in my back just eased up. No pills, no weird side effects. That was months ago and I haven't gone back. It completely changed how I manage my day.",
+      "talking_points": [
+        "Share your specific pain struggle — make it relatable",
+        "Mention what you tried before (pills, creams, heating pads)",
+        "Describe the moment you first noticed it working",
+        "Emphasize the drug-free aspect and zero side effects",
+        "Connect it to how your daily life improved"
+      ],
+      "transition_to_discovery": "That's my experience — but everyone's different. I'm curious, what's going on with you? What's been bugging you lately?"
+    },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",
       "description": "Uncover needs & pain points (ask 3-5)",

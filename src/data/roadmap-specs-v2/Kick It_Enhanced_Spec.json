@@ -64,6 +64,19 @@
         }
       ]
     },
+    "2b_rapport_story": {
+      "title": "\ud83e\udec2 BUILD RAPPORT",
+      "description": "Share your personal story to build trust",
+      "personal_story": "I'd tried to quit so many times I lost count. The cravings always won. Then somebody told me about the Kick It patch. I didn't expect much, but I noticed the urges just dialed down. It wasn't magic — I still had to want it. But the patch took the edge off enough that I could actually follow through. That was the missing piece for me.",
+      "talking_points": [
+        "Be real about the struggle — vulnerability builds trust",
+        "Mention previous failed attempts without shame",
+        "Describe how the cravings felt different with the patch",
+        "Emphasize that willpower plus support is the formula",
+        "Share where you are now compared to before"
+      ],
+      "transition_to_discovery": "I know it's not easy to talk about. But if there's something you've been trying to kick — I get it. What's going on with you?"
+    },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",
       "description": "Uncover needs & pain points (ask 3-5)",

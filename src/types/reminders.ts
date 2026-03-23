@@ -19,6 +19,7 @@ export interface FollowUpReminder {
 
 export const STALENESS_THRESHOLDS: Record<ContactStep, number> = {
   add_contact: 2,
+  rapport: 2,
   discovery: 2,
   samples: 2,
   followup: 0,

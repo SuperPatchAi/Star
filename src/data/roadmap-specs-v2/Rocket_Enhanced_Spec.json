@@ -64,6 +64,19 @@
         }
       ]
     },
+    "2b_rapport_story": {
+      "title": "\ud83e\udec2 BUILD RAPPORT",
+      "description": "Share your personal story to build trust",
+      "personal_story": "Look, this isn't the easiest thing to talk about, but that's exactly why I bring it up. I was feeling run down — low energy, low drive, just not myself. A buddy quietly told me about Rocket and I decided to try it. Within a week I felt like myself again. More energy, more confidence, more presence. It's completely drug-free, which was important to me. Wish I'd found it sooner.",
+      "talking_points": [
+        "Acknowledge it's a sensitive topic — that builds trust",
+        "Keep it honest but not overly detailed",
+        "Mention the all-around effect: energy, confidence, drive",
+        "Emphasize it's drug-free — many men want that",
+        "Let them know they're not alone in feeling this way"
+      ],
+      "transition_to_discovery": "I only bring it up because it really helped me. No pressure, but — have you been feeling like you've lost a step lately?"
+    },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",
       "description": "Uncover needs & pain points (ask 3-5)",

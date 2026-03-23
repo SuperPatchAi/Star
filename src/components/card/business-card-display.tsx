@@ -1,13 +1,15 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
-import { getSocialUrl } from "@/lib/utils";
+import { getSocialUrl, getProductPurchaseUrl } from "@/lib/utils";
 import { SOCIAL_ICON_MAP } from "@/components/ui/social-icons";
 import { ShareCardButton } from "./share-card-button";
 import type { SocialLinks, SocialPlatform } from "@/lib/db/types";
+import type { Product } from "@/types";
 
 interface BusinessCardDisplayProps {
   displayName: string;
@@ -16,6 +18,11 @@ interface BusinessCardDisplayProps {
   storeUrl: string;
   socialEntries: { key: SocialPlatform; label: string }[];
   socialLinks: SocialLinks;
+  products?: Product[];
+  storeSubdomain?: string;
+  contactFirstName?: string;
+  shareUrl?: string;
+  shareText?: string;
 }
 
 export function BusinessCardDisplay({
@@ -25,8 +32,14 @@ export function BusinessCardDisplay({
   storeUrl,
   socialEntries,
   socialLinks,
+  products,
+  storeSubdomain,
+  contactFirstName,
+  shareUrl,
+  shareText,
 }: BusinessCardDisplayProps) {
   const cardRef = useRef<HTMLDivElement>(null);
+  const hasProducts = products && products.length > 0 && storeSubdomain;
 
   return (
     <div className="flex flex-col items-center gap-4 w-full max-w-sm">
@@ -49,12 +62,50 @@ export function BusinessCardDisplay({
             Independent SuperPatch Representative
           </p>
 
-          <Button asChild className="w-full mt-6">
-            <a href={storeUrl} target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="size-4 mr-2" />
-              Visit My Store
-            </a>
-          </Button>
+          {hasProducts ? (
+            <div className="mt-6">
+              <p className="text-sm font-medium text-muted-foreground mb-3">
+                Picked for you{contactFirstName ? `, ${contactFirstName}` : ""}:
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {products.map((p) => {
+                  const url = getProductPurchaseUrl(storeSubdomain, p.id);
+                  return (
+                    <a
+                      key={p.id}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex flex-col items-center gap-1.5 rounded-xl border bg-muted/30 p-3 hover:bg-muted/60 transition-colors"
+                    >
+                      <div className="relative size-12 rounded-full overflow-hidden bg-white shrink-0">
+                        <Image
+                          src={p.image}
+                          alt={p.name}
+                          fill
+                          className="object-cover"
+                          sizes="48px"
+                        />
+                      </div>
+                      <span className="text-xs font-semibold leading-tight">
+                        {p.name}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground leading-tight">
+                        {p.tagline}
+                      </span>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            <Button asChild className="w-full mt-6">
+              <a href={storeUrl} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="size-4 mr-2" />
+                Visit My Store
+              </a>
+            </Button>
+          )}
 
           {socialEntries.length > 0 && (
             <div className="flex items-center justify-center gap-3 mt-6">
@@ -84,7 +135,12 @@ export function BusinessCardDisplay({
         </div>
       </div>
 
-      <ShareCardButton cardRef={cardRef} displayName={displayName} />
+      <ShareCardButton
+        cardRef={cardRef}
+        displayName={displayName}
+        shareUrl={shareUrl}
+        shareText={shareText}
+      />
     </div>
   );
 }

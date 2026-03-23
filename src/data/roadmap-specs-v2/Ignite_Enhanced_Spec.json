@@ -64,6 +64,19 @@
         }
       ]
     },
+    "2b_rapport_story": {
+      "title": "\ud83e\udec2 BUILD RAPPORT",
+      "description": "Share your personal story to build trust",
+      "personal_story": "I'd been stuck. Eating right, working out, doing all the things — and the scale wouldn't budge. My metabolism just felt asleep. A friend suggested Ignite and within a couple weeks I noticed a shift. My energy during workouts picked up, my body started responding again. It's not a magic pill — it just felt like my metabolism finally got the kickstart it needed. That's when things started moving.",
+      "talking_points": [
+        "Share the frustration of doing everything right with no results",
+        "Mention the plateau — anyone trying to manage weight gets it",
+        "Describe the shift you felt in your energy and body",
+        "Be honest that it's a support tool, not a miracle",
+        "Talk about how it complemented your existing healthy habits"
+      ],
+      "transition_to_discovery": "That's why I wanted to share it. What about you — have you been trying to get your metabolism going? How's that been?"
+    },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",
       "description": "Uncover needs & pain points (ask 3-5)",

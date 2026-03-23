@@ -7,7 +7,7 @@ alwaysApply: true
 
 ## What This App Is
 
-**S.T.A.R. = Sample. Track. Align. Recruit.** A Next.js 16 sales enablement platform for SuperPatch D2C reps. Guided 9-step sales conversations with multi-product support, contact tracking, auto-save, product-specific scripts, and personalized MLM purchase links. Deployed at `star-seven-sigma.vercel.app`.
+**S.T.A.R. = Sample. Track. Align. Recruit.** A Next.js 16 sales enablement platform for SuperPatch D2C reps. Guided 7-step sales conversations with multi-product support, contact tracking, auto-save, product-specific scripts, and personalized MLM purchase links. Deployed at `star-seven-sigma.vercel.app`.
 
 ## Tech Stack
 
@@ -39,23 +39,21 @@ alwaysApply: true
 - `products/[product]/page.tsx` — Product detail (reference only)
 - `onboarding/page.tsx` — New user onboarding carousel (Phase 1, outside AppShell)
 - `settings/page.tsx` — Settings page (profile photo/name/store URL, social links, notification preferences, appearance theme, account/password, about/onboarding replay)
-- `card/[subdomain]/page.tsx` — Public digital business card (no auth, OG metadata, social icons, share as image)
-- `api/og/card/[subdomain]/route.tsx` — OG image generation (1200x630 PNG, edge runtime, Satori/next-og)
+- `card/[subdomain]/page.tsx` — Public digital business card (no auth, OG metadata, social icons, share as image); supports `?products=` param for branded product grid variant
+- `api/og/card/[subdomain]/route.tsx` — OG image generation (1200x630 PNG, edge runtime, Satori/next-og); supports `?products=` param for product recommendations in OG image
 - `api/cron/send-reminders/route.ts` — Vercel Cron endpoint: queries due reminders, sends push via `web-push`
 - `(auth)/login/page.tsx` — Login form
 - `(auth)/signup/page.tsx` — Invite-only signup
 
 ### Sales Flow (`src/components/sales-flow/`)
-- `decision-tree.tsx` — Central orchestrator (9 steps, auto-save, contact gating, `variant="drawer"` for embedded use, dynamic `continueLabel`, timestamped question/objection tracking, fetches `storeSubdomain` on mount)
+- `decision-tree.tsx` — Central orchestrator (7 steps, auto-save, contact gating, `variant="drawer"` for embedded use, dynamic `continueLabel`, timestamped question/objection tracking, fetches `storeSubdomain` on mount)
 - `step-add-contact.tsx` — Step 1: create contact + select products (gate)
-- `step-opening-picker.tsx` — Step 2: choose opening approach
-- `step-discovery.tsx` — Step 3: check off discovery questions
-- `step-presentation.tsx` — Step 4: P-A-S framework with `{{discovery_callback}}`
-- `step-send-samples.tsx` — Step 5: 2-script sample flow (offer, commitment) + product picker + address
-- `step-followup.tsx` — Step 6: 7-task follow-up sequence (shipping, arrival+checkbox, Zoom demo, experience check-in, product-specific follow-up, reorder+referral, ask for the close)
-- `step-closing.tsx` — Step 7: closing technique
-- `step-objections.tsx` — Step 8: handle objections
-- `step-purchase-links.tsx` — Step 9: per-product purchase URLs with shareable scripts + Won/Lost outcome recording
+- `step-rapport.tsx` — Step 2: per-product personal story scripts (how the rep discovered the product), talking points, transition bridge to discovery (read-only, no persisted state)
+- `step-discovery-v2.tsx` — Step 3: 5 universal discovery questions (category, quality rating 1-10, duration, what they've tried, results)
+- `step-send-samples.tsx` — Step 4: 2-script sample flow (offer, commitment) + product picker + address
+- `step-followup.tsx` — Step 5: 7-task follow-up sequence (shipping, arrival+checkbox, Zoom demo, experience check-in, product-specific follow-up, reorder+referral, ask for the close)
+- `step-close.tsx` — Step 6: closing techniques + collapsible objection handling (merged)
+- `step-purchase-links.tsx` — Step 7: branded product business card (primary share via image+URL) + text scripts (secondary) + Won/Lost outcome recording
 - `product-tabs.tsx` — Multi-product tabbed content
 - `customer-insight.tsx` — Customer profile from roadmap
 
@@ -87,8 +85,8 @@ alwaysApply: true
 - `push-permission-banner.tsx` — Non-blocking push notification opt-in banner
 
 ### Card (`src/components/card/`)
-- `business-card-display.tsx` — Client wrapper for public card with ref for screenshot capture + ShareCardButton
-- `share-card-button.tsx` — Captures card DOM as PNG via html-to-image, shares via Web Share API or downloads
+- `business-card-display.tsx` — Client wrapper for public card with ref for screenshot capture + ShareCardButton; supports optional `products` prop for branded product grid variant used in Purchase Links step
+- `share-card-button.tsx` — Captures card DOM as PNG via html-to-image, shares via Web Share API or downloads; supports optional `shareUrl` and `shareText` for richer sharing payloads
 
 ### Settings (`src/components/settings/`)
 - `profile-section.tsx` — Avatar upload, full name edit, email display, SuperPatch store URL, My Links Card share
@@ -113,14 +111,14 @@ alwaysApply: true
 - `db/types.ts` — Database/Contact/UserProfile TypeScript types
 
 ### Types (`src/types/`)
-- `roadmap.ts` — RoadmapV2, SalesStep, SALES_STEPS (9 steps)
+- `roadmap.ts` — RoadmapV2, RoadmapRapportStory, SalesStep, SALES_STEPS (7 steps)
 - `reminders.ts` — FollowUpReminder, STALENESS_THRESHOLDS, FOLLOWUP_DAY_OFFSETS
 - `activity.ts` — ActivityEvent, UnifiedFeedItem, TimeBucket, getTimeBucket, EVENT_LABELS
 - `index.ts` — Product, WordTrack, NavItem
 
 ## Sales Step IDs (in order)
 
-`add_contact` → `opening` → `discovery` → `presentation` → `samples` → `followup` → `closing` → `objections` → `purchase_links`
+`add_contact` → `rapport` → `discovery` → `samples` → `followup` → `close` → `purchase_links`
 
 ## Database Table: `d2c_contacts`
 

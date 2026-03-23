@@ -64,6 +64,19 @@
         }
       ]
     },
+    "2b_rapport_story": {
+      "title": "\ud83e\udec2 BUILD RAPPORT",
+      "description": "Share your personal story to build trust",
+      "personal_story": "I was spending a fortune on serums and creams trying to get my skin to cooperate. Nothing was giving me that glow I wanted. When I heard about Lumi, I was curious — a patch for beauty support? Seemed different. But after a couple weeks, people started commenting. My skin looked healthier, more vibrant. I still do my routine, but Lumi gave me results I wasn't getting from products alone.",
+      "talking_points": [
+        "Mention how much you were spending on skincare products",
+        "Share the frustration of trying everything with no results",
+        "Describe the moment people started noticing a difference",
+        "Emphasize it works alongside your existing routine",
+        "Talk about the confidence boost of looking and feeling radiant"
+      ],
+      "transition_to_discovery": "That's what made me fall in love with it. What about you — is there something about your skin or your look that's been bugging you?"
+    },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",
       "description": "Uncover needs & pain points (ask 3-5)",

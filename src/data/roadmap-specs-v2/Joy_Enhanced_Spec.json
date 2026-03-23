@@ -64,6 +64,19 @@
         }
       ]
     },
+    "2b_rapport_story": {
+      "title": "\ud83e\udec2 BUILD RAPPORT",
+      "description": "Share your personal story to build trust",
+      "personal_story": "There was a stretch where I just felt flat. Not sad exactly, but nothing excited me. Going through the motions every day. A friend gave me Joy to try. I can't explain it scientifically, but within a day or two I felt lighter. More like myself. Started laughing more, enjoying little things again. It's a small thing — a patch — but it made a real difference in how I show up every day.",
+      "talking_points": [
+        "Describe the 'flat' feeling without overdramatizing it",
+        "Make it relatable — most people have experienced a funk",
+        "Share the subtle shift you noticed in your mood",
+        "Mention specific moments — laughing more, enjoying things again",
+        "Keep it light and hopeful, not clinical"
+      ],
+      "transition_to_discovery": "That's why I bring it up. How are you doing — honestly? Sometimes we don't realize how much our mood has been off until someone asks."
+    },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",
       "description": "Uncover needs & pain points (ask 3-5)",

@@ -1,6 +1,6 @@
 # SuperPatch S.T.A.R.
 
-**Sample. Track. Align. Recruit.** — A Next.js 16 sales enablement app for SuperPatch direct-to-consumer reps. Guided 6-step sales conversations with multi-product support, contact tracking, auto-save, and product-specific scripts powered by roadmap spec data.
+**Sample. Track. Align. Recruit.** — A Next.js 16 sales enablement app for SuperPatch direct-to-consumer reps. Guided 7-step sales conversations with multi-product support, contact tracking, auto-save, and product-specific scripts powered by roadmap spec data.
 
 ## Tech Stack
 
@@ -71,17 +71,18 @@ src/
 
 ## Sales Conversation Flow
 
-The core feature is a 6-step guided sales conversation. Universal discovery questions drive product recommendation, with quantifiable 1-10 ratings tracked through follow-up.
+The core feature is a 7-step guided sales conversation. Rapport-first approach builds trust before discovery, with quantifiable 1-10 ratings tracked through follow-up.
 
 ### Step Sequence
 
 ```
 1. Add Contact      → Create contact with first/last name (no product selection)
-2. Discovery        → 5 universal questions: category selection, quality rating (1-10), duration, what they've tried, results
-3. Send Samples     → Auto-suggested product from discovery category, address collection
-4. Follow-Up        → 7-day sequence with 1-10 rating at each touchpoint, category-contextual scripts
-5. Close            → Closing techniques + collapsible objection handling (merged)
-6. Purchase Links   → Share personalized product purchase URLs + Won/Lost outcome recording
+2. Rapport          → Per-product personal story scripts (how the rep discovered the product), talking points, and transition bridge to discovery
+3. Discovery        → 5 universal questions: category selection, quality rating (1-10), duration, what they've tried, results
+4. Send Samples     → Auto-suggested product from discovery category, address collection
+5. Follow-Up        → 7-day sequence with 1-10 rating at each touchpoint, category-contextual scripts
+6. Close            → Closing techniques + collapsible objection handling (merged)
+7. Purchase Links   → Share personalized product purchase URLs + Won/Lost outcome recording
 ```
 
 ### Data Flow Diagram
@@ -100,14 +101,21 @@ User lands on /contacts
          │
          ▼
 ┌─────────────────────────────────────────┐
-│  Step 2: Universal Discovery            │
+│  Step 2: Rapport Building               │
+│  Per-product personal story scripts     │
+│  Read-only → bridges into Discovery     │
+└─────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────┐
+│  Step 3: Universal Discovery            │
 │  Category → auto-maps to product        │
 │  1-10 baseline rating recorded          │
 └─────────────────────────────────────────┘
          │
          ▼
 ┌─────────────────────────────────────────┐
-│  Steps 3-6: Product-contextual content  │
+│  Steps 4-7: Product-contextual content  │
 │  Auto-save on every state change        │
 │  (500ms debounce → updateContact())     │
 │  Follow-up tracks 1-10 improvement      │
@@ -238,6 +246,7 @@ Each product has a JSON file in `src/data/roadmap-specs-v2/` following the `Road
   sections:
     1_customer_profile:    { demographics[], pain_points[], psychographics[], tried_before[] }
     2_opening_approaches:  { approaches[]: { type, context, script } }  — 5 per product
+    2b_rapport_story:      { personal_story, talking_points[], transition_to_discovery } — 1 per product
     3_discovery_questions: { questions[]: { type, question } }          — 10 per product
     4_presentation:        { problem, agitate (with {{discovery_callback}}), solve, key_benefits[], differentiator }
     5_objection_handling:  { objections[]: { objection, trigger, response, psychology } } — 8 per product
@@ -271,7 +280,7 @@ All 13 products have fully customized, product-specific content across all secti
 ### DecisionTree (`src/components/sales-flow/decision-tree.tsx`)
 The central orchestrator. Manages:
 - `activeContact` state (Contact or null)
-- `currentStepIndex` (0-5)
+- `currentStepIndex` (0-6)
 - `DecisionTreeState` (discovery answers, samples, follow-up ratings, closings, objections)
 - `storeSubdomain` (user's MLM store subdomain, fetched on mount)
 - `socialLinks` (user's social handles, fetched on mount, passed to purchase links and follow-up steps)
@@ -491,8 +500,9 @@ Users can replay the carousel or tour anytime from the user dropdown menu in the
 - Public route (no auth required, bypasses middleware auth guard and onboarding redirect)
 - Displays rep's avatar, name, "Visit My Store" link, and social media icons
 - Social icons link to full profile URLs using platform-specific prefixes
-- **OG image endpoint** (`/api/og/card/[subdomain]`) generates a 1200x630 PNG preview using `next/og` (edge runtime, Satori engine) for rich social media previews on iMessage, Facebook, LinkedIn, Slack, etc.
-- **Share Card button** on the card page captures the card DOM as a PNG via `html-to-image`, then shares via Web Share API (native share sheet on iOS/Android) or downloads as a file
+- **Product variant** (`?products=freedom,rem`): When the `products` search param is present, the card shows a branded product grid with per-product purchase links instead of the generic store button. Used when sharing from the Purchase Links step in the sales flow.
+- **OG image endpoint** (`/api/og/card/[subdomain]`) generates a 1200x630 PNG preview using `next/og` (edge runtime, Satori engine) for rich social media previews. Supports optional `?products=` param to render product recommendations in the OG image.
+- **Share Card button** on the card page captures the card DOM as a PNG via `html-to-image`, then shares via Web Share API (native share sheet on iOS/Android) or downloads as a file. When sharing from the sales flow, includes the product card URL + personalized text alongside the image.
 - Shareable from Settings → Profile section via the "My Links Card" widget
 
 ---
@@ -584,11 +594,12 @@ Every user-facing script and speakable text has a share-or-copy button powered b
 
 | Component | What's Shareable |
 |-----------|-----------------|
+| `step-rapport.tsx` | Rapport building personal story scripts |
 | `step-discovery-v2.tsx` | Discovery questions and category selection |
 | `step-send-samples.tsx` | Sample offer, commitment, and experience scripts |
 | `step-followup.tsx` | Each follow-up template (with social footer) |
 | `step-close.tsx` | Closing techniques + objection responses |
-| `step-purchase-links.tsx` | Per-product purchase URLs + single/multi-product share scripts (with social footer) |
+| `step-purchase-links.tsx` | Branded product business card (image + URL) as primary share, text scripts as secondary (with social footer) |
 | `reference-tabs-view.tsx` | All scripts across Discovery, Samples, Follow-Up, Close, and Quick Ref tabs |
 | `feed-entry.tsx` | Follow-up script templates in activity feed |
 | `contact-sheet.tsx` | Active follow-up script on contact detail |

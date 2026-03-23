@@ -2,7 +2,7 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 
 export type UserRole = 'admin' | 'user';
 
-export type ContactStep = 'add_contact' | 'discovery' | 'samples' | 'followup' | 'close' | 'purchase_links' | 'closed';
+export type ContactStep = 'add_contact' | 'rapport' | 'discovery' | 'samples' | 'followup' | 'close' | 'purchase_links' | 'closed';
 
 const LEGACY_STEP_MAP: Record<string, ContactStep> = {
   opening: 'discovery',

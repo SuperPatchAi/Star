@@ -64,6 +64,19 @@
         }
       ]
     },
+    "2b_rapport_story": {
+      "title": "\ud83e\udec2 BUILD RAPPORT",
+      "description": "Share your personal story to build trust",
+      "personal_story": "I was that person awake at 2 AM staring at the ceiling every single night. Tried melatonin, tried the teas, the whole routine — nothing stuck. My friend told me about the REM patch and I figured, what do I have to lose? First night I used it, I slept straight through. Woke up actually feeling rested for the first time in I don't know how long. I haven't looked back since.",
+      "talking_points": [
+        "Describe your sleep struggles — everyone relates to bad sleep",
+        "Mention other things you tried that didn't work",
+        "Share the specific night you noticed the difference",
+        "Talk about how better sleep changed your energy and mood",
+        "Keep it casual — sleep is an easy topic to bond over"
+      ],
+      "transition_to_discovery": "Anyway, that's what got me hooked. But I'd love to hear about you — how are you sleeping these days?"
+    },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",
       "description": "Uncover needs & pain points (ask 3-5)",

@@ -5,7 +5,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, UserPlus, HelpCircle, Package, Handshake, ShoppingCart, CalendarCheck, ArrowLeft } from "lucide-react";
+import { ChevronLeft, ChevronRight, UserPlus, HeartHandshake, HelpCircle, Package, Handshake, ShoppingCart, CalendarCheck, ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import type { RoadmapV2, SalesStep } from "@/types/roadmap";
 import { SALES_STEPS } from "@/types/roadmap";
@@ -14,10 +14,11 @@ import type { Contact, TimestampedObjection, QuestionsAsked, ObjectionsEncounter
 import { normalizeQuestions, normalizeObjections, normalizeContactStep } from "@/lib/db/types";
 import { products as allProducts } from "@/data/products";
 import { updateContact, advanceFollowUpDay, markSamplesReceived } from "@/lib/actions/contacts";
-import { getStoreSubdomain, getSocialLinks } from "@/lib/actions/profile";
+import { getStoreSubdomain, getSocialLinks, getMyProfile } from "@/lib/actions/profile";
 import type { SocialLinks } from "@/lib/db/types";
 import { getRoadmapsForProducts } from "@/lib/roadmap-data";
 import { StepAddContact } from "./step-add-contact";
+import { StepRapport } from "./step-rapport";
 import { StepDiscoveryV2 } from "./step-discovery-v2";
 import { StepClose } from "./step-close";
 import { StepFollowUp } from "./step-followup";
@@ -105,6 +106,7 @@ function stepIdToIndex(stepId: string): number {
 
 const STEP_ICONS: Record<string, React.ElementType> = {
   add_contact: UserPlus,
+  rapport: HeartHandshake,
   discovery: HelpCircle,
   samples: Package,
   followup: CalendarCheck,
@@ -139,11 +141,15 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
 
   const [storeSubdomain, setStoreSubdomain] = useState<string | null>(null);
   const [socialLinks, setSocialLinks] = useState<SocialLinks>({});
+  const [repProfile, setRepProfile] = useState<{ name: string | null; avatarUrl: string | null }>({ name: null, avatarUrl: null });
   const [keyboardOpen, setKeyboardOpen] = useState(false);
 
   useEffect(() => {
     getStoreSubdomain().then(setStoreSubdomain);
     getSocialLinks().then(setSocialLinks);
+    getMyProfile().then(({ data }) => {
+      if (data) setRepProfile({ name: data.full_name, avatarUrl: data.avatar_url });
+    });
   }, []);
 
   useEffect(() => {
@@ -380,6 +386,23 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
             existingContact={activeContact}
           />
         );
+      case "rapport":
+        return (
+          <ProductTabs products={contactProducts}>
+            {(product) => {
+              const roadmap = roadmaps[product.id];
+              if (!roadmap) return null;
+              return (
+                <StepRapport
+                  rapportData={roadmap.sections["2b_rapport_story"]}
+                  contactFirstName={contactFirstName}
+                  onContinue={goNext}
+                  continueLabel={continueLabel}
+                />
+              );
+            }}
+          </ProductTabs>
+        );
       case "discovery":
         return (
           <StepDiscoveryV2
@@ -471,6 +494,8 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                 onSubdomainSaved={setStoreSubdomain}
                 contactId={activeContact?.id}
                 socialLinks={socialLinks}
+                repName={repProfile.name}
+                repAvatarUrl={repProfile.avatarUrl}
               />
             )}
           </ProductTabs>

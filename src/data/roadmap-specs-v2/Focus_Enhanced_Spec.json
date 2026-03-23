@@ -64,6 +64,19 @@
         }
       ]
     },
+    "2b_rapport_story": {
+      "title": "\ud83e\udec2 BUILD RAPPORT",
+      "description": "Share your personal story to build trust",
+      "personal_story": "I couldn't get through a single task without getting distracted. Work was piling up — I'd start something and twenty minutes later I'm scrolling my phone. A colleague mentioned the Focus patch and I thought, sure, why not. Put it on and sat down to work — and actually worked. Deep focus for hours. No brain fog, no wandering. It sounds simple, but getting my concentration back changed everything for me.",
+      "talking_points": [
+        "Describe the distraction struggle — it's universal right now",
+        "Mention the phone/social media pull everyone deals with",
+        "Share the first time you experienced deep focus with it",
+        "Talk about how productivity and confidence improved",
+        "Keep it relatable — most people feel scattered"
+      ],
+      "transition_to_discovery": "That's my story with it. But what about you — do you ever struggle to stay locked in on things?"
+    },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",
       "description": "Uncover needs & pain points (ask 3-5)",

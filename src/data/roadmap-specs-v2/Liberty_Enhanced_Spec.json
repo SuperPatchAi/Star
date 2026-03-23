@@ -64,6 +64,19 @@
         }
       ]
     },
+    "2b_rapport_story": {
+      "title": "\ud83e\udec2 BUILD RAPPORT",
+      "description": "Share your personal story to build trust",
+      "personal_story": "About a year ago I noticed I was grabbing onto furniture just to stand up. My balance was off and it scared me — I didn't want to end up with a fall. Someone introduced me to Liberty and I figured I'd try anything at that point. Within a few days I felt steadier on my feet. Now I walk my dog without worrying about tripping. It gave me my confidence back.",
+      "talking_points": [
+        "Talk about when you first noticed your balance changing",
+        "Mention the fear of falling — it's a real concern for many",
+        "Share how quickly you noticed improvement",
+        "Describe a specific activity you can do confidently again",
+        "Emphasize how it restored independence and confidence"
+      ],
+      "transition_to_discovery": "That's why I'm so passionate about this. But enough about me — how's your balance been? Anything you've noticed changing?"
+    },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",
       "description": "Uncover needs & pain points (ask 3-5)",

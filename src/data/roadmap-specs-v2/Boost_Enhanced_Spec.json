@@ -64,6 +64,19 @@
         }
       ]
     },
+    "2b_rapport_story": {
+      "title": "\ud83e\udec2 BUILD RAPPORT",
+      "description": "Share your personal story to build trust",
+      "personal_story": "I was running on coffee and willpower. By 2 PM every day I'd hit this wall — just completely drained. A teammate told me about the Boost patch and I was skeptical, honestly. But I stuck one on before work and the difference was wild. Steady energy, no jitters, no crash. It wasn't like a caffeine buzz — it just felt like my body woke up. Now I don't even need that third cup of coffee.",
+      "talking_points": [
+        "Describe the afternoon crash — almost everyone relates to it",
+        "Mention your caffeine dependency before Boost",
+        "Contrast the jittery caffeine feeling with steady natural energy",
+        "Share a specific moment the energy difference was obvious",
+        "Emphasize it's drug-free with no crash"
+      ],
+      "transition_to_discovery": "That's what sold me on it. But let me ask you — how's your energy been? Do you hit that wall during the day too?"
+    },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",
       "description": "Uncover needs & pain points (ask 3-5)",

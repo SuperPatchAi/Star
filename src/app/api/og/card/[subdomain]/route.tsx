@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { getPublicProfile } from "@/lib/actions/profile";
 import { SOCIAL_PLATFORMS } from "@/lib/db/types";
 import { getSocialUrl } from "@/lib/utils";
+import { products as allProductsData } from "@/data/products";
 
 export const runtime = "edge";
 
@@ -27,8 +28,14 @@ async function fetchImageAsDataUri(url: string): Promise<string | null> {
   }
 }
 
+function resolveProducts(param: string | undefined) {
+  if (!param) return [];
+  const ids = param.split(",").map((s) => s.trim()).filter(Boolean);
+  return allProductsData.filter((p) => ids.includes(p.id)).slice(0, 4);
+}
+
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ subdomain: string }> }
 ) {
   const { subdomain } = await params;
@@ -37,6 +44,11 @@ export async function GET(
   if (!profile) {
     return new Response("Not found", { status: 404 });
   }
+
+  const url = new URL(req.url);
+  const productsParam = url.searchParams.get("products") ?? undefined;
+  const matchedProducts = resolveProducts(productsParam);
+  const hasProducts = matchedProducts.length > 0;
 
   const displayName = profile.full_name || subdomain;
   const initials =
@@ -83,14 +95,13 @@ export async function GET(
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            width: 460,
+            width: hasProducts ? 540 : 460,
             background: "white",
             borderRadius: 24,
             overflow: "hidden",
             boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
           }}
         >
-          {/* Gradient header */}
           <div
             style={{
               width: "100%",
@@ -100,7 +111,6 @@ export async function GET(
             }}
           />
 
-          {/* Avatar */}
           <div
             style={{
               display: "flex",
@@ -137,13 +147,12 @@ export async function GET(
             )}
           </div>
 
-          {/* Name */}
           <div
             style={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              padding: "20px 32px 32px",
+              padding: "16px 32px 28px",
             }}
           >
             <span
@@ -165,61 +174,125 @@ export async function GET(
               Independent SuperPatch Representative
             </span>
 
-            {/* Social handles */}
-            {socialEntries.length > 0 && (
+            {hasProducts ? (
               <div
                 style={{
                   display: "flex",
-                  gap: 16,
-                  marginTop: 24,
-                  flexWrap: "wrap",
-                  justifyContent: "center",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  marginTop: 20,
+                  width: "100%",
                 }}
               >
-                {socialEntries.map((p) => {
-                  const handle = profile.social_links[p.key]!;
-                  const label = SOCIAL_LABELS[p.key] || p.label;
-                  return (
+                <span style={{ fontSize: 13, color: "#64748b", marginBottom: 12 }}>
+                  Recommended products:
+                </span>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 10,
+                    justifyContent: "center",
+                    width: "100%",
+                  }}
+                >
+                  {matchedProducts.map((p) => (
                     <div
-                      key={p.key}
+                      key={p.id}
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: 4,
-                        fontSize: 13,
-                        color: "#475569",
-                        background: "#f1f5f9",
-                        borderRadius: 8,
-                        padding: "6px 12px",
+                        gap: 10,
+                        background: "#f8fafc",
+                        borderRadius: 12,
+                        padding: "8px 14px",
+                        border: "1px solid #e2e8f0",
                       }}
                     >
-                      <span style={{ fontWeight: 600 }}>{label}</span>
-                      <span style={{ color: "#94a3b8" }}>
-                        {getSocialUrl(p.key, handle).replace(/^https?:\/\//, "")}
-                      </span>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: 36,
+                          height: 36,
+                          borderRadius: "50%",
+                          background: p.color,
+                        }}
+                      >
+                        <span style={{ fontSize: 14, fontWeight: 700, color: "white" }}>
+                          {p.name[0]}
+                        </span>
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: "#0f172a" }}>
+                          {p.name}
+                        </span>
+                        <span style={{ fontSize: 11, color: "#64748b" }}>
+                          {p.tagline}
+                        </span>
+                      </div>
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
-            )}
+            ) : (
+              <>
+                {socialEntries.length > 0 && (
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 16,
+                      marginTop: 24,
+                      flexWrap: "wrap",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {socialEntries.map((p) => {
+                      const handle = profile.social_links[p.key]!;
+                      const label = SOCIAL_LABELS[p.key] || p.label;
+                      return (
+                        <div
+                          key={p.key}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 4,
+                            fontSize: 13,
+                            color: "#475569",
+                            background: "#f1f5f9",
+                            borderRadius: 8,
+                            padding: "6px 12px",
+                          }}
+                        >
+                          <span style={{ fontWeight: 600 }}>{label}</span>
+                          <span style={{ color: "#94a3b8" }}>
+                            {getSocialUrl(p.key, handle).replace(/^https?:\/\//, "")}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
 
-            {/* Store link */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                marginTop: 24,
-                background: "#1a73e8",
-                color: "white",
-                borderRadius: 12,
-                padding: "12px 28px",
-                fontSize: 15,
-                fontWeight: 600,
-              }}
-            >
-              {profile.store_subdomain}.superpatch.com
-            </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    marginTop: 24,
+                    background: "#1a73e8",
+                    color: "white",
+                    borderRadius: 12,
+                    padding: "12px 28px",
+                    fontSize: 15,
+                    fontWeight: 600,
+                  }}
+                >
+                  {profile.store_subdomain}.superpatch.com
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
