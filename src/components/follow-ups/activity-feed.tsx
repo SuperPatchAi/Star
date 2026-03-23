@@ -19,6 +19,7 @@ const FILTER_OPTIONS: { id: FilterOption; label: string }[] = [
   { id: "all", label: "All" },
   { id: "overdue", label: "Overdue" },
   { id: "today", label: "Today" },
+  { id: "upcoming", label: "Upcoming" },
   { id: "this_week", label: "This Week" },
   { id: "older", label: "Older" },
 ];
@@ -26,6 +27,7 @@ const FILTER_OPTIONS: { id: FilterOption; label: string }[] = [
 const SECTION_CONFIG: { key: TimeBucket; label: string; accent: string }[] = [
   { key: "overdue", label: "Overdue", accent: "text-destructive" },
   { key: "today", label: "Today", accent: "text-amber-600 dark:text-amber-400" },
+  { key: "upcoming", label: "Upcoming", accent: "text-violet-600 dark:text-violet-400" },
   { key: "this_week", label: "This Week", accent: "text-blue-600 dark:text-blue-400" },
   { key: "older", label: "Older", accent: "text-muted-foreground" },
 ];
@@ -64,6 +66,7 @@ export function ActivityFeed({ onCountChange }: ActivityFeedProps) {
   const grouped: Record<TimeBucket, UnifiedFeedItem[]> = {
     overdue: [],
     today: [],
+    upcoming: [],
     this_week: [],
     older: [],
   };
