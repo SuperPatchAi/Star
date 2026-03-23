@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import webpush from "web-push";
 import { createAdminClient } from "@/lib/supabase/server";
 import type { ContactStep } from "@/lib/db/types";
+import { DEFAULT_NOTIFICATION_PREFERENCES } from "@/lib/db/types";
+import type { NotificationPreferences } from "@/lib/db/types";
 import { STALENESS_THRESHOLDS, FOLLOWUP_DAY_OFFSETS } from "@/types/reminders";
 
 function daysBetween(date1: Date, date2: Date): number {
@@ -65,10 +67,11 @@ export async function GET(request: Request) {
       outcome: string | null;
     }[];
 
+    type ReminderType = "followup" | "overdue" | "sample";
     const now = new Date();
     const userReminders = new Map<
       string,
-      { contactId: string; name: string; message: string }[]
+      { contactId: string; name: string; message: string; type: ReminderType }[]
     >();
 
     for (const contact of contacts) {
@@ -78,6 +81,7 @@ export async function GET(request: Request) {
 
       let shouldNotify = false;
       let message = "";
+      let reminderType: ReminderType = "overdue";
 
       if (step === "followup") {
         const dayIndex = contact.follow_up_day ?? 0;
@@ -86,13 +90,22 @@ export async function GET(request: Request) {
           if (daysSince >= dueOffset) {
             shouldNotify = true;
             message = `DAY ${dueOffset} follow-up due for ${contact.first_name} ${contact.last_name}`;
+            reminderType = "followup";
           }
+        }
+      } else if (step === "samples") {
+        const threshold = STALENESS_THRESHOLDS[step as ContactStep];
+        if (threshold && daysSince >= threshold) {
+          shouldNotify = true;
+          message = `${contact.first_name} ${contact.last_name} — check if samples arrived (${daysSince} days)`;
+          reminderType = "sample";
         }
       } else {
         const threshold = STALENESS_THRESHOLDS[step as ContactStep];
         if (threshold && daysSince >= threshold) {
           shouldNotify = true;
           message = `${contact.first_name} ${contact.last_name} has been in ${step} for ${daysSince} days`;
+          reminderType = "overdue";
         }
       }
 
@@ -102,6 +115,7 @@ export async function GET(request: Request) {
           contactId: contact.id,
           name: `${contact.first_name} ${contact.last_name}`,
           message,
+          type: reminderType,
         });
         userReminders.set(contact.user_id, existing);
       }
@@ -111,6 +125,16 @@ export async function GET(request: Request) {
     let failedCount = 0;
 
     for (const [userId, reminders] of userReminders) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: profileRow } = await (supabase as any)
+        .from("user_profiles")
+        .select("notification_preferences")
+        .eq("id", userId)
+        .single();
+
+      const userPrefs = (profileRow?.notification_preferences as NotificationPreferences | null)
+        ?? DEFAULT_NOTIFICATION_PREFERENCES;
+
       const { data: subRows } = await supabase
         .from("d2c_push_subscriptions")
         .select("endpoint, p256dh, auth")
@@ -125,6 +149,9 @@ export async function GET(request: Request) {
       if (subscriptions.length === 0) continue;
 
       for (const reminder of reminders) {
+        if (reminder.type === "followup" && !userPrefs.follow_up_reminders) continue;
+        if (reminder.type === "overdue" && !userPrefs.overdue_alerts) continue;
+        if (reminder.type === "sample" && !userPrefs.sample_check_ins) continue;
         const payload = JSON.stringify({
           title: `Follow up with ${reminder.name}`,
           body: reminder.message,

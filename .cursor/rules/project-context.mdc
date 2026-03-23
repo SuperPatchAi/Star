@@ -38,6 +38,7 @@ alwaysApply: true
 - `activity/page.tsx` — Follow-up calendar + activity feed
 - `products/[product]/page.tsx` — Product detail (reference only)
 - `onboarding/page.tsx` — New user onboarding carousel (Phase 1, outside AppShell)
+- `settings/page.tsx` — Settings page (profile photo/name/store URL, notification preferences, appearance theme, account/password, about/onboarding replay)
 - `api/cron/send-reminders/route.ts` — Vercel Cron endpoint: queries due reminders, sends push via `web-push`
 - `(auth)/login/page.tsx` — Login form
 - `(auth)/signup/page.tsx` — Invite-only signup
@@ -83,13 +84,20 @@ alwaysApply: true
 - `follow-up-calendar.tsx` — Week strip / full month calendar with reminder dots for the Activity page
 - `push-permission-banner.tsx` — Non-blocking push notification opt-in banner
 
+### Settings (`src/components/settings/`)
+- `profile-section.tsx` — Avatar upload, full name edit, email display, SuperPatch store URL
+- `notification-section.tsx` — Push master toggle + per-type notification preferences
+- `appearance-section.tsx` — Light/Dark/System theme toggle via next-themes
+- `account-section.tsx` — Password reset link + sign out
+- `about-section.tsx` — App version, support link, replay onboarding (welcome + tour)
+
 ### Lib (`src/lib/`)
 - `actions/contacts.ts` — Server actions: getContacts, getContact, createContact, updateContact, deleteContact, advanceFollowUpDay, dismissReminder, markSamplesReceived, getDashboardStats, getSalesAnalytics
 - `actions/onboarding.ts` — getOnboardingState, completeCarousel, completeTour, updateChecklistItem, resetOnboarding, dismissOnboarding
-- `actions/profile.ts` — getMyProfile, getStoreSubdomain, updateStoreSubdomain
+- `actions/profile.ts` — getMyProfile, getStoreSubdomain, updateStoreSubdomain, updateProfile, uploadAvatar, requestPasswordReset
 - `actions/reminders.ts` — getFollowUpReminders, getFollowUpReminderCount (staleness + DAY sequence)
 - `actions/activity.ts` — logActivity, getActivityLog, getUnifiedFeed (unified feed merging reminders + activity events)
-- `actions/push-subscriptions.ts` — subscribePush, unsubscribePush
+- `actions/push-subscriptions.ts` — subscribePush, unsubscribePush, getNotificationPreferences, updateNotificationPreferences
 - `roadmap-data.ts` — getRoadmapSpec, getRoadmapsForProducts, getAllRoadmapSpecs
 - `auth.ts` — getAuthUser, requireAdmin
 - `supabase/server.ts` — createClient (server), createAdminClient
@@ -113,7 +121,7 @@ Key columns: `user_id`, `product_ids text[]`, `first_name`, `last_name`, `email`
 
 ## Database Table: `user_profiles` (onboarding columns)
 
-Key additions: `onboarding_step text` (carousel | tour | checklist | completed), `onboarding_checklist jsonb` (5 boolean milestone flags), `store_subdomain text` (MLM store subdomain for purchase URLs)
+Key additions: `onboarding_step text` (carousel | tour | checklist | completed), `onboarding_checklist jsonb` (5 boolean milestone flags), `store_subdomain text` (MLM store subdomain for purchase URLs), `notification_preferences jsonb` (follow_up_reminders, overdue_alerts, sample_check_ins booleans)
 
 ## Database Table: `d2c_activity_log`
 

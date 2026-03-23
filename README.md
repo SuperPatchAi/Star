@@ -20,7 +20,7 @@
 src/
 ├── app/                    # Next.js App Router pages
 │   ├── page.tsx            # Root redirect → /dashboard
-│   ├── layout.tsx          # Root layout (fonts, metadata, Toaster)
+│   ├── layout.tsx          # Root layout (fonts, metadata, Toaster, ThemeProvider)
 │   ├── globals.css         # Tailwind + CSS variables + themes
 │   ├── (auth)/             # Auth group (login, signup, callbacks)
 │   ├── dashboard/          # Dashboard entry point
@@ -32,6 +32,7 @@ src/
 │   ├── favorites/          # Saved scripts/objections
 │   ├── roadmaps/           # Roadmap image gallery
 │   ├── onboarding/         # New user onboarding flow (carousel, tour, checklist)
+│   ├── settings/           # Settings page (profile, notifications, appearance, account, about)
 │   └── api/auth/           # Auth API routes (signout)
 ├── components/
 │   ├── layout/             # AppShell, AppSidebar, BottomNav
@@ -39,6 +40,7 @@ src/
 │   ├── contacts/           # Contact table, Kanban, sheet
 │   ├── follow-ups/         # Notification bell, activity feed, feed entries
 │   ├── onboarding/         # Onboarding components (carousel, tour, checklist)
+│   ├── settings/           # Settings section components (profile, notifications, appearance, account, about)
 │   └── ui/                 # shadcn/ui primitives
 ├── lib/
 │   ├── auth.ts             # Auth helpers (getAuthUser, requireAdmin)
@@ -47,7 +49,7 @@ src/
 │   ├── interpolate-script.ts # {{FirstName}}/[Name] replacement in scripts
 │   ├── roadmap-data.ts     # Roadmap spec loading functions
 │   ├── supabase/           # Supabase clients (server, client, middleware)
-│   ├── actions/            # Server actions (contacts, reminders, activity, onboarding, push subscriptions)
+│   ├── actions/            # Server actions (contacts, reminders, activity, onboarding, profile, push subscriptions)
 │   └── db/                 # Database TypeScript types
 ├── data/
 │   ├── products.ts         # Product catalog (13 products)

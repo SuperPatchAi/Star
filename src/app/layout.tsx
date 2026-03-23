@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Montserrat, JetBrains_Mono, Inter } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -79,17 +80,24 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} ${montserrat.variable} font-sans antialiased`}
       >
-        {children}
-        <Toaster 
-          position="top-center"
-          toastOptions={{
-            style: {
-              background: "var(--card)",
-              color: "var(--card-foreground)",
-              border: "1px solid var(--border)",
-            },
-          }}
-        />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster 
+            position="top-center"
+            toastOptions={{
+              style: {
+                background: "var(--card)",
+                color: "var(--card-foreground)",
+                border: "1px solid var(--border)",
+              },
+            }}
+          />
+        </ThemeProvider>
       </body>
     </html>
   );

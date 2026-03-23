@@ -57,6 +57,18 @@ export type OnboardingChecklist = {
   setup_followup: boolean;
 };
 
+export type NotificationPreferences = {
+  follow_up_reminders: boolean;
+  overdue_alerts: boolean;
+  sample_check_ins: boolean;
+};
+
+export const DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences = {
+  follow_up_reminders: true,
+  overdue_alerts: true,
+  sample_check_ins: true,
+};
+
 export interface Database {
   public: {
     Tables: {
@@ -74,6 +86,7 @@ export interface Database {
           onboarding_step: OnboardingStep;
           onboarding_checklist: OnboardingChecklist;
           store_subdomain: string | null;
+          notification_preferences: NotificationPreferences;
         };
         Insert: {
           id: string;
@@ -88,6 +101,7 @@ export interface Database {
           onboarding_step?: OnboardingStep;
           onboarding_checklist?: OnboardingChecklist;
           store_subdomain?: string | null;
+          notification_preferences?: NotificationPreferences;
         };
         Update: {
           id?: string;
@@ -101,6 +115,7 @@ export interface Database {
           onboarding_step?: OnboardingStep;
           onboarding_checklist?: OnboardingChecklist;
           store_subdomain?: string | null;
+          notification_preferences?: NotificationPreferences;
         };
       };
       d2c_contacts: {
