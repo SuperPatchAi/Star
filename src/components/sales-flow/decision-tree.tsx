@@ -14,7 +14,8 @@ import type { Contact, TimestampedObjection, QuestionsAsked, ObjectionsEncounter
 import { normalizeQuestions, normalizeObjections, normalizeContactStep } from "@/lib/db/types";
 import { products as allProducts } from "@/data/products";
 import { updateContact, advanceFollowUpDay, markSamplesReceived } from "@/lib/actions/contacts";
-import { getStoreSubdomain } from "@/lib/actions/profile";
+import { getStoreSubdomain, getSocialLinks } from "@/lib/actions/profile";
+import type { SocialLinks } from "@/lib/db/types";
 import { getRoadmapsForProducts } from "@/lib/roadmap-data";
 import { StepAddContact } from "./step-add-contact";
 import { StepDiscoveryV2 } from "./step-discovery-v2";
@@ -137,10 +138,12 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
   );
 
   const [storeSubdomain, setStoreSubdomain] = useState<string | null>(null);
+  const [socialLinks, setSocialLinks] = useState<SocialLinks>({});
   const [keyboardOpen, setKeyboardOpen] = useState(false);
 
   useEffect(() => {
     getStoreSubdomain().then(setStoreSubdomain);
+    getSocialLinks().then(setSocialLinks);
   }, []);
 
   useEffect(() => {
@@ -428,6 +431,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
             followupRatings={state.followupRatings}
             onFollowupRatingChange={setFollowupRating}
             sampleProducts={state.sampleProducts}
+            socialLinks={socialLinks}
           />
         );
       case "close":
@@ -466,6 +470,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                 allProducts={contactProducts}
                 onSubdomainSaved={setStoreSubdomain}
                 contactId={activeContact?.id}
+                socialLinks={socialLinks}
               />
             )}
           </ProductTabs>

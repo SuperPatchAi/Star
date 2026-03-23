@@ -32,7 +32,8 @@ src/
 │   ├── favorites/          # Saved scripts/objections
 │   ├── roadmaps/           # Roadmap image gallery
 │   ├── onboarding/         # New user onboarding flow (carousel, tour, checklist)
-│   ├── settings/           # Settings page (profile, notifications, appearance, account, about)
+│   ├── settings/           # Settings page (profile, social links, notifications, appearance, account, about)
+│   ├── card/[subdomain]/   # Public digital business card (no auth required)
 │   └── api/auth/           # Auth API routes (signout)
 ├── components/
 │   ├── layout/             # AppShell, AppSidebar, BottomNav
@@ -40,12 +41,12 @@ src/
 │   ├── contacts/           # Contact table, Kanban, sheet
 │   ├── follow-ups/         # Notification bell, activity feed, feed entries
 │   ├── onboarding/         # Onboarding components (carousel, tour, checklist)
-│   ├── settings/           # Settings section components (profile, notifications, appearance, account, about)
+│   ├── settings/           # Settings section components (profile, social links, notifications, appearance, account, about)
 │   └── ui/                 # shadcn/ui primitives
 ├── lib/
 │   ├── auth.ts             # Auth helpers (getAuthUser, requireAdmin)
 │   ├── security.ts         # Redirect/input sanitization
-│   ├── utils.ts            # cn(), copyToClipboard(), shareOrCopy(), getProductPurchaseUrl()
+│   ├── utils.ts            # cn(), copyToClipboard(), shareOrCopy(), getProductPurchaseUrl(), getSocialUrl(), buildSocialFooter()
 │   ├── interpolate-script.ts # {{FirstName}}/[Name] replacement in scripts
 │   ├── roadmap-data.ts     # Roadmap spec loading functions
 │   ├── supabase/           # Supabase clients (server, client, middleware)
@@ -213,7 +214,7 @@ create table public.d2c_contacts (
 
 ### `user_profiles` Table
 
-Fields: `id`, `email`, `full_name`, `avatar_url`, `role` (admin/user), `is_active`, `invited_by`, `onboarding_step`, `onboarding_checklist` (JSONB), `store_subdomain` (MLM store subdomain for purchase URLs), `created_at`, `updated_at`. Auto-created on signup via the `handle_new_user()` trigger on `auth.users`.
+Fields: `id`, `email`, `full_name`, `avatar_url`, `role` (admin/user), `is_active`, `invited_by`, `onboarding_step`, `onboarding_checklist` (JSONB), `store_subdomain` (MLM store subdomain for purchase URLs), `notification_preferences` (JSONB), `social_links` (JSONB — partial record of platform handles: instagram, facebook, tiktok, youtube, linkedin, x), `created_at`, `updated_at`. Auto-created on signup via the `handle_new_user()` trigger on `auth.users`.
 
 ### `d2c_activity_log` Table
 
@@ -271,6 +272,7 @@ The central orchestrator. Manages:
 - `currentStepIndex` (0-5)
 - `DecisionTreeState` (discovery answers, samples, follow-up ratings, closings, objections)
 - `storeSubdomain` (user's MLM store subdomain, fetched on mount)
+- `socialLinks` (user's social handles, fetched on mount, passed to purchase links and follow-up steps)
 - Auto-save via `useEffect` with 500ms debounce
 - Contact gating (step 0 must be completed before proceeding)
 - Auto-maps discovery category to product_ids
@@ -481,6 +483,14 @@ Users can replay the carousel or tour anytime from the user dropdown menu in the
 - `user_profiles.onboarding_step`: `carousel | tour | checklist | completed`
 - `user_profiles.onboarding_checklist`: JSONB with 5 boolean milestone flags
 - `user_profiles.store_subdomain`: text, user's MLM store subdomain (e.g., `"janesmith"` for `janesmith.superpatch.com`)
+- `user_profiles.social_links`: JSONB, partial map of social platform handles (instagram, facebook, tiktok, youtube, linkedin, x)
+
+### Public Digital Business Card (`/card/[subdomain]`)
+- Public route (no auth required, bypasses middleware auth guard and onboarding redirect)
+- Displays rep's avatar, name, "Visit My Store" link, and social media icons
+- Social icons link to full profile URLs using platform-specific prefixes
+- Open Graph metadata for rich link previews when shared on social media
+- Shareable from Settings → Profile section via the "My Links Card" widget
 
 ---
 
@@ -564,7 +574,7 @@ Every user-facing script and speakable text has a share-or-copy button powered b
 
 | Layer | File | Purpose |
 |-------|------|---------|
-| Utility | `src/lib/utils.ts` | `shareOrCopy(text, title?)` — tries `navigator.share`, falls back to `copyToClipboard`; `getProductPurchaseUrl(subdomain, productId)` — generates MLM purchase URLs |
+| Utility | `src/lib/utils.ts` | `shareOrCopy(text, title?)` — tries `navigator.share`, falls back to `copyToClipboard`; `getProductPurchaseUrl(subdomain, productId)` — generates MLM purchase URLs; `getSocialUrl(platform, handle)` — builds full social profile URL; `buildSocialFooter(links)` — generates social footer appended to shareable scripts |
 | Component | `src/components/ui/share-copy-button.tsx` | `ShareCopyButton` — reusable button with icon swap (Share2/Copy/Check), SSR-safe share detection, `"icon"` and `"labeled"` variants |
 
 ### Usage across components
@@ -573,9 +583,9 @@ Every user-facing script and speakable text has a share-or-copy button powered b
 |-----------|-----------------|
 | `step-discovery-v2.tsx` | Discovery questions and category selection |
 | `step-send-samples.tsx` | Sample offer, commitment, and experience scripts |
-| `step-followup.tsx` | Each follow-up template |
+| `step-followup.tsx` | Each follow-up template (with social footer) |
 | `step-close.tsx` | Closing techniques + objection responses |
-| `step-purchase-links.tsx` | Per-product purchase URLs + single/multi-product share scripts |
+| `step-purchase-links.tsx` | Per-product purchase URLs + single/multi-product share scripts (with social footer) |
 | `reference-tabs-view.tsx` | All scripts across Discovery, Samples, Follow-Up, Close, and Quick Ref tabs |
 | `feed-entry.tsx` | Follow-up script templates in activity feed |
 | `contact-sheet.tsx` | Active follow-up script on contact detail |

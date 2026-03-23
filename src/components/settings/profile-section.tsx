@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 import { updateProfile, uploadAvatar, updateStoreSubdomain } from "@/lib/actions/profile";
+import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import type { UserProfile } from "@/lib/db/types";
 
 interface ProfileSectionProps {
@@ -228,6 +229,26 @@ export function ProfileSection({ profile, email }: ProfileSectionProps) {
             Used to generate purchase links in the sales flow.
           </p>
         </div>
+
+        {/* My Links Card */}
+        {subdomain && (
+          <div className="rounded-lg border bg-muted/30 p-4 space-y-2">
+            <Label>My Links Card</Label>
+            <p className="text-xs text-muted-foreground">
+              Share your digital business card with prospects and customers.
+            </p>
+            <div className="flex items-center gap-2">
+              <code className="flex-1 text-xs bg-muted rounded-md px-3 py-2 truncate">
+                {`https://star-seven-sigma.vercel.app/card/${subdomain}`}
+              </code>
+              <ShareCopyButton
+                text={`https://star-seven-sigma.vercel.app/card/${subdomain}`}
+                title="My SuperPatch Card"
+                className="size-9 min-h-[44px] min-w-[44px] shrink-0"
+              />
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

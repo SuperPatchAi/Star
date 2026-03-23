@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient, createAdminClient } from "@/lib/supabase/server";
-import type { UserProfile } from "@/lib/db/types";
+import type { UserProfile, SocialLinks } from "@/lib/db/types";
 import { revalidatePath } from "next/cache";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -144,6 +144,69 @@ export async function uploadAvatar(
 
   revalidatePath("/settings");
   return { url: avatarUrl, error: null };
+}
+
+export async function getSocialLinks(): Promise<SocialLinks> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return {};
+
+  const adminClient = await createAdminClient();
+  const { data } = await (adminClient as SupabaseAny)
+    .from("user_profiles")
+    .select("social_links")
+    .eq("id", user.id)
+    .single();
+
+  return (data?.social_links as SocialLinks) ?? {};
+}
+
+export async function updateSocialLinks(
+  links: SocialLinks
+): Promise<{ error: string | null }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const cleaned: SocialLinks = {};
+  for (const [key, value] of Object.entries(links)) {
+    const trimmed = (value as string)?.trim().replace(/^@/, "");
+    if (trimmed) {
+      cleaned[key as keyof SocialLinks] = trimmed;
+    }
+  }
+
+  const adminClient = await createAdminClient();
+  const { error } = await (adminClient as SupabaseAny)
+    .from("user_profiles")
+    .update({ social_links: cleaned, updated_at: new Date().toISOString() })
+    .eq("id", user.id);
+
+  if (!error) revalidatePath("/settings");
+  return { error: error?.message ?? null };
+}
+
+export async function getPublicProfile(subdomain: string): Promise<{
+  full_name: string | null;
+  avatar_url: string | null;
+  store_subdomain: string;
+  social_links: SocialLinks;
+} | null> {
+  const adminClient = await createAdminClient();
+  const { data } = await (adminClient as SupabaseAny)
+    .from("user_profiles")
+    .select("full_name, avatar_url, store_subdomain, social_links")
+    .eq("store_subdomain", subdomain)
+    .eq("is_active", true)
+    .single();
+
+  if (!data) return null;
+  return {
+    full_name: data.full_name,
+    avatar_url: data.avatar_url,
+    store_subdomain: data.store_subdomain,
+    social_links: (data.social_links as SocialLinks) ?? {},
+  };
 }
 
 export async function requestPasswordReset(): Promise<{ error: string | null }> {

@@ -1,6 +1,8 @@
 import { getAuthUser } from "@/lib/auth";
 import { getNotificationPreferences } from "@/lib/actions/push-subscriptions";
+import { getSocialLinks } from "@/lib/actions/profile";
 import { ProfileSection } from "@/components/settings/profile-section";
+import { SocialLinksSection } from "@/components/settings/social-links-section";
 import { NotificationSection } from "@/components/settings/notification-section";
 import { AppearanceSection } from "@/components/settings/appearance-section";
 import { AccountSection } from "@/components/settings/account-section";
@@ -12,7 +14,10 @@ export const metadata = {
 
 export default async function SettingsPage() {
   const { user, profile } = await getAuthUser();
-  const notificationPrefs = await getNotificationPreferences();
+  const [notificationPrefs, socialLinks] = await Promise.all([
+    getNotificationPreferences(),
+    getSocialLinks(),
+  ]);
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-4 pb-8 md:p-6">
@@ -27,6 +32,8 @@ export default async function SettingsPage() {
         profile={profile}
         email={user.email ?? ""}
       />
+
+      <SocialLinksSection initialLinks={socialLinks} />
 
       <NotificationSection
         initialPrefs={notificationPrefs}

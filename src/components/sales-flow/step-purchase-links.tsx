@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ExternalLink, AlertCircle, CheckCircle, XCircle } from "lucide-react";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
-import { getProductPurchaseUrl } from "@/lib/utils";
+import { getProductPurchaseUrl, buildSocialFooter } from "@/lib/utils";
 import { updateStoreSubdomain } from "@/lib/actions/profile";
 import { updateContactOutcome } from "@/lib/actions/contacts";
 import type { Product } from "@/types";
+import type { SocialLinks } from "@/lib/db/types";
 
 interface StepPurchaseLinksProps {
   product: Product;
@@ -18,24 +19,27 @@ interface StepPurchaseLinksProps {
   allProducts: Product[];
   onSubdomainSaved: (subdomain: string) => void;
   contactId?: string;
+  socialLinks?: SocialLinks;
 }
 
 function buildSingleProductScript(
   firstName: string | undefined,
   productName: string,
   url: string,
+  socialFooter: string,
 ): string {
   const name = firstName || "[Name]";
-  return `Hey ${name}, great chatting about ${productName}! Here's where you can grab yours:\n\n${url}\n\nIt's 100% drug-free and all-natural. Let me know if you have any questions!`;
+  return `Hey ${name}, great chatting about ${productName}! Here's where you can grab yours:\n\n${url}\n\nIt's 100% drug-free and all-natural. Let me know if you have any questions!${socialFooter}`;
 }
 
 function buildMultiProductScript(
   firstName: string | undefined,
   products: { name: string; url: string }[],
+  socialFooter: string,
 ): string {
   const name = firstName || "[Name]";
   const links = products.map((p) => `• ${p.name}: ${p.url}`).join("\n");
-  return `Hey ${name}, thanks for taking the time today! Here are the links to everything we talked about:\n\n${links}\n\nLet me know which one you'd like to start with, or grab them all!`;
+  return `Hey ${name}, thanks for taking the time today! Here are the links to everything we talked about:\n\n${links}\n\nLet me know which one you'd like to start with, or grab them all!${socialFooter}`;
 }
 
 export function StepPurchaseLinks({
@@ -45,6 +49,7 @@ export function StepPurchaseLinks({
   allProducts,
   onSubdomainSaved,
   contactId,
+  socialLinks = {},
 }: StepPurchaseLinksProps) {
   const [localSubdomain, setLocalSubdomain] = useState("");
   const [saving, setSaving] = useState(false);
@@ -70,9 +75,11 @@ export function StepPurchaseLinks({
     [storeSubdomain, product.id],
   );
 
+  const socialFooter = useMemo(() => buildSocialFooter(socialLinks), [socialLinks]);
+
   const singleScript = useMemo(
-    () => (productUrl ? buildSingleProductScript(contactFirstName, product.name, productUrl) : ""),
-    [productUrl, contactFirstName, product.name],
+    () => (productUrl ? buildSingleProductScript(contactFirstName, product.name, productUrl, socialFooter) : ""),
+    [productUrl, contactFirstName, product.name, socialFooter],
   );
 
   const allProductLinks = useMemo(
@@ -89,9 +96,9 @@ export function StepPurchaseLinks({
   const multiScript = useMemo(
     () =>
       allProductLinks.length > 1
-        ? buildMultiProductScript(contactFirstName, allProductLinks)
+        ? buildMultiProductScript(contactFirstName, allProductLinks, socialFooter)
         : "",
-    [allProductLinks, contactFirstName],
+    [allProductLinks, contactFirstName, socialFooter],
   );
 
   if (!storeSubdomain) {

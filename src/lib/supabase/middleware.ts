@@ -35,7 +35,7 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const publicRoutes = ['/login', '/signup', '/auth']
+  const publicRoutes = ['/login', '/signup', '/auth', '/card']
   const isPublicRoute = publicRoutes.some(route => 
     request.nextUrl.pathname.startsWith(route)
   )
@@ -67,8 +67,8 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Onboarding routing for authenticated users
-  if (user && !request.nextUrl.pathname.startsWith('/_next') && !request.nextUrl.pathname.startsWith('/api')) {
+  // Onboarding routing for authenticated users (skip for public card pages)
+  if (user && !request.nextUrl.pathname.startsWith('/_next') && !request.nextUrl.pathname.startsWith('/api') && !request.nextUrl.pathname.startsWith('/card')) {
     const isOnboardingRoute = request.nextUrl.pathname.startsWith('/onboarding');
 
     const { data: profile } = await supabase

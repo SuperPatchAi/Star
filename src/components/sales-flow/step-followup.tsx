@@ -24,7 +24,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
-import { cn } from "@/lib/utils";
+import { cn, buildSocialFooter } from "@/lib/utils";
 import {
   FOLLOWUP_SEQUENCE,
   interpolateFollowUpTemplate,
@@ -32,6 +32,7 @@ import {
 import { joinCategoryLabels } from "@/data/discovery-categories";
 import { getProductById } from "@/data/products";
 import { createContact } from "@/lib/actions/contacts";
+import type { SocialLinks } from "@/lib/db/types";
 
 interface ReferralEntry {
   firstName: string;
@@ -54,6 +55,7 @@ interface StepFollowUpProps {
   followupRatings: Record<string, number>;
   onFollowupRatingChange: (dayIndex: number, rating: number) => void;
   sampleProducts: string[];
+  socialLinks?: SocialLinks;
 }
 
 const GOAL = "Track improvement and build proof through consistent follow-up";
@@ -94,6 +96,7 @@ export function StepFollowUp({
   followupRatings,
   onFollowupRatingChange,
   sampleProducts,
+  socialLinks = {},
 }: StepFollowUpProps) {
   const [advancing, setAdvancing] = useState(false);
   const emptyReferral = (): ReferralEntry => ({ firstName: "", lastName: "", phone: "", email: "" });
@@ -117,9 +120,11 @@ export function StepFollowUp({
     return ratingsEntries[ratingsEntries.length - 1].rating;
   }, [ratingsEntries, baseline]);
 
+  const socialFooter = useMemo(() => buildSocialFooter(socialLinks), [socialLinks]);
+
   function getInterpolatedScript(template: string, dayIndex: number) {
     const currentDayRating = followupRatings[String(dayIndex)];
-    return interpolateFollowUpTemplate(template, {
+    const base = interpolateFollowUpTemplate(template, {
       firstName: contactFirstName ?? "{{FirstName}}",
       productName,
       categoryLabel,
@@ -128,6 +133,7 @@ export function StepFollowUp({
       currentRating: currentDayRating ?? lastRecordedRating,
       improvement: (currentDayRating ?? lastRecordedRating) - baseline,
     });
+    return base + socialFooter;
   }
 
   const updateReferral = (index: number, field: keyof ReferralEntry, value: string) => {

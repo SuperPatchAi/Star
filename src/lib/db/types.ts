@@ -69,6 +69,19 @@ export const DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences = {
   sample_check_ins: true,
 };
 
+export type SocialPlatform = 'instagram' | 'facebook' | 'tiktok' | 'youtube' | 'linkedin' | 'x';
+
+export type SocialLinks = Partial<Record<SocialPlatform, string>>;
+
+export const SOCIAL_PLATFORMS: { key: SocialPlatform; label: string; prefix: string; placeholder: string }[] = [
+  { key: 'instagram', label: 'Instagram', prefix: 'instagram.com/', placeholder: 'yourhandle' },
+  { key: 'facebook', label: 'Facebook', prefix: 'facebook.com/', placeholder: 'your.profile' },
+  { key: 'tiktok', label: 'TikTok', prefix: 'tiktok.com/@', placeholder: 'yourhandle' },
+  { key: 'youtube', label: 'YouTube', prefix: 'youtube.com/@', placeholder: 'yourchannel' },
+  { key: 'linkedin', label: 'LinkedIn', prefix: 'linkedin.com/in/', placeholder: 'your-name' },
+  { key: 'x', label: 'X', prefix: 'x.com/', placeholder: 'yourhandle' },
+];
+
 export interface Database {
   public: {
     Tables: {
@@ -87,6 +100,7 @@ export interface Database {
           onboarding_checklist: OnboardingChecklist;
           store_subdomain: string | null;
           notification_preferences: NotificationPreferences;
+          social_links: SocialLinks;
         };
         Insert: {
           id: string;
@@ -102,6 +116,7 @@ export interface Database {
           onboarding_checklist?: OnboardingChecklist;
           store_subdomain?: string | null;
           notification_preferences?: NotificationPreferences;
+          social_links?: SocialLinks;
         };
         Update: {
           id?: string;
@@ -116,6 +131,7 @@ export interface Database {
           onboarding_checklist?: OnboardingChecklist;
           store_subdomain?: string | null;
           notification_preferences?: NotificationPreferences;
+          social_links?: SocialLinks;
         };
       };
       d2c_contacts: {
