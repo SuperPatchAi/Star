@@ -1,11 +1,21 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { Camera, Loader2, Check } from "lucide-react";
+import Cropper from "react-easy-crop";
+import type { Area } from "react-easy-crop";
+import { Camera, Loader2, Check, ZoomIn, ZoomOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import {
   Card,
   CardContent,
@@ -20,21 +30,21 @@ import type { UserProfile } from "@/lib/db/types";
 
 const AVATAR_SIZE = 512;
 
-function processImage(file: File): Promise<Blob> {
+function cropAndResize(imageSrc: string, crop: Area): Promise<Blob> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
-      const side = Math.min(img.width, img.height);
-      const sx = (img.width - side) / 2;
-      const sy = (img.height - side) / 2;
-
       const canvas = document.createElement("canvas");
       canvas.width = AVATAR_SIZE;
       canvas.height = AVATAR_SIZE;
       const ctx = canvas.getContext("2d");
       if (!ctx) return reject(new Error("Canvas not supported"));
 
-      ctx.drawImage(img, sx, sy, side, side, 0, 0, AVATAR_SIZE, AVATAR_SIZE);
+      ctx.drawImage(
+        img,
+        crop.x, crop.y, crop.width, crop.height,
+        0, 0, AVATAR_SIZE, AVATAR_SIZE,
+      );
       canvas.toBlob(
         (blob) => (blob ? resolve(blob) : reject(new Error("Failed to process image"))),
         "image/webp",
@@ -42,7 +52,7 @@ function processImage(file: File): Promise<Blob> {
       );
     };
     img.onerror = () => reject(new Error("Failed to load image"));
-    img.src = URL.createObjectURL(file);
+    img.src = imageSrc;
   });
 }
 
@@ -62,6 +72,11 @@ export function ProfileSection({ profile, email }: ProfileSectionProps) {
   const [savingSubdomain, setSavingSubdomain] = useState(false);
   const [subdomainChanged, setSubdomainChanged] = useState(false);
 
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const [cropPos, setCropPos] = useState({ x: 0, y: 0 });
+  const [cropZoom, setCropZoom] = useState(1);
+  const [croppedArea, setCroppedArea] = useState<Area | null>(null);
+
   const initials = profile?.full_name
     ?.split(" ")
     .map((n) => n[0])
@@ -71,13 +86,35 @@ export function ProfileSection({ profile, email }: ProfileSectionProps) {
 
   const handleAvatarClick = () => fileInputRef.current?.click();
 
-  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const url = URL.createObjectURL(file);
+    setCropSrc(url);
+    setCropPos({ x: 0, y: 0 });
+    setCropZoom(1);
+    setCroppedArea(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }, []);
+
+  const handleCropComplete = useCallback((_: Area, croppedPixels: Area) => {
+    setCroppedArea(croppedPixels);
+  }, []);
+
+  const handleCropCancel = useCallback(() => {
+    if (cropSrc) URL.revokeObjectURL(cropSrc);
+    setCropSrc(null);
+  }, [cropSrc]);
+
+  const handleCropSave = useCallback(async () => {
+    if (!cropSrc || !croppedArea) return;
+
     setUploading(true);
+    setCropSrc(null);
     try {
-      const processed = await processImage(file);
+      const processed = await cropAndResize(cropSrc, croppedArea);
+      URL.revokeObjectURL(cropSrc);
       const formData = new FormData();
       formData.append("avatar", new File([processed], "avatar.webp", { type: "image/webp" }));
 
@@ -92,9 +129,8 @@ export function ProfileSection({ profile, email }: ProfileSectionProps) {
       toast.error("Failed to process image");
     } finally {
       setUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
     }
-  }, []);
+  }, [cropSrc, croppedArea]);
 
   const handleSaveName = useCallback(async () => {
     setSavingName(true);
@@ -282,6 +318,52 @@ export function ProfileSection({ profile, email }: ProfileSectionProps) {
           </div>
         )}
       </CardContent>
+
+      <Dialog open={!!cropSrc} onOpenChange={(open) => { if (!open) handleCropCancel(); }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Adjust Photo</DialogTitle>
+          </DialogHeader>
+          <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-black">
+            {cropSrc && (
+              <Cropper
+                image={cropSrc}
+                crop={cropPos}
+                zoom={cropZoom}
+                aspect={1}
+                cropShape="round"
+                showGrid={false}
+                onCropChange={setCropPos}
+                onZoomChange={setCropZoom}
+                onCropComplete={handleCropComplete}
+              />
+            )}
+          </div>
+          <div className="flex items-center gap-3 px-1">
+            <ZoomOut className="size-4 text-muted-foreground shrink-0" />
+            <Slider
+              min={1}
+              max={3}
+              step={0.05}
+              value={[cropZoom]}
+              onValueChange={([v]) => setCropZoom(v)}
+              className="flex-1"
+            />
+            <ZoomIn className="size-4 text-muted-foreground shrink-0" />
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={handleCropCancel}>
+              Cancel
+            </Button>
+            <Button onClick={handleCropSave} disabled={uploading}>
+              {uploading ? (
+                <Loader2 className="size-4 animate-spin mr-2" />
+              ) : null}
+              Save Photo
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
