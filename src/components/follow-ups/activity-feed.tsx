@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getUnifiedFeed } from "@/lib/actions/activity";
+import { getFollowUpReminders } from "@/lib/actions/reminders";
 import { FeedEntry } from "./feed-entry";
 import { ActivityEventEntry } from "./activity-event-entry";
 import { PushPermissionBanner } from "./push-permission-banner";
@@ -33,22 +34,35 @@ const SECTION_CONFIG: { key: TimeBucket; label: string; accent: string }[] = [
 ];
 
 interface ActivityFeedProps {
+  mode?: "all" | "reminders-only";
   onCountChange?: (count: number) => void;
 }
 
-export function ActivityFeed({ onCountChange }: ActivityFeedProps) {
+export function ActivityFeed({ mode = "all", onCountChange }: ActivityFeedProps) {
   const [items, setItems] = useState<UnifiedFeedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<FilterOption>("all");
 
   const fetchFeed = useCallback(async () => {
-    const feedResult = await getUnifiedFeed();
-    const feedItems = feedResult.data ?? [];
+    let feedItems: UnifiedFeedItem[];
+
+    if (mode === "reminders-only") {
+      const { data } = await getFollowUpReminders();
+      feedItems = (data ?? []).map((r) => ({
+        kind: "reminder" as const,
+        data: r,
+        timestamp: r.dueDate,
+      }));
+    } else {
+      const feedResult = await getUnifiedFeed();
+      feedItems = feedResult.data ?? [];
+    }
+
     setItems(feedItems);
     const reminderCount = feedItems.filter((i) => i.kind === "reminder").length;
     onCountChange?.(reminderCount);
     setLoading(false);
-  }, [onCountChange]);
+  }, [mode, onCountChange]);
 
   useEffect(() => {
     fetchFeed();
