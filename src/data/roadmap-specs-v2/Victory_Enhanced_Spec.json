@@ -67,15 +67,15 @@
     "2b_rapport_story": {
       "title": "\ud83e\udec2 BUILD RAPPORT",
       "description": "Share your personal story to build trust",
-      "personal_story": "I've always been active, but I was hitting a wall with my workouts. Recovery was taking forever and I just couldn't push through like I used to. My training partner started using Victory and wouldn't shut up about it. So I tried it — first week, I noticed I was recovering faster and my endurance was better. It felt like I got five years back. Total game changer for staying active.",
+      "personal_story": "[Name], you know how it feels when your body just won't keep up with what your mind wants to do? That was me. Recovery was taking forever, couldn't push through like I used to. My training partner started using this Victory patch and wouldn't shut up about it. So I tried it — first week, my recovery was faster and my endurance was noticeably better. Felt like I got five years back. [Name], that's why I thought of you.",
       "talking_points": [
-        "Talk about your active lifestyle and where you hit a wall",
-        "Mention the recovery struggles — athletes and gym-goers get it",
-        "Share how quickly the difference showed up in your workouts",
-        "Describe the feeling of performing at a higher level again",
-        "Emphasize it's drug-free — important for anyone who's active"
+        "Open with their name and a feeling they can identify with",
+        "Talk about where your performance hit a wall",
+        "Mention recovery struggles — anyone active gets it",
+        "Share the specific moment you noticed the difference",
+        "Close with why you thought of THEM — make it personal"
       ],
-      "transition_to_discovery": "That's what hooked me. But I'm curious about you — what are you into? Are you finding it harder to keep up with your routine?"
+      "transition_to_discovery": "[Name], that's my story with it. But what about you — what are you into? Are you finding it harder to keep up with your routine?"
     },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",

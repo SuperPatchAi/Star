@@ -10,16 +10,16 @@ const GENERIC_RAPPORT: RoadmapRapportStory = {
   title: "BUILD RAPPORT",
   description: "Share your personal story to build trust",
   personal_story:
-    "I have to tell you about something that's been a game changer for me. A friend introduced me to this patch — completely drug-free, no pills, nothing to swallow — and honestly, I was skeptical. Like, really? A patch? But I tried it and the difference was real. I just felt better. More like myself. It's become part of my daily routine now, and that's why I started sharing it with people I care about.",
+    "Hey [Name], I gotta tell you about something. A friend introduced me to this patch — totally drug-free, no pills, nothing to swallow — and honestly? I thought it was ridiculous. But I tried it, and the difference was real. I just felt better. More like myself. It's part of my daily routine now. [Name], that's why I wanted to share it with you — I genuinely think it could help.",
   talking_points: [
-    "Share a genuine personal struggle you've experienced",
-    "Describe your initial skepticism — it makes you relatable",
-    "Talk about the moment you first noticed a difference",
-    "Keep it simple — don't explain how it works, just what it did for you",
-    "Explain why you started sharing it — you genuinely believe in it",
+    "Open with their name — it pulls them in immediately",
+    "Share a real struggle you've dealt with, keep it honest",
+    "Describe your skepticism — it makes you relatable",
+    "Talk about the moment you noticed a difference, not how it works",
+    "Close with why you're telling THEM — make them feel chosen, not pitched",
   ],
   transition_to_discovery:
-    "That's my story with it. But I'd love to hear about you — what's going on in your life right now? Is there anything that's been holding you back?",
+    "So [Name], that's my story. But enough about me — I'd love to hear what's going on with you. Is there anything that's been holding you back lately?",
 };
 
 interface StepRapportProps {

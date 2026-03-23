@@ -67,15 +67,15 @@
     "2b_rapport_story": {
       "title": "\ud83e\udec2 BUILD RAPPORT",
       "description": "Share your personal story to build trust",
-      "personal_story": "I couldn't get through a single task without getting distracted. Work was piling up — I'd start something and twenty minutes later I'm scrolling my phone. A colleague mentioned the Focus patch and I thought, sure, why not. Put it on and sat down to work — and actually worked. Deep focus for hours. No brain fog, no wandering. It sounds simple, but getting my concentration back changed everything for me.",
+      "personal_story": "Hey [Name], be honest — do you ever start a task and twenty minutes later you're scrolling your phone? That was my life. Work piling up, brain fog, couldn't lock in. A colleague mentioned this Focus patch and I figured, why not. Put it on, sat down to work — and actually worked. Deep focus for hours. [Name], getting my concentration back changed everything, and I think you'd notice the same thing.",
       "talking_points": [
-        "Describe the distraction struggle — it's universal right now",
-        "Mention the phone/social media pull everyone deals with",
-        "Share the first time you experienced deep focus with it",
-        "Talk about how productivity and confidence improved",
-        "Keep it relatable — most people feel scattered"
+        "Open with their name and a question about distraction — it's universal",
+        "Describe the scrolling/brain fog struggle honestly",
+        "Share the first time you experienced real deep focus",
+        "Talk about what changed in your productivity and confidence",
+        "Close with why YOU think it would help THEM"
       ],
-      "transition_to_discovery": "That's my story with it. But what about you — do you ever struggle to stay locked in on things?"
+      "transition_to_discovery": "So [Name], that's what happened for me. But I'm curious about you — do you ever struggle to stay locked in when you need to?"
     },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",

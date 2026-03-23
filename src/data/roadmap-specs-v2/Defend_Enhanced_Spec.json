@@ -67,15 +67,15 @@
     "2b_rapport_story": {
       "title": "\ud83e\udec2 BUILD RAPPORT",
       "description": "Share your personal story to build trust",
-      "personal_story": "I used to catch every cold that went around. If someone in the office sneezed, I'd be down for a week. Started using Defend and honestly, I can't remember the last time I was knocked out sick. My immune system just feels stronger. I'm not popping vitamin C pills every hour anymore. It's one of those things where you don't realize it until — hey, I haven't been sick in months.",
+      "personal_story": "[Name], you know what's annoying? Being the person who catches everything. That was me — someone sneezes in the office and I'm down for a week. Started using this Defend patch and honestly? I can't remember the last time I was knocked out sick. No more popping vitamin C every hour. [Name], it's one of those things you don't notice until you realize — hey, I haven't been sick in months. That's why I wanted to mention it to you.",
       "talking_points": [
-        "Talk about how often you used to get sick",
-        "Mention the remedies you tried before (vitamin C, zinc, etc.)",
-        "Share the realization that you stopped getting sick",
-        "Emphasize it's drug-free immune support, not a supplement",
-        "Keep it light — nobody likes being the person who's always sick"
+        "Open with their name and a relatable frustration",
+        "Talk about how often you used to get sick — keep it light",
+        "Mention the remedies you tried that didn't really work",
+        "Share the moment you realized you just stopped getting sick",
+        "Close with why you're bringing it up to THEM"
       ],
-      "transition_to_discovery": "That's what made me a believer. How about you — do you find yourself getting run down or catching everything going around?"
+      "transition_to_discovery": "[Name], that's what made me a believer. But what about you — do you find yourself catching everything that goes around?"
     },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",

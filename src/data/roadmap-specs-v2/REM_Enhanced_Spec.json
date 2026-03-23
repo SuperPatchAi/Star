@@ -67,15 +67,15 @@
     "2b_rapport_story": {
       "title": "\ud83e\udec2 BUILD RAPPORT",
       "description": "Share your personal story to build trust",
-      "personal_story": "I was that person awake at 2 AM staring at the ceiling every single night. Tried melatonin, tried the teas, the whole routine — nothing stuck. My friend told me about the REM patch and I figured, what do I have to lose? First night I used it, I slept straight through. Woke up actually feeling rested for the first time in I don't know how long. I haven't looked back since.",
+      "personal_story": "[Name], let me ask you something — do you ever just lie there at 2 AM staring at the ceiling? That was me every single night. Tried melatonin, the teas, the whole routine — nothing stuck. A friend told me about this REM patch and I figured, what do I have to lose? First night, I slept straight through. Woke up actually feeling rested. [Name], I haven't looked back, and I thought of you because I think it could help.",
       "talking_points": [
-        "Describe your sleep struggles — everyone relates to bad sleep",
-        "Mention other things you tried that didn't work",
-        "Share the specific night you noticed the difference",
-        "Talk about how better sleep changed your energy and mood",
-        "Keep it casual — sleep is an easy topic to bond over"
+        "Open with their name and a question — everyone relates to bad sleep",
+        "Mention what you tried before that failed",
+        "Share the specific night everything changed",
+        "Talk about how better sleep improved your whole day",
+        "Close with why you thought of THEM specifically"
       ],
-      "transition_to_discovery": "Anyway, that's what got me hooked. But I'd love to hear about you — how are you sleeping these days?"
+      "transition_to_discovery": "So [Name], that's my deal. But I'm curious about you — how are you sleeping these days? Getting the rest you need?"
     },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",

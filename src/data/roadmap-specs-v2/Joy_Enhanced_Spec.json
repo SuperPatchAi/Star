@@ -67,15 +67,15 @@
     "2b_rapport_story": {
       "title": "\ud83e\udec2 BUILD RAPPORT",
       "description": "Share your personal story to build trust",
-      "personal_story": "There was a stretch where I just felt flat. Not sad exactly, but nothing excited me. Going through the motions every day. A friend gave me Joy to try. I can't explain it scientifically, but within a day or two I felt lighter. More like myself. Started laughing more, enjoying little things again. It's a small thing — a patch — but it made a real difference in how I show up every day.",
+      "personal_story": "Hey [Name], I want to share something with you. There was a stretch where I just felt flat. Not sad exactly, but nothing excited me anymore. Going through the motions. A friend gave me this Joy patch to try. Within a day or two, I felt lighter. More like myself. Started laughing more, enjoying little things again. [Name], it's a small thing, but it made a real difference — and I thought of you.",
       "talking_points": [
+        "Open with their name — signal that this is personal, not a pitch",
         "Describe the 'flat' feeling without overdramatizing it",
-        "Make it relatable — most people have experienced a funk",
-        "Share the subtle shift you noticed in your mood",
-        "Mention specific moments — laughing more, enjoying things again",
-        "Keep it light and hopeful, not clinical"
+        "Make it relatable — most people have been in a funk",
+        "Share the subtle shift — laughing more, enjoying little things",
+        "Close with why you thought of THEM — keep it warm"
       ],
-      "transition_to_discovery": "That's why I bring it up. How are you doing — honestly? Sometimes we don't realize how much our mood has been off until someone asks."
+      "transition_to_discovery": "[Name], that's why I bring it up. How are you doing — honestly? Sometimes we don't realize how off we've been feeling until someone actually asks."
     },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",

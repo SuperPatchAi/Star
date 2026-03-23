@@ -67,15 +67,15 @@
     "2b_rapport_story": {
       "title": "\ud83e\udec2 BUILD RAPPORT",
       "description": "Share your personal story to build trust",
-      "personal_story": "I was spending a fortune on serums and creams trying to get my skin to cooperate. Nothing was giving me that glow I wanted. When I heard about Lumi, I was curious — a patch for beauty support? Seemed different. But after a couple weeks, people started commenting. My skin looked healthier, more vibrant. I still do my routine, but Lumi gave me results I wasn't getting from products alone.",
+      "personal_story": "[Name], I have to tell you about this. I was spending a fortune on serums and creams — nothing was giving me the glow I wanted. Then I heard about this Lumi patch and thought, really? A patch for beauty? But after a couple weeks, people started commenting. My skin looked healthier, more vibrant. I still do my routine, but Lumi gave me what the products couldn't. [Name], that's why I wanted to share it with you.",
       "talking_points": [
-        "Mention how much you were spending on skincare products",
-        "Share the frustration of trying everything with no results",
-        "Describe the moment people started noticing a difference",
-        "Emphasize it works alongside your existing routine",
-        "Talk about the confidence boost of looking and feeling radiant"
+        "Open with their name and genuine excitement",
+        "Mention the money spent on skincare that didn't deliver",
+        "Share the moment people started noticing the difference",
+        "Emphasize it complements your existing routine",
+        "Close with why you're sharing it with THEM — make it feel personal"
       ],
-      "transition_to_discovery": "That's what made me fall in love with it. What about you — is there something about your skin or your look that's been bugging you?"
+      "transition_to_discovery": "So [Name], that's what happened for me. What about you — is there anything about your skin or your look that's been on your mind?"
     },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",
