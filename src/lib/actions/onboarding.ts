@@ -91,14 +91,10 @@ export async function updateChecklistItem(
 
   checklist[item] = true;
 
-  const allDone = Object.values(checklist).every(Boolean);
   const updates: Record<string, unknown> = {
     onboarding_checklist: checklist,
     updated_at: new Date().toISOString(),
   };
-  if (allDone) {
-    updates.onboarding_step = "completed";
-  }
 
   const { error } = await (adminClient as SupabaseAny)
     .from("user_profiles")

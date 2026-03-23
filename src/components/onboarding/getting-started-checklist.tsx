@@ -34,7 +34,7 @@ export function GettingStartedChecklist() {
       setChecklist(state.checklist);
 
       const allDone = Object.values(state.checklist).every(Boolean);
-      if (allDone && state.step === "completed") {
+      if (allDone && state.step === "checklist") {
         setCelebrating(true);
       }
     }
