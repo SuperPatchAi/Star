@@ -130,8 +130,9 @@ export function StepPurchaseLinks({
   const cardShareText = useMemo(() => {
     const name = contactFirstName || "there";
     const productNames = allProducts.map((p) => p.name).join(", ");
-    return `Hey ${name}! Here are my product picks for you: ${productNames}. Check them out on my card!`;
-  }, [contactFirstName, allProducts]);
+    const urlLine = cardShareUrl ? `\n\nTap here to shop: ${cardShareUrl}` : "";
+    return `Hey ${name}! Here are my product picks for you: ${productNames}.${urlLine}`;
+  }, [contactFirstName, allProducts, cardShareUrl]);
 
   if (!storeSubdomain) {
     return (

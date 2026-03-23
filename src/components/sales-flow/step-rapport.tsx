@@ -10,13 +10,13 @@ const GENERIC_RAPPORT: RoadmapRapportStory = {
   title: "BUILD RAPPORT",
   description: "Share your personal story to build trust",
   personal_story:
-    "I have to tell you about something that's been a game changer for me. I discovered these patches from SuperPatch — they use vibrotactile technology, totally drug-free — and honestly, I was skeptical at first. But I tried one and the difference was real. No pills, no side effects, just this little patch that works with your body's nervous system. It changed how I feel day to day, and that's why I started sharing it with people I care about.",
+    "I have to tell you about something that's been a game changer for me. A friend introduced me to this patch — completely drug-free, no pills, nothing to swallow — and honestly, I was skeptical. Like, really? A patch? But I tried it and the difference was real. I just felt better. More like myself. It's become part of my daily routine now, and that's why I started sharing it with people I care about.",
   talking_points: [
     "Share a genuine personal struggle you've experienced",
     "Describe your initial skepticism — it makes you relatable",
     "Talk about the moment you first noticed a difference",
-    "Emphasize drug-free, no side effects, works with your body",
-    "Explain why you started sharing it — you believe in it",
+    "Keep it simple — don't explain how it works, just what it did for you",
+    "Explain why you started sharing it — you genuinely believe in it",
   ],
   transition_to_discovery:
     "That's my story with it. But I'd love to hear about you — what's going on in your life right now? Is there anything that's been holding you back?",

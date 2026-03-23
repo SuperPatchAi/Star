@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
@@ -78,15 +77,12 @@ export function BusinessCardDisplay({
                       rel="noopener noreferrer"
                       className="flex flex-col items-center gap-1.5 rounded-xl border bg-muted/30 p-3 hover:bg-muted/60 transition-colors"
                     >
-                      <div className="relative size-12 rounded-full overflow-hidden bg-white shrink-0">
-                        <Image
-                          src={p.image}
-                          alt={p.name}
-                          fill
-                          className="object-cover"
-                          sizes="48px"
-                        />
-                      </div>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={p.image}
+                        alt={p.name}
+                        className="size-12 rounded-full object-cover bg-white shrink-0"
+                      />
                       <span className="text-xs font-semibold leading-tight">
                         {p.name}
                       </span>
