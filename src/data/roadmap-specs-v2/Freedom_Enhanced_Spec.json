@@ -67,15 +67,15 @@
     "2b_rapport_story": {
       "title": "\ud83e\udec2 BUILD RAPPORT",
       "description": "Share your personal story to build trust",
-      "personal_story": "Hey [Name], I gotta tell you something. I used to live on ibuprofen — three, four pills a day just to get through work. A friend handed me this Freedom patch and honestly? I thought it was ridiculous. A sticker for pain? But I tried it, and within a couple hours the tension just eased up. No pills, no side effects. That was months ago and I haven't gone back. [Name], that's why I wanted to share it with you.",
+      "personal_story": "[Name], I was popping ibuprofen like candy. Three, four a day just to get through work. A friend gave me this patch called Freedom and I thought it was the dumbest thing I'd ever seen. A sticker? For pain? But I put it on, and [Name], within a couple hours my back just loosened up. That was months ago. I haven't touched the ibuprofen since.",
       "talking_points": [
-        "Open with their name — pull them into the conversation",
-        "Share your specific pain struggle, make it real",
-        "Mention what you tried before that didn't work",
-        "Describe the exact moment you noticed it working",
-        "Close with why you're telling THEM — make them feel chosen"
+        "Use their name early — make it a conversation, not a speech",
+        "Lead with what you were dealing with, keep it real",
+        "Be honest about thinking it was dumb — skepticism is relatable",
+        "Describe how your body felt, not product features",
+        "Don't pitch — just tell what happened and stop"
       ],
-      "transition_to_discovery": "So [Name], that's what happened for me. But enough about me — what's going on with you? Anything been bugging you lately?"
+      "transition_to_discovery": "Anyway [Name], that's my thing. What about you — anything been bothering you lately?"
     },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",

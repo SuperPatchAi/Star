@@ -67,15 +67,15 @@
     "2b_rapport_story": {
       "title": "\ud83e\udec2 BUILD RAPPORT",
       "description": "Share your personal story to build trust",
-      "personal_story": "Hey [Name], quick question — do you ever hit that 2 PM wall where you're just done? That was me every single day. Running on coffee and willpower. A teammate told me about this Boost patch and I was skeptical. But I stuck one on and the difference was wild — steady energy, no jitters, no crash. It just felt like my body woke up. [Name], that's why I wanted to mention it to you.",
+      "personal_story": "Hey [Name], you ever hit that 2 PM wall where you're just done? That was me every day. Living on coffee. A teammate told me about this Boost patch and I thought, sure, whatever. But [Name], I stuck one on and it was like my body just woke up. Steady, all day. No jitters, no crash at 4. I don't even drink that third cup of coffee anymore.",
       "talking_points": [
-        "Open with their name and a question they can relate to",
-        "Describe the afternoon crash — it's universal",
-        "Mention your caffeine dependency before, keep it real",
-        "Contrast the jitters with the steady, natural feeling",
-        "Close with why you're bringing it up to THEM"
+        "Use their name and ask a question — the afternoon crash is universal",
+        "Describe your caffeine dependency honestly",
+        "Talk about how you FELT, not product features",
+        "Contrast the old jittery feeling with the new steady one",
+        "Don't pitch — just describe what changed for you"
       ],
-      "transition_to_discovery": "So [Name], that's what happened for me. But I'm curious — how's your energy been? You ever hit that wall during the day?"
+      "transition_to_discovery": "Anyway [Name], that's me. How's your energy been? You hitting that wall too?"
     },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",

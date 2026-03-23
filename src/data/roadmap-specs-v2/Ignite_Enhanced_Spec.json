@@ -67,15 +67,15 @@
     "2b_rapport_story": {
       "title": "\ud83e\udec2 BUILD RAPPORT",
       "description": "Share your personal story to build trust",
-      "personal_story": "Hey [Name], can I be real with you? I'd been stuck. Eating right, working out, doing everything — and nothing was moving. My metabolism just felt asleep. A friend suggested this Ignite patch and within a couple weeks I felt a shift. My energy picked up, my body started responding again. It's not a magic pill — it just felt like my metabolism finally woke up. [Name], that's why I wanted to tell you about it.",
+      "personal_story": "Hey [Name], can I be real? I'd been stuck. Eating right, working out, doing everything — and nothing was moving. My body just wasn't responding. A friend told me about this Ignite patch and within a couple weeks, [Name], something shifted. My energy came back during workouts, and things just started working again. It wasn't overnight, but I could finally tell something was different.",
       "talking_points": [
-        "Open with their name and ask permission to be real — it builds trust",
+        "Use their name and ask to be real — it builds instant trust",
         "Share the frustration of doing everything right with no results",
-        "Mention the plateau — anyone managing weight gets it",
-        "Describe the shift you felt, be honest it's a support tool",
-        "Close with why you're sharing it with THEM specifically"
+        "Talk about the plateau honestly — anyone managing weight gets it",
+        "Describe the shift you FELT, not what the product claims to do",
+        "Don't pitch — the relief of finally seeing progress is the story"
       ],
-      "transition_to_discovery": "So [Name], that's what happened for me. But what about you — have you been trying to get things moving? How's that been going?"
+      "transition_to_discovery": "[Name], that's my story. What about you — have you been trying to get things moving? How's that going?"
     },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",

@@ -67,15 +67,15 @@
     "2b_rapport_story": {
       "title": "\ud83e\udec2 BUILD RAPPORT",
       "description": "Share your personal story to build trust",
-      "personal_story": "[Name], look — this isn't the easiest thing to talk about, but that's exactly why I'm bringing it up with you. I was feeling run down. Low energy, low drive, just not myself. A buddy quietly told me about Rocket and I gave it a shot. Within a week, I felt like myself again. More energy, more confidence, more presence. Totally drug-free. [Name], I wish I'd found it sooner — and I think it could help you too.",
+      "personal_story": "[Name], look — this isn't the easiest thing to talk about, but that's exactly why I'm saying something. I was feeling run down. Low energy, low drive, just not myself. A buddy quietly told me about this Rocket patch. I gave it a shot, and [Name], within a week I just felt like me again. More energy, more confidence. I wish I'd known about it sooner.",
       "talking_points": [
-        "Open with their name and acknowledge the sensitivity — it builds real trust",
-        "Keep it honest but not overly detailed",
-        "Mention the all-around effect: energy, confidence, drive",
-        "Emphasize drug-free — that matters to a lot of men",
-        "Close with why you're telling THEM — let them know they're not alone"
+        "Use their name and acknowledge the sensitivity — it builds real trust",
+        "Keep it honest but not overly detailed — less is more here",
+        "Describe how YOU felt, not what the product claims",
+        "The vulnerability of admitting you were off IS the connection",
+        "Don't pitch — just be one guy being real with another"
       ],
-      "transition_to_discovery": "[Name], I only bring it up because it really helped me. No pressure at all — but have you been feeling like you've lost a step lately?"
+      "transition_to_discovery": "[Name], I only bring it up because it really helped me. No pressure — but have you been feeling like you've lost a step?"
     },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",

@@ -67,15 +67,15 @@
     "2b_rapport_story": {
       "title": "\ud83e\udec2 BUILD RAPPORT",
       "description": "Share your personal story to build trust",
-      "personal_story": "[Name], let me ask you something — do you ever just lie there at 2 AM staring at the ceiling? That was me every single night. Tried melatonin, the teas, the whole routine — nothing stuck. A friend told me about this REM patch and I figured, what do I have to lose? First night, I slept straight through. Woke up actually feeling rested. [Name], I haven't looked back, and I thought of you because I think it could help.",
+      "personal_story": "[Name], do you ever just lie there at 2 AM staring at the ceiling? That was me every night. Melatonin, the teas, the whole routine — nothing stuck. A friend told me about this REM patch and I figured, what do I have to lose? First night I slept straight through. [Name], I woke up actually feeling rested for the first time in I don't know how long. I haven't gone back to any of that other stuff.",
       "talking_points": [
-        "Open with their name and a question — everyone relates to bad sleep",
-        "Mention what you tried before that failed",
-        "Share the specific night everything changed",
-        "Talk about how better sleep improved your whole day",
-        "Close with why you thought of THEM specifically"
+        "Use their name and ask a question — everyone relates to bad sleep",
+        "Mention what you tried that didn't work",
+        "Share the specific night it changed",
+        "Describe how YOU felt, not what the product did",
+        "Don't pitch — let the story speak for itself"
       ],
-      "transition_to_discovery": "So [Name], that's my deal. But I'm curious about you — how are you sleeping these days? Getting the rest you need?"
+      "transition_to_discovery": "Anyway [Name], that's what happened with me. How are you sleeping these days?"
     },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",

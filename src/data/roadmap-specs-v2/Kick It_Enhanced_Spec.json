@@ -67,15 +67,15 @@
     "2b_rapport_story": {
       "title": "\ud83e\udec2 BUILD RAPPORT",
       "description": "Share your personal story to build trust",
-      "personal_story": "[Name], I want to share something personal with you. I'd tried to quit so many times I lost count. The cravings always won. Then somebody told me about the Kick It patch. I didn't expect much, but the urges just dialed down. It wasn't magic — I still had to want it. But it took the edge off enough that I could finally follow through. [Name], that was the missing piece, and I think it could help you too.",
+      "personal_story": "[Name], I'm going to tell you something I don't tell a lot of people. I tried to quit so many times I lost count. The cravings always won. Then somebody told me about the Kick It patch. I didn't expect much, but [Name], the urges just dialed down. It wasn't magic — I still had to want it. But it took the edge off enough that I could actually follow through for once.",
       "talking_points": [
-        "Open with their name and signal vulnerability — it builds deep trust",
+        "Use their name and be vulnerable — it builds deep trust",
         "Be real about failed attempts, no shame",
-        "Describe how the cravings felt different with the patch",
-        "Emphasize willpower plus support is the formula",
-        "Close with why you believe it could help THEM"
+        "Describe how the cravings felt different, not product claims",
+        "Be honest that it took willpower too — it's more believable",
+        "Don't pitch — the vulnerability IS the connection"
       ],
-      "transition_to_discovery": "[Name], I know it's not easy to talk about. But if there's something you've been trying to kick — I get it. What's going on with you?"
+      "transition_to_discovery": "[Name], I know it's not easy to talk about. But if there's something you've been trying to kick — I get it. What's going on?"
     },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",

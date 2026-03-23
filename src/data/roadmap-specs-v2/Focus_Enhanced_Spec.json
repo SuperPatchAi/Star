@@ -67,15 +67,15 @@
     "2b_rapport_story": {
       "title": "\ud83e\udec2 BUILD RAPPORT",
       "description": "Share your personal story to build trust",
-      "personal_story": "Hey [Name], be honest — do you ever start a task and twenty minutes later you're scrolling your phone? That was my life. Work piling up, brain fog, couldn't lock in. A colleague mentioned this Focus patch and I figured, why not. Put it on, sat down to work — and actually worked. Deep focus for hours. [Name], getting my concentration back changed everything, and I think you'd notice the same thing.",
+      "personal_story": "Hey [Name], be honest — you ever start something and twenty minutes later you're just scrolling your phone? That was my life. Work piling up, brain fog, couldn't lock in on anything. A colleague mentioned this Focus patch and I figured, why not. [Name], I put it on and sat down to work — and actually worked. Like, deep focus for hours. I forgot what that felt like.",
       "talking_points": [
-        "Open with their name and a question about distraction — it's universal",
+        "Use their name and ask a relatable question — distraction is universal",
         "Describe the scrolling/brain fog struggle honestly",
-        "Share the first time you experienced real deep focus",
-        "Talk about what changed in your productivity and confidence",
-        "Close with why YOU think it would help THEM"
+        "Share the first time you experienced real focus again",
+        "Describe what it FELT like, not what the product does",
+        "Don't pitch — just share the surprise of it working"
       ],
-      "transition_to_discovery": "So [Name], that's what happened for me. But I'm curious about you — do you ever struggle to stay locked in when you need to?"
+      "transition_to_discovery": "Anyway [Name], that's me. Do you ever struggle with that? Staying locked in when you need to?"
     },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",

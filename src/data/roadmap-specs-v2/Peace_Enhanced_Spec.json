@@ -67,15 +67,15 @@
     "2b_rapport_story": {
       "title": "\ud83e\udec2 BUILD RAPPORT",
       "description": "Share your personal story to build trust",
-      "personal_story": "[Name], can I be honest? My stress was through the roof. Wound up all the time — snapping at my family, couldn't relax even on my days off. Someone gave me this Peace patch and I put it on not expecting anything. But that evening, I sat on the couch and actually felt calm. Not drowsy — just at ease. My family noticed before I did. [Name], that's why I wanted to bring it up with you.",
+      "personal_story": "[Name], can I be honest? My stress was through the roof. Snapping at my family, couldn't turn it off even on my days off. Someone gave me this Peace patch and I put it on not expecting anything. But that evening, [Name], I sat on the couch and actually felt calm. Not tired — just calm. My wife actually asked me what was different before I even said anything.",
       "talking_points": [
-        "Open with their name and ask to be honest — it disarms people",
-        "Be specific about how stress showed up — snapping, can't relax",
-        "Share the exact moment you felt the calm kick in",
-        "Clarify it's not sedating — calm but alert",
-        "Close with why you're bringing it up to THEM"
+        "Use their name and ask to be honest — it disarms people",
+        "Be specific about how stress showed up in your life",
+        "Share the exact moment you felt different",
+        "Describe the feeling, not product benefits",
+        "Don't pitch — the fact that someone else noticed is the proof"
       ],
-      "transition_to_discovery": "So [Name], that's what happened for me. But what about you — how are you managing stress right now? Is it under control or running the show?"
+      "transition_to_discovery": "[Name], anyway, that's me. How are you managing stress right now? Under control or running the show?"
     },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",

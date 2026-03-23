@@ -10,16 +10,16 @@ const GENERIC_RAPPORT: RoadmapRapportStory = {
   title: "BUILD RAPPORT",
   description: "Share your personal story to build trust",
   personal_story:
-    "Hey [Name], I gotta tell you about something. A friend introduced me to this patch — totally drug-free, no pills, nothing to swallow — and honestly? I thought it was ridiculous. But I tried it, and the difference was real. I just felt better. More like myself. It's part of my daily routine now. [Name], that's why I wanted to share it with you — I genuinely think it could help.",
+    "Hey [Name], so a friend gave me this patch a while back. I honestly thought it was kind of weird — like, a patch? But I was dealing with some stuff and figured why not. And [Name], I'm not exaggerating, I just started feeling better. More like myself. I wear it every day now. It's one of those things where you don't realize how off you were until something clicks.",
   talking_points: [
-    "Open with their name — it pulls them in immediately",
-    "Share a real struggle you've dealt with, keep it honest",
-    "Describe your skepticism — it makes you relatable",
-    "Talk about the moment you noticed a difference, not how it works",
-    "Close with why you're telling THEM — make them feel chosen, not pitched",
+    "Use their name early — it makes the conversation feel real",
+    "Lead with your struggle, not the product",
+    "Be honest about your skepticism — it makes you relatable",
+    "Describe how YOU felt, not what the product does",
+    "Don't sell — just tell your story and let them connect the dots",
   ],
   transition_to_discovery:
-    "So [Name], that's my story. But enough about me — I'd love to hear what's going on with you. Is there anything that's been holding you back lately?",
+    "Anyway [Name], that's my deal. What about you — how have you been feeling lately?",
 };
 
 interface StepRapportProps {

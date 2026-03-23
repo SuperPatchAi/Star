@@ -67,15 +67,15 @@
     "2b_rapport_story": {
       "title": "\ud83e\udec2 BUILD RAPPORT",
       "description": "Share your personal story to build trust",
-      "personal_story": "Hey [Name], I want to share something with you. There was a stretch where I just felt flat. Not sad exactly, but nothing excited me anymore. Going through the motions. A friend gave me this Joy patch to try. Within a day or two, I felt lighter. More like myself. Started laughing more, enjoying little things again. [Name], it's a small thing, but it made a real difference — and I thought of you.",
+      "personal_story": "Hey [Name], there was this stretch where I just felt flat. Not sad exactly, but nothing excited me. Going through the motions every day. A friend gave me this Joy patch and within a day or two, [Name], I just felt lighter. More like myself. Started laughing at stuff again, enjoying the little things. It's weird how you don't realize how off you were until something shifts.",
       "talking_points": [
-        "Open with their name — signal that this is personal, not a pitch",
-        "Describe the 'flat' feeling without overdramatizing it",
+        "Use their name — signal this is personal, not a pitch",
+        "Describe the 'flat' feeling without overdramatizing",
         "Make it relatable — most people have been in a funk",
-        "Share the subtle shift — laughing more, enjoying little things",
-        "Close with why you thought of THEM — keep it warm"
+        "Share the subtle shift — laughing more, small joys returning",
+        "Don't pitch — the realization of feeling 'off' is the connection"
       ],
-      "transition_to_discovery": "[Name], that's why I bring it up. How are you doing — honestly? Sometimes we don't realize how off we've been feeling until someone actually asks."
+      "transition_to_discovery": "[Name], that's why I mention it. How are you doing — honestly? Sometimes we don't realize how off we've been until someone asks."
     },
     "3_discovery_questions": {
       "title": "\ud83d\udd0d DISCOVERY QUESTIONS",
