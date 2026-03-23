@@ -386,23 +386,17 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
             existingContact={activeContact}
           />
         );
-      case "rapport":
+      case "rapport": {
+        const firstRoadmap = Object.values(roadmaps)[0];
         return (
-          <ProductTabs products={contactProducts}>
-            {(product) => {
-              const roadmap = roadmaps[product.id];
-              if (!roadmap) return null;
-              return (
-                <StepRapport
-                  rapportData={roadmap.sections["2b_rapport_story"]}
-                  contactFirstName={contactFirstName}
-                  onContinue={goNext}
-                  continueLabel={continueLabel}
-                />
-              );
-            }}
-          </ProductTabs>
+          <StepRapport
+            rapportData={firstRoadmap?.sections["2b_rapport_story"] ?? null}
+            contactFirstName={contactFirstName}
+            onContinue={goNext}
+            continueLabel={continueLabel}
+          />
         );
+      }
       case "discovery":
         return (
           <StepDiscoveryV2
