@@ -11,18 +11,20 @@ import { FeedEntry } from "./feed-entry";
 import { ActivityEventEntry } from "./activity-event-entry";
 import { PushPermissionBanner } from "./push-permission-banner";
 import type { UnifiedFeedItem, TimeBucket } from "@/types/activity";
-import { getTimeBucket } from "@/types/activity";
+import { getItemBucket } from "@/types/activity";
 
 type FilterOption = "all" | TimeBucket;
 
 const FILTER_OPTIONS: { id: FilterOption; label: string }[] = [
   { id: "all", label: "All" },
+  { id: "overdue", label: "Overdue" },
   { id: "today", label: "Today" },
   { id: "this_week", label: "This Week" },
   { id: "older", label: "Older" },
 ];
 
 const SECTION_CONFIG: { key: TimeBucket; label: string; accent: string }[] = [
+  { key: "overdue", label: "Overdue", accent: "text-destructive" },
   { key: "today", label: "Today", accent: "text-amber-600 dark:text-amber-400" },
   { key: "this_week", label: "This Week", accent: "text-blue-600 dark:text-blue-400" },
   { key: "older", label: "Older", accent: "text-muted-foreground" },
@@ -57,16 +59,16 @@ export function ActivityFeed({ onCountChange }: ActivityFeedProps) {
   const filtered =
     filter === "all"
       ? items
-      : items.filter((item) => getTimeBucket(item.timestamp) === filter);
+      : items.filter((item) => getItemBucket(item) === filter);
 
   const grouped: Record<TimeBucket, UnifiedFeedItem[]> = {
+    overdue: [],
     today: [],
     this_week: [],
     older: [],
   };
   for (const item of filtered) {
-    const bucket = getTimeBucket(item.timestamp);
-    grouped[bucket].push(item);
+    grouped[getItemBucket(item)].push(item);
   }
 
   if (loading) {
@@ -109,7 +111,7 @@ export function ActivityFeed({ onCountChange }: ActivityFeedProps) {
           const count =
             opt.id === "all"
               ? items.length
-              : items.filter((i) => getTimeBucket(i.timestamp) === opt.id).length;
+              : items.filter((i) => getItemBucket(i) === opt.id).length;
           return (
             <button
               key={opt.id}

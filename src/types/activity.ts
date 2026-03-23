@@ -21,7 +21,7 @@ export type UnifiedFeedItem =
   | { kind: "reminder"; data: FollowUpReminder; timestamp: string }
   | { kind: "event"; data: ActivityEvent; timestamp: string };
 
-export type TimeBucket = "today" | "this_week" | "older";
+export type TimeBucket = "overdue" | "today" | "this_week" | "older";
 
 export const EVENT_LABELS: Record<ActivityEventType, string> = {
   contact_created: "New Contact",
@@ -31,6 +31,13 @@ export const EVENT_LABELS: Record<ActivityEventType, string> = {
   followup_completed: "Follow-Up Done",
   outcome_changed: "Outcome Updated",
 };
+
+export function getItemBucket(item: UnifiedFeedItem): TimeBucket {
+  if (item.kind === "reminder" && item.data.urgency === "overdue") {
+    return "overdue";
+  }
+  return getTimeBucket(item.timestamp);
+}
 
 export function getTimeBucket(dateStr: string): TimeBucket {
   const now = new Date();
