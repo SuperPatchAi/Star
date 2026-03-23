@@ -39,7 +39,8 @@ alwaysApply: true
 - `products/[product]/page.tsx` — Product detail (reference only)
 - `onboarding/page.tsx` — New user onboarding carousel (Phase 1, outside AppShell)
 - `settings/page.tsx` — Settings page (profile photo/name/store URL, social links, notification preferences, appearance theme, account/password, about/onboarding replay)
-- `card/[subdomain]/page.tsx` — Public digital business card (no auth, OG metadata, social icons)
+- `card/[subdomain]/page.tsx` — Public digital business card (no auth, OG metadata, social icons, share as image)
+- `api/og/card/[subdomain]/route.tsx` — OG image generation (1200x630 PNG, edge runtime, Satori/next-og)
 - `api/cron/send-reminders/route.ts` — Vercel Cron endpoint: queries due reminders, sends push via `web-push`
 - `(auth)/login/page.tsx` — Login form
 - `(auth)/signup/page.tsx` — Invite-only signup
@@ -84,6 +85,10 @@ alwaysApply: true
 - `feed-entry.tsx` — Reminder card with one-tap call/email, script accordion, Mark Done/Snooze
 - `follow-up-calendar.tsx` — Week strip / full month calendar with reminder dots for the Activity page
 - `push-permission-banner.tsx` — Non-blocking push notification opt-in banner
+
+### Card (`src/components/card/`)
+- `business-card-display.tsx` — Client wrapper for public card with ref for screenshot capture + ShareCardButton
+- `share-card-button.tsx` — Captures card DOM as PNG via html-to-image, shares via Web Share API or downloads
 
 ### Settings (`src/components/settings/`)
 - `profile-section.tsx` — Avatar upload, full name edit, email display, SuperPatch store URL, My Links Card share

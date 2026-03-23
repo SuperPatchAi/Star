@@ -34,6 +34,7 @@ src/
 │   ├── onboarding/         # New user onboarding flow (carousel, tour, checklist)
 │   ├── settings/           # Settings page (profile, social links, notifications, appearance, account, about)
 │   ├── card/[subdomain]/   # Public digital business card (no auth required)
+│   ├── api/og/card/        # OG image generation for card social previews (edge runtime)
 │   └── api/auth/           # Auth API routes (signout)
 ├── components/
 │   ├── layout/             # AppShell, AppSidebar, BottomNav
@@ -42,6 +43,7 @@ src/
 │   ├── follow-ups/         # Notification bell, activity feed, feed entries
 │   ├── onboarding/         # Onboarding components (carousel, tour, checklist)
 │   ├── settings/           # Settings section components (profile, social links, notifications, appearance, account, about)
+│   ├── card/               # Business card components (BusinessCardDisplay, ShareCardButton)
 │   └── ui/                 # shadcn/ui primitives
 ├── lib/
 │   ├── auth.ts             # Auth helpers (getAuthUser, requireAdmin)
@@ -489,7 +491,8 @@ Users can replay the carousel or tour anytime from the user dropdown menu in the
 - Public route (no auth required, bypasses middleware auth guard and onboarding redirect)
 - Displays rep's avatar, name, "Visit My Store" link, and social media icons
 - Social icons link to full profile URLs using platform-specific prefixes
-- Open Graph metadata for rich link previews when shared on social media
+- **OG image endpoint** (`/api/og/card/[subdomain]`) generates a 1200x630 PNG preview using `next/og` (edge runtime, Satori engine) for rich social media previews on iMessage, Facebook, LinkedIn, Slack, etc.
+- **Share Card button** on the card page captures the card DOM as a PNG via `html-to-image`, then shares via Web Share API (native share sheet on iOS/Android) or downloads as a file
 - Shareable from Settings → Profile section via the "My Links Card" widget
 
 ---

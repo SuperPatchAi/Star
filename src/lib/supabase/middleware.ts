@@ -45,6 +45,7 @@ export async function updateSession(request: NextRequest) {
 
   // Allow API routes that need to be public
   const isPublicApiRoute = request.nextUrl.pathname.startsWith('/api/auth')
+    || request.nextUrl.pathname.startsWith('/api/og')
 
   if (
     !user &&
