@@ -18,6 +18,34 @@ import { updateProfile, uploadAvatar, updateStoreSubdomain } from "@/lib/actions
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import type { UserProfile } from "@/lib/db/types";
 
+const AVATAR_SIZE = 512;
+
+function processImage(file: File): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const side = Math.min(img.width, img.height);
+      const sx = (img.width - side) / 2;
+      const sy = (img.height - side) / 2;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = AVATAR_SIZE;
+      canvas.height = AVATAR_SIZE;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return reject(new Error("Canvas not supported"));
+
+      ctx.drawImage(img, sx, sy, side, side, 0, 0, AVATAR_SIZE, AVATAR_SIZE);
+      canvas.toBlob(
+        (blob) => (blob ? resolve(blob) : reject(new Error("Failed to process image"))),
+        "image/webp",
+        0.85,
+      );
+    };
+    img.onerror = () => reject(new Error("Failed to load image"));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
 interface ProfileSectionProps {
   profile: UserProfile | null;
   email: string;
@@ -48,20 +76,24 @@ export function ProfileSection({ profile, email }: ProfileSectionProps) {
     if (!file) return;
 
     setUploading(true);
-    const formData = new FormData();
-    formData.append("avatar", file);
+    try {
+      const processed = await processImage(file);
+      const formData = new FormData();
+      formData.append("avatar", new File([processed], "avatar.webp", { type: "image/webp" }));
 
-    const { url, error } = await uploadAvatar(formData);
-    setUploading(false);
-
-    if (error) {
-      toast.error(error);
-    } else if (url) {
-      setAvatarUrl(url);
-      toast.success("Photo updated");
+      const { url, error } = await uploadAvatar(formData);
+      if (error) {
+        toast.error(error);
+      } else if (url) {
+        setAvatarUrl(url);
+        toast.success("Photo updated");
+      }
+    } catch {
+      toast.error("Failed to process image");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
-
-    if (fileInputRef.current) fileInputRef.current.value = "";
   }, []);
 
   const handleSaveName = useCallback(async () => {
