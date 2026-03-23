@@ -101,7 +101,7 @@ export function ActivityFeed({ onCountChange }: ActivityFeedProps) {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       <PushPermissionBanner />
 
       <div className="flex items-center gap-2 px-4 py-3 border-b overflow-x-auto scrollbar-none">
@@ -127,7 +127,7 @@ export function ActivityFeed({ onCountChange }: ActivityFeedProps) {
         })}
       </div>
 
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 min-h-0">
         <div className="p-4 space-y-5">
           {SECTION_CONFIG.map(({ key, label, accent }) => {
             const sectionItems = grouped[key];
