@@ -23,6 +23,7 @@ import {
   MessageSquarePlus,
   SlidersHorizontal,
   MapPin,
+  CalendarPlus,
 } from "lucide-react";
 import { products } from "@/data/products";
 import type { Contact, ContactStep } from "@/lib/db/types";
@@ -54,6 +55,11 @@ function OutcomeIcon({ outcome }: { outcome: string }) {
     default:
       return <Circle className="size-5 text-muted-foreground/40" />;
   }
+}
+
+function formatShortDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
 function getTimeAgo(dateStr: string): string {
@@ -109,6 +115,37 @@ function getContextLine(contact: Contact): { text: string; accent?: string } {
   return { text: `${productNames} · ${step} · ${timeAgo}` };
 }
 
+type DateRangeKey = "all" | "today" | "this_week" | "this_month" | "this_quarter";
+
+const DATE_RANGE_FILTERS: { value: DateRangeKey; label: string }[] = [
+  { value: "all", label: "All Time" },
+  { value: "today", label: "Today" },
+  { value: "this_week", label: "This Week" },
+  { value: "this_month", label: "This Month" },
+  { value: "this_quarter", label: "Last 90 Days" },
+];
+
+function getDateRangeStart(range: DateRangeKey): Date | null {
+  if (range === "all") return null;
+  const now = new Date();
+  switch (range) {
+    case "today":
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    case "this_week": {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      d.setDate(d.getDate() - d.getDay());
+      return d;
+    }
+    case "this_month":
+      return new Date(now.getFullYear(), now.getMonth(), 1);
+    case "this_quarter": {
+      const d = new Date(now);
+      d.setDate(d.getDate() - 90);
+      return d;
+    }
+  }
+}
+
 type FilterKey = "all" | "pending" | "won" | "lost" | "follow_up" | "samples";
 
 const STAGE_FILTERS: { value: string; label: string }[] = [
@@ -126,11 +163,15 @@ export function ContactsTable({
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
   const [filterProduct, setFilterProduct] = useState<string>("all");
   const [filterStage, setFilterStage] = useState<string>(initialStageFilter || "all");
+  const [filterDateRange, setFilterDateRange] = useState<DateRangeKey>("all");
+
+  const dateRangeStart = getDateRangeStart(filterDateRange);
 
   const filtered = contacts.filter((c) => {
     if (filterProduct !== "all" && !c.product_ids.includes(filterProduct))
       return false;
     if (filterStage !== "all" && c.current_step !== filterStage) return false;
+    if (dateRangeStart && new Date(c.created_at) < dateRangeStart) return false;
     if (activeFilter === "pending" && c.outcome !== "pending") return false;
     if (activeFilter === "won" && c.outcome !== "won") return false;
     if (activeFilter === "lost" && c.outcome !== "lost") return false;
@@ -203,6 +244,22 @@ export function ContactsTable({
             {STAGE_FILTERS.map((s) => (
               <SelectItem key={s.value} value={s.value} className="text-xs">
                 {s.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select value={filterDateRange} onValueChange={(v) => setFilterDateRange(v as DateRangeKey)}>
+          <SelectTrigger className={cn(
+            "h-8 w-auto min-w-[100px] text-xs shrink-0",
+            filterDateRange !== "all" && "border-primary text-primary"
+          )}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {DATE_RANGE_FILTERS.map((d) => (
+              <SelectItem key={d.value} value={d.value} className="text-xs">
+                {d.label}
               </SelectItem>
             ))}
           </SelectContent>
@@ -313,12 +370,18 @@ export function ContactsTable({
                   <p className={cn("text-xs truncate", context.accent || "text-muted-foreground")}>
                     {context.text}
                   </p>
-                  {contact.address_line1 && (
-                    <p className="text-xs text-muted-foreground/70 truncate flex items-center gap-1 mt-0.5">
-                      <MapPin className="size-2.5 shrink-0" />
-                      {[contact.address_line1, contact.address_city, contact.address_state, contact.address_zip].filter(Boolean).join(", ")}
+                  <div className="flex items-center gap-2 mt-0.5">
+                    {contact.address_line1 && (
+                      <p className="text-xs text-muted-foreground/70 truncate flex items-center gap-1">
+                        <MapPin className="size-2.5 shrink-0" />
+                        {[contact.address_line1, contact.address_city, contact.address_state, contact.address_zip].filter(Boolean).join(", ")}
+                      </p>
+                    )}
+                    <p className="text-xs text-muted-foreground/50 flex items-center gap-1 shrink-0">
+                      <CalendarPlus className="size-2.5" />
+                      {formatShortDate(contact.created_at)}
                     </p>
-                  )}
+                  </div>
                 </div>
 
                 {/* Outcome icon */}
