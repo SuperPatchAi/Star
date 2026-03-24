@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -94,7 +94,21 @@ export default function PracticePage() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [productFilter, setProductFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [masteredCards, setMasteredCards] = useState<Set<string>>(new Set());
+  const [masteredCards, setMasteredCards] = useState<Set<string>>(() => {
+    if (typeof window === "undefined") return new Set<string>();
+    try {
+      const stored = localStorage.getItem("practice_mastered");
+      return stored ? new Set<string>(JSON.parse(stored)) : new Set<string>();
+    } catch {
+      return new Set<string>();
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("practice_mastered", JSON.stringify([...masteredCards]));
+    } catch { /* quota exceeded — ignore */ }
+  }, [masteredCards]);
 
   const filteredCards = useMemo(() => {
     return flashcards.filter((card) => {

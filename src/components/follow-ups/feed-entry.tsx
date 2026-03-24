@@ -8,6 +8,7 @@ import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { cn } from "@/lib/utils";
 import { interpolateScript } from "@/lib/interpolate-script";
 import { advanceFollowUpDay, dismissReminder } from "@/lib/actions/contacts";
+import { products } from "@/data/products";
 import type { FollowUpReminder } from "@/types/reminders";
 
 interface FeedEntryProps {
@@ -30,7 +31,9 @@ export function FeedEntry({ reminder, onAction }: FeedEntryProps) {
 
   const { contact, type, urgency, stageName, daysSinceEntry, followUpStep } = reminder;
   const fullName = `${contact.first_name} ${contact.last_name}`;
-  const productNames = contact.product_ids.join(", ");
+  const productNames = contact.product_ids
+    .map(id => products.find(p => p.id === id)?.name ?? id)
+    .join(", ");
 
   const contextLine =
     type === "followup_due" && followUpStep

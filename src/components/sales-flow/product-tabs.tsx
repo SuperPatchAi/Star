@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
 import type { Product } from "@/types";
 
 interface ProductTabsProps {

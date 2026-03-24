@@ -42,10 +42,10 @@ const TOUR_STEPS: TourStep[] = [
     placement: "bottom",
   },
   {
-    targets: ["activity-bottom-nav", "practice-nav"],
+    targets: ["activity-bottom-nav"],
     title: "Activities & Practice",
     message:
-      "Track your follow-up schedule and sharpen your skills with objection flashcards.",
+      "Track your follow-up schedule here. You'll also find objection flashcards under Practice in the menu.",
     placement: "top",
   },
 ];

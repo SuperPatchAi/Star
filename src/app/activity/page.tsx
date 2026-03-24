@@ -39,7 +39,7 @@ export default function ActivityPage() {
       />
 
       <div className="-mx-4 md:-mx-6 flex-1 min-h-0">
-        <ActivityFeed mode="reminders-only" onCountChange={handleCountChange} />
+        <ActivityFeed mode="reminders-only" selectedDate={selectedDate} onCountChange={handleCountChange} />
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import {
   FlaskConical,
@@ -22,8 +22,17 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { resetOnboarding } from "@/lib/actions/onboarding";
+import { getContacts } from "@/lib/actions/contacts";
 import { Badge } from "@/components/ui/badge";
-import type { UserProfile } from "@/lib/db/types";
+import {
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+} from "@/components/ui/command";
+import type { UserProfile, Contact } from "@/lib/db/types";
 
 import {
   Sidebar,
@@ -59,9 +68,34 @@ export function AppSidebar({
   ...props
 }: AppSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!searchOpen) return;
+    setSearchLoading(true);
+    getContacts().then(({ data }) => {
+      setContacts(data ?? []);
+      setSearchLoading(false);
+    });
+  }, [searchOpen]);
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      }
+    };
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
   }, []);
 
   const handleSignOut = async () => {
@@ -121,11 +155,15 @@ export function AppSidebar({
             <SidebarMenuButton
               className="w-full justify-start gap-2 bg-sidebar-accent/50"
               tooltip="Search"
+              onClick={() => setSearchOpen(true)}
             >
               <Search className="h-4 w-4" />
               <span className="group-data-[collapsible=icon]:hidden">
                 Search...
               </span>
+              <kbd className="pointer-events-none ml-auto hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex group-data-[collapsible=icon]:!hidden">
+                <span className="text-xs">⌘</span>K
+              </kbd>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -321,6 +359,30 @@ export function AppSidebar({
       </SidebarFooter>
 
       <SidebarRail />
+
+      <CommandDialog open={searchOpen} onOpenChange={setSearchOpen}>
+        <CommandInput placeholder="Search contacts..." />
+        <CommandList>
+          <CommandEmpty>
+            {searchLoading ? "Loading..." : "No contacts found."}
+          </CommandEmpty>
+          <CommandGroup heading="Contacts">
+            {contacts.map((c) => (
+              <CommandItem
+                key={c.id}
+                value={`${c.first_name} ${c.last_name}`}
+                onSelect={() => {
+                  setSearchOpen(false);
+                  router.push(`/contacts?openContact=${c.id}`);
+                }}
+              >
+                <Users className="mr-2 h-4 w-4" />
+                {c.first_name} {c.last_name}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
     </Sidebar>
   );
 }

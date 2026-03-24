@@ -94,6 +94,14 @@ export default function DashboardPage() {
     loadData();
   }, [loadData]);
 
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === "visible") loadData();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [loadData]);
+
   if (loading) {
     return (
       <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
@@ -202,7 +210,7 @@ export default function DashboardPage() {
             Recent Activity
           </h2>
           <Button variant="ghost" size="sm" className="text-xs h-7" asChild>
-            <Link href="/contacts">View all</Link>
+            <Link href="/activity">View all</Link>
           </Button>
         </div>
         {stats.recentActivity.length > 0 ? (
@@ -241,6 +249,13 @@ export default function DashboardPage() {
       </div>
 
       {/* Sales Analytics */}
+      {(!analytics || (analytics.topWinningQuestions.length === 0 && analytics.topLostObjections.length === 0)) && (
+        <div className="rounded-lg border border-dashed p-6 text-center">
+          <BarChart3 className="size-8 mx-auto text-muted-foreground/40 mb-2" />
+          <p className="text-sm font-medium text-muted-foreground">Complete your first sale to unlock performance insights</p>
+          <p className="text-xs text-muted-foreground/70 mt-1">Win/loss analytics, top questions, and best approaches will appear here.</p>
+        </div>
+      )}
       {analytics && (analytics.topWinningQuestions.length > 0 || analytics.topLostObjections.length > 0) && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {/* What's Working */}

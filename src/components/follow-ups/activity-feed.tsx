@@ -35,10 +35,15 @@ const SECTION_CONFIG: { key: TimeBucket; label: string; accent: string }[] = [
 
 interface ActivityFeedProps {
   mode?: "all" | "reminders-only";
+  selectedDate?: Date | null;
   onCountChange?: (count: number) => void;
 }
 
-export function ActivityFeed({ mode = "all", onCountChange }: ActivityFeedProps) {
+function isSameDay(a: Date, b: Date): boolean {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
+export function ActivityFeed({ mode = "all", selectedDate, onCountChange }: ActivityFeedProps) {
   const [items, setItems] = useState<UnifiedFeedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<FilterOption>("all");
@@ -72,10 +77,14 @@ export function ActivityFeed({ mode = "all", onCountChange }: ActivityFeedProps)
     fetchFeed();
   };
 
-  const filtered =
+  const bucketFiltered =
     filter === "all"
       ? items
       : items.filter((item) => getItemBucket(item) === filter);
+
+  const filtered = selectedDate
+    ? bucketFiltered.filter((item) => isSameDay(new Date(item.timestamp), selectedDate))
+    : bucketFiltered;
 
   const grouped: Record<TimeBucket, UnifiedFeedItem[]> = {
     overdue: [],

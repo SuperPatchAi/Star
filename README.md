@@ -29,7 +29,6 @@ src/
 │   ├── products/           # Product catalog (reference only)
 │   ├── evidence/           # Clinical evidence page
 │   ├── practice/           # Objection flashcards
-│   ├── favorites/          # Saved scripts/objections
 │   ├── roadmaps/           # Roadmap image gallery
 │   ├── onboarding/         # New user onboarding flow (carousel, tour, checklist)
 │   ├── settings/           # Settings page (profile, social links, notifications, appearance, account, about)
@@ -311,16 +310,18 @@ Shared card sub-component used by both mobile accordion and desktop DnD layouts.
 Full-width slide-out drawer that serves as the primary sales workspace:
 - **View mode**: Stacked layout with contact INFO section at top (summary, read-only stage display, contact details) and the full interactive `DecisionTree` component below
 - **New contact mode**: Opens `DecisionTree` at step 0 (`add_contact`) for creating a contact and immediately starting a sales conversation
-- **Edit mode**: Full field editing form for contact data
+- **Edit mode**: Full field editing form for contact data; manual Current Step and Outcome controls are collapsed behind an "Advanced" section to prevent accidental changes
 - The drawer replaces the old `/sales` page -- all sales conversations now happen inside the contact drawer
 - `DecisionTree` receives `variant="drawer"` which hides the page-level header, uses inline navigation buttons, and adds flush-on-unmount to prevent data loss when the drawer closes
 
 ### Dashboard (`src/app/dashboard/page.tsx`)
 Landing page with sales pipeline overview:
-- **Pipeline summary**: Stat cards (Active, Won, Lost, Win Rate) + per-stage progress bars
+- **Pipeline summary**: Stat cards (Active, Won, Lost, Win Rate) + per-stage progress bars with deep links to `/contacts?stage=`
 - **Today's follow-ups**: Shows overdue and due-today reminders with compact `FeedEntry` components
-- **Recent activity**: Last 10 contact updates with name, step, outcome, and relative timestamp
+- **Recent activity**: Last 10 contact updates with name, step, outcome, and relative timestamp; "View all" links to `/activity`
+- **Sales analytics**: What's Working / Watch Out / Discovery Depth sections; empty state card shown for new reps
 - **Performance stats**: Contacts this week, active conversations
+- **Auto-refresh**: `visibilitychange` listener re-fetches data when the tab becomes visible again
 
 ### FollowUpCalendar (`src/components/follow-ups/follow-up-calendar.tsx`)
 Premium mobile-first calendar on the Activity page:
@@ -391,6 +392,10 @@ npm run lint         # ESLint
 
 Products are accessible at `/products` and `/products/[product]` but are not in the main navigation — they serve as reference pages only.
 
+### Command Palette (`⌘K`)
+
+The sidebar search button opens a `CommandDialog` (cmdk) that lets reps search contacts by name. Selecting a result navigates to `/contacts?openContact={id}`, opening that contact's drawer. Contacts are fetched on dialog open. The shortcut `⌘K` (or `Ctrl+K`) toggles the palette globally.
+
 ### Mobile Navigation
 
 On mobile (below `md` breakpoint), the sidebar is replaced by a fixed bottom tab bar (`BottomNav`) with 4 tabs: **Dashboard**, **Contacts**, **Activity**, **Roadmaps**, and **More** (opens sidebar sheet). The sidebar hamburger trigger is hidden on mobile. The sales flow has a sticky Previous/Next footer above the bottom nav for step navigation.
@@ -454,7 +459,6 @@ The app includes a comprehensive mobile-first experience informed by HubSpot, Pi
 - **Responsive form layouts** that stack to single columns on small screens (contact fields, address forms, contact sheet)
 - **Responsive filters** on contacts page: full-width search + 3-column filter row on mobile
 - **Stacked action buttons** on product detail, contacts page header
-- **Scrollable TabsList** on favorites page to prevent overflow
 - **Wrapped key stats** on evidence page for narrow viewports
 - **Responsive flashcard controls** with grid layout on mobile
 
@@ -603,7 +607,6 @@ Every user-facing script and speakable text has a share-or-copy button powered b
 | `reference-tabs-view.tsx` | All scripts across Discovery, Samples, Follow-Up, Close, and Quick Ref tabs |
 | `feed-entry.tsx` | Follow-up script templates in activity feed |
 | `contact-sheet.tsx` | Active follow-up script on contact detail |
-| `favorites/page.tsx` | Saved scripts, objections, and product references |
 
 On mobile, share/copy buttons are always visible; on desktop they appear on hover (`md:opacity-0 md:group-hover:opacity-100`).
 

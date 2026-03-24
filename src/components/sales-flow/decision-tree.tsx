@@ -387,14 +387,27 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
           />
         );
       case "rapport": {
-        const firstRoadmap = Object.values(roadmaps)[0];
+        if (contactProducts.length === 0) {
+          return (
+            <StepRapport
+              rapportData={null}
+              contactFirstName={contactFirstName}
+              onContinue={goNext}
+              continueLabel={continueLabel}
+            />
+          );
+        }
         return (
-          <StepRapport
-            rapportData={firstRoadmap?.sections["2b_rapport_story"] ?? null}
-            contactFirstName={contactFirstName}
-            onContinue={goNext}
-            continueLabel={continueLabel}
-          />
+          <ProductTabs products={contactProducts}>
+            {(product) => (
+              <StepRapport
+                rapportData={roadmaps[product.id]?.sections["2b_rapport_story"] ?? null}
+                contactFirstName={contactFirstName}
+                onContinue={goNext}
+                continueLabel={continueLabel}
+              />
+            )}
+          </ProductTabs>
         );
       }
       case "discovery":

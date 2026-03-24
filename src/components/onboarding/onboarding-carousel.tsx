@@ -25,7 +25,7 @@ const SLIDES = [
   {
     icon: MessageSquarePlus,
     headline: "Your guided sales conversations",
-    subtitle: "Follow an 8-step scripted flow from opening to close. Every word track at your fingertips.",
+    subtitle: "Follow a 7-step scripted flow from opening to close. Every word track at your fingertips.",
     gradient: "bg-gradient-to-br from-blue-600 to-indigo-800",
   },
   {

@@ -30,7 +30,13 @@ import {
   Check,
   Plus,
   Package,
+  ChevronDown,
 } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import Image from "next/image";
 import { createContact, updateContact, updateContactOutcome } from "@/lib/actions/contacts";
 import { products } from "@/data/products";
@@ -729,36 +735,44 @@ function EditMode({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="space-y-2">
-            <Label>Current Step</Label>
-            <Select value={currentStep} onValueChange={(v) => setCurrentStep(v as ContactStep)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {SALES_STEPS.map((step) => (
-                  <SelectItem key={step.id} value={step.id}>{step.label}</SelectItem>
-                ))}
-                <SelectItem value="closed">Closed</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label>Outcome</Label>
-            <Select value={outcome} onValueChange={(v) => setOutcome(v as ContactOutcome)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="won">Won</SelectItem>
-                <SelectItem value="lost">Lost</SelectItem>
-                <SelectItem value="follow_up">Follow Up</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
+        <Collapsible>
+          <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md border px-3 py-2 text-sm text-muted-foreground hover:bg-accent transition-colors [&[data-state=open]>svg]:rotate-180">
+            Advanced
+            <ChevronDown className="size-4 transition-transform" />
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
+              <div className="space-y-2">
+                <Label>Current Step</Label>
+                <Select value={currentStep} onValueChange={(v) => setCurrentStep(v as ContactStep)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SALES_STEPS.map((step) => (
+                      <SelectItem key={step.id} value={step.id}>{step.label}</SelectItem>
+                    ))}
+                    <SelectItem value="closed">Closed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Outcome</Label>
+                <Select value={outcome} onValueChange={(v) => setOutcome(v as ContactOutcome)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="won">Won</SelectItem>
+                    <SelectItem value="lost">Lost</SelectItem>
+                    <SelectItem value="follow_up">Follow Up</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
 
         <div className="space-y-2">
           <Label htmlFor="notes">Notes</Label>
