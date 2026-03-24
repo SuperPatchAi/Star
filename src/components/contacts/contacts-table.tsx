@@ -233,80 +233,100 @@ export function ContactsTable({
             </button>
           ))}
         </div>
-        <Select value={filterStage} onValueChange={setFilterStage}>
-          <SelectTrigger className={cn(
-            "h-8 w-auto min-w-[120px] text-xs shrink-0",
-            filterStage !== "all" && "border-primary text-primary"
-          )}>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {STAGE_FILTERS.map((s) => (
-              <SelectItem key={s.value} value={s.value} className="text-xs">
-                {s.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select value={filterDateRange} onValueChange={(v) => setFilterDateRange(v as DateRangeKey)}>
-          <SelectTrigger className={cn(
-            "h-8 w-auto min-w-[100px] text-xs shrink-0",
-            filterDateRange !== "all" && "border-primary text-primary"
-          )}>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {DATE_RANGE_FILTERS.map((d) => (
-              <SelectItem key={d.value} value={d.value} className="text-xs">
-                {d.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
               className={cn(
-                "size-9 shrink-0",
-                filterProduct !== "all" && "text-primary"
+                "size-9 shrink-0 relative",
+                (filterStage !== "all" || filterDateRange !== "all" || filterProduct !== "all") && "text-primary"
               )}
             >
               <SlidersHorizontal className="size-4" />
+              {(filterStage !== "all" || filterDateRange !== "all" || filterProduct !== "all") && (
+                <span className="absolute top-1 right-1 size-2 rounded-full bg-primary" />
+              )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent align="end" className="w-48 p-2">
-            <p className="text-xs font-medium text-muted-foreground px-2 pb-1.5">
-              Product
-            </p>
-            <button
-              onClick={() => setFilterProduct("all")}
-              className={cn(
-                "w-full text-left text-sm px-2 py-1.5 rounded-md transition-colors",
-                filterProduct === "all"
-                  ? "bg-muted font-medium"
-                  : "hover:bg-muted/60"
-              )}
-            >
-              All Products
-            </button>
-            {products.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => setFilterProduct(p.id)}
-                className={cn(
-                  "w-full text-left text-sm px-2 py-1.5 rounded-md transition-colors",
-                  filterProduct === p.id
-                    ? "bg-muted font-medium"
-                    : "hover:bg-muted/60"
-                )}
+          <PopoverContent align="end" className="w-56 p-3 space-y-4">
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-muted-foreground">Stage</p>
+              <Select value={filterStage} onValueChange={setFilterStage}>
+                <SelectTrigger className="h-8 text-xs w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {STAGE_FILTERS.map((s) => (
+                    <SelectItem key={s.value} value={s.value} className="text-xs">
+                      {s.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-muted-foreground">Added</p>
+              <Select value={filterDateRange} onValueChange={(v) => setFilterDateRange(v as DateRangeKey)}>
+                <SelectTrigger className="h-8 text-xs w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {DATE_RANGE_FILTERS.map((d) => (
+                    <SelectItem key={d.value} value={d.value} className="text-xs">
+                      {d.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-muted-foreground">Product</p>
+              <div className="max-h-48 overflow-y-auto -mx-1 px-1">
+                <button
+                  onClick={() => setFilterProduct("all")}
+                  className={cn(
+                    "w-full text-left text-sm px-2 py-1.5 rounded-md transition-colors",
+                    filterProduct === "all"
+                      ? "bg-muted font-medium"
+                      : "hover:bg-muted/60"
+                  )}
+                >
+                  All Products
+                </button>
+                {products.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => setFilterProduct(p.id)}
+                    className={cn(
+                      "w-full text-left text-sm px-2 py-1.5 rounded-md transition-colors",
+                      filterProduct === p.id
+                        ? "bg-muted font-medium"
+                        : "hover:bg-muted/60"
+                    )}
+                  >
+                    {p.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {(filterStage !== "all" || filterDateRange !== "all" || filterProduct !== "all") && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full text-xs h-7"
+                onClick={() => {
+                  setFilterStage("all");
+                  setFilterDateRange("all");
+                  setFilterProduct("all");
+                }}
               >
-                {p.name}
-              </button>
-            ))}
+                Clear all filters
+              </Button>
+            )}
           </PopoverContent>
         </Popover>
       </div>
