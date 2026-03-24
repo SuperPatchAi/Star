@@ -8,6 +8,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import {
   CheckCircle,
   XCircle,
   Circle,
@@ -28,6 +35,7 @@ interface ContactsTableProps {
   contacts: Contact[];
   onEdit: (contact: Contact) => void;
   onStartNew?: () => void;
+  initialStageFilter?: string | null;
 }
 
 const stepLabels: Record<string, string> = Object.fromEntries([
@@ -103,17 +111,26 @@ function getContextLine(contact: Contact): { text: string; accent?: string } {
 
 type FilterKey = "all" | "pending" | "won" | "lost" | "follow_up" | "samples";
 
+const STAGE_FILTERS: { value: string; label: string }[] = [
+  { value: "all", label: "All Stages" },
+  ...SALES_STEPS.filter(s => s.id !== "add_contact").map(s => ({ value: s.id, label: s.label })),
+  { value: "closed", label: "Closed" },
+];
+
 export function ContactsTable({
   contacts,
   onEdit,
   onStartNew,
+  initialStageFilter,
 }: ContactsTableProps) {
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
   const [filterProduct, setFilterProduct] = useState<string>("all");
+  const [filterStage, setFilterStage] = useState<string>(initialStageFilter || "all");
 
   const filtered = contacts.filter((c) => {
     if (filterProduct !== "all" && !c.product_ids.includes(filterProduct))
       return false;
+    if (filterStage !== "all" && c.current_step !== filterStage) return false;
     if (activeFilter === "pending" && c.outcome !== "pending") return false;
     if (activeFilter === "won" && c.outcome !== "won") return false;
     if (activeFilter === "lost" && c.outcome !== "lost") return false;
@@ -175,6 +192,22 @@ export function ContactsTable({
             </button>
           ))}
         </div>
+        <Select value={filterStage} onValueChange={setFilterStage}>
+          <SelectTrigger className={cn(
+            "h-8 w-auto min-w-[120px] text-xs shrink-0",
+            filterStage !== "all" && "border-primary text-primary"
+          )}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {STAGE_FILTERS.map((s) => (
+              <SelectItem key={s.value} value={s.value} className="text-xs">
+                {s.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
         <Popover>
           <PopoverTrigger asChild>
             <Button

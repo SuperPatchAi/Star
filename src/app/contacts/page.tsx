@@ -32,6 +32,7 @@ export default function ContactsPage() {
   const [search, setSearch] = useState("");
   const isMobile = useIsMobile();
   const [openContactHandled, setOpenContactHandled] = useState(false);
+  const initialStage = searchParams.get("stage");
 
   const fetchContacts = useCallback(async () => {
     setLoading(true);
@@ -231,7 +232,7 @@ export default function ContactsPage() {
           </div>
         )
       ) : view === "list" ? (
-        <ContactsTable contacts={searchFiltered} onEdit={handleEdit} onStartNew={handleAdd} />
+        <ContactsTable contacts={searchFiltered} onEdit={handleEdit} onStartNew={handleAdd} initialStageFilter={initialStage} />
       ) : (
         <ContactsKanban
           contacts={searchFiltered}

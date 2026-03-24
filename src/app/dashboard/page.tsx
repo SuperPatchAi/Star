@@ -157,7 +157,7 @@ export default function DashboardPage() {
             return (
               <Link
                 key={stepId}
-                href="/contacts"
+                href={`/contacts?stage=${stepId}`}
                 className="flex items-center gap-3 rounded-md px-2 py-1.5 -mx-2 transition-colors hover:bg-muted/50 active:bg-muted"
               >
                 <span className="text-xs text-muted-foreground w-24 truncate">{STEP_LABELS[stepId] || stepId}</span>
