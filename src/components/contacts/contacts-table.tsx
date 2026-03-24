@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Popover,
   PopoverContent,
@@ -148,11 +149,15 @@ function getDateRangeStart(range: DateRangeKey): Date | null {
 
 type FilterKey = "all" | "pending" | "won" | "lost" | "follow_up" | "samples";
 
-const STAGE_FILTERS: { value: string; label: string }[] = [
-  { value: "all", label: "All Stages" },
+const STAGE_OPTIONS: { value: string; label: string }[] = [
   ...SALES_STEPS.filter(s => s.id !== "add_contact").map(s => ({ value: s.id, label: s.label })),
   { value: "closed", label: "Closed" },
 ];
+
+const PRODUCT_OPTIONS: { value: string; label: string }[] = products.map(p => ({
+  value: p.id,
+  label: p.name,
+}));
 
 export function ContactsTable({
   contacts,
@@ -161,16 +166,21 @@ export function ContactsTable({
   initialStageFilter,
 }: ContactsTableProps) {
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
-  const [filterProduct, setFilterProduct] = useState<string>("all");
-  const [filterStage, setFilterStage] = useState<string>(initialStageFilter || "all");
+  const [filterProducts, setFilterProducts] = useState<string[]>([]);
+  const [filterStages, setFilterStages] = useState<string[]>(
+    initialStageFilter ? [initialStageFilter] : []
+  );
   const [filterDateRange, setFilterDateRange] = useState<DateRangeKey>("all");
+
+  const toggleArrayItem = (arr: string[], item: string) =>
+    arr.includes(item) ? arr.filter(i => i !== item) : [...arr, item];
 
   const dateRangeStart = getDateRangeStart(filterDateRange);
 
   const filtered = contacts.filter((c) => {
-    if (filterProduct !== "all" && !c.product_ids.includes(filterProduct))
+    if (filterProducts.length > 0 && !c.product_ids.some(id => filterProducts.includes(id)))
       return false;
-    if (filterStage !== "all" && c.current_step !== filterStage) return false;
+    if (filterStages.length > 0 && !filterStages.includes(c.current_step)) return false;
     if (dateRangeStart && new Date(c.created_at) < dateRangeStart) return false;
     if (activeFilter === "pending" && c.outcome !== "pending") return false;
     if (activeFilter === "won" && c.outcome !== "won") return false;
@@ -240,30 +250,37 @@ export function ContactsTable({
               size="icon"
               className={cn(
                 "size-9 shrink-0 relative",
-                (filterStage !== "all" || filterDateRange !== "all" || filterProduct !== "all") && "text-primary"
+                (filterStages.length > 0 || filterDateRange !== "all" || filterProducts.length > 0) && "text-primary"
               )}
             >
               <SlidersHorizontal className="size-4" />
-              {(filterStage !== "all" || filterDateRange !== "all" || filterProduct !== "all") && (
+              {(filterStages.length > 0 || filterDateRange !== "all" || filterProducts.length > 0) && (
                 <span className="absolute top-1 right-1 size-2 rounded-full bg-primary" />
               )}
             </Button>
           </PopoverTrigger>
           <PopoverContent align="end" className="w-56 p-3 space-y-4">
             <div className="space-y-1.5">
-              <p className="text-xs font-medium text-muted-foreground">Stage</p>
-              <Select value={filterStage} onValueChange={setFilterStage}>
-                <SelectTrigger className="h-8 text-xs w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {STAGE_FILTERS.map((s) => (
-                    <SelectItem key={s.value} value={s.value} className="text-xs">
-                      {s.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <p className="text-xs font-medium text-muted-foreground">
+                Stage {filterStages.length > 0 && `(${filterStages.length})`}
+              </p>
+              <div className="max-h-40 overflow-y-auto space-y-0.5">
+                {STAGE_OPTIONS.map((s) => (
+                  <button
+                    key={s.value}
+                    type="button"
+                    onClick={() => setFilterStages(toggleArrayItem(filterStages, s.value))}
+                    className="flex items-center gap-2 w-full rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-muted/50"
+                  >
+                    <Checkbox
+                      checked={filterStages.includes(s.value)}
+                      onCheckedChange={() => setFilterStages(toggleArrayItem(filterStages, s.value))}
+                      className="pointer-events-none"
+                    />
+                    <span className="truncate">{s.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="space-y-1.5">
@@ -283,45 +300,37 @@ export function ContactsTable({
             </div>
 
             <div className="space-y-1.5">
-              <p className="text-xs font-medium text-muted-foreground">Product</p>
-              <div className="max-h-48 overflow-y-auto -mx-1 px-1">
-                <button
-                  onClick={() => setFilterProduct("all")}
-                  className={cn(
-                    "w-full text-left text-sm px-2 py-1.5 rounded-md transition-colors",
-                    filterProduct === "all"
-                      ? "bg-muted font-medium"
-                      : "hover:bg-muted/60"
-                  )}
-                >
-                  All Products
-                </button>
-                {products.map((p) => (
+              <p className="text-xs font-medium text-muted-foreground">
+                Product {filterProducts.length > 0 && `(${filterProducts.length})`}
+              </p>
+              <div className="max-h-40 overflow-y-auto space-y-0.5">
+                {PRODUCT_OPTIONS.map((p) => (
                   <button
-                    key={p.id}
-                    onClick={() => setFilterProduct(p.id)}
-                    className={cn(
-                      "w-full text-left text-sm px-2 py-1.5 rounded-md transition-colors",
-                      filterProduct === p.id
-                        ? "bg-muted font-medium"
-                        : "hover:bg-muted/60"
-                    )}
+                    key={p.value}
+                    type="button"
+                    onClick={() => setFilterProducts(toggleArrayItem(filterProducts, p.value))}
+                    className="flex items-center gap-2 w-full rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-muted/50"
                   >
-                    {p.name}
+                    <Checkbox
+                      checked={filterProducts.includes(p.value)}
+                      onCheckedChange={() => setFilterProducts(toggleArrayItem(filterProducts, p.value))}
+                      className="pointer-events-none"
+                    />
+                    <span className="truncate">{p.label}</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            {(filterStage !== "all" || filterDateRange !== "all" || filterProduct !== "all") && (
+            {(filterStages.length > 0 || filterDateRange !== "all" || filterProducts.length > 0) && (
               <Button
                 variant="ghost"
                 size="sm"
                 className="w-full text-xs h-7"
                 onClick={() => {
-                  setFilterStage("all");
+                  setFilterStages([]);
                   setFilterDateRange("all");
-                  setFilterProduct("all");
+                  setFilterProducts([]);
                 }}
               >
                 Clear all filters
