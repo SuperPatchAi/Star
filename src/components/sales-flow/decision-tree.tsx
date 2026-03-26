@@ -16,7 +16,7 @@ import { products as allProducts } from "@/data/products";
 import { updateContact, advanceFollowUpDay, markSamplesReceived } from "@/lib/actions/contacts";
 import { getStoreSubdomain, getSocialLinks, getMyProfile } from "@/lib/actions/profile";
 import type { SocialLinks } from "@/lib/db/types";
-import { getRoadmapsForProducts } from "@/lib/roadmap-data";
+import { getRoadmapsForProducts, getAllRoadmapSpecs } from "@/lib/roadmap-data";
 import { StepAddContact } from "./step-add-contact";
 import { StepRapport } from "./step-rapport";
 import { StepDiscoveryV2 } from "./step-discovery-v2";
@@ -387,21 +387,12 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
           />
         );
       case "rapport": {
-        if (contactProducts.length === 0) {
-          return (
-            <StepRapport
-              rapportData={null}
-              contactFirstName={contactFirstName}
-              onContinue={goNext}
-              continueLabel={continueLabel}
-            />
-          );
-        }
+        const allRoadmaps = getAllRoadmapSpecs();
         return (
-          <ProductTabs products={contactProducts}>
+          <ProductTabs products={allProducts}>
             {(product) => (
               <StepRapport
-                rapportData={roadmaps[product.id]?.sections["2b_rapport_story"] ?? null}
+                rapportData={allRoadmaps[product.id]?.sections["2b_rapport_story"] ?? null}
                 contactFirstName={contactFirstName}
                 onContinue={goNext}
                 continueLabel={continueLabel}

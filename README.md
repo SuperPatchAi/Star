@@ -76,7 +76,7 @@ The core feature is a 7-step guided sales conversation. Rapport-first approach b
 
 ```
 1. Add Contact      → Create contact with first/last name (no product selection)
-2. Rapport          → Per-product personal story scripts (how the rep discovered the product), talking points, and transition bridge to discovery
+2. Rapport          → All 13 product stories shown as selectable pills so the rep picks whichever resonates with their personal experience (decoupled from the contact's product fit, which is determined in discovery)
 3. Discovery        → 5 universal questions: category selection, quality rating (1-10), duration, what they've tried, results
 4. Send Samples     → Auto-suggested product from discovery category, address collection
 5. Follow-Up        → 7-day sequence with 1-10 rating at each touchpoint, category-contextual scripts
@@ -101,7 +101,7 @@ User lands on /contacts
          ▼
 ┌─────────────────────────────────────────┐
 │  Step 2: Rapport Building               │
-│  Per-product personal story scripts     │
+│  All product story pills (rep's choice) │
 │  Read-only → bridges into Discovery     │
 └─────────────────────────────────────────┘
          │

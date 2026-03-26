@@ -48,7 +48,7 @@ alwaysApply: true
 ### Sales Flow (`src/components/sales-flow/`)
 - `decision-tree.tsx` — Central orchestrator (7 steps, auto-save, contact gating, `variant="drawer"` for embedded use, dynamic `continueLabel`, timestamped question/objection tracking, fetches `storeSubdomain` on mount)
 - `step-add-contact.tsx` — Step 1: create contact + select products (gate)
-- `step-rapport.tsx` — Step 2: per-product personal story scripts (how the rep discovered the product), talking points, transition bridge to discovery (read-only, no persisted state)
+- `step-rapport.tsx` — Step 2: all 13 product stories shown as selectable pills (rep picks whichever story resonates with their experience, decoupled from contact's product fit); talking points, transition bridge to discovery (read-only, no persisted state)
 - `step-discovery-v2.tsx` — Step 3: 5 universal discovery questions (category, quality rating 1-10, duration, what they've tried, results)
 - `step-send-samples.tsx` — Step 4: 2-script sample flow (offer, commitment) + product picker + address
 - `step-followup.tsx` — Step 5: 7-task follow-up sequence (shipping, arrival+checkbox, Zoom demo, experience check-in, product-specific follow-up, reorder+referral, ask for the close)
