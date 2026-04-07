@@ -142,38 +142,71 @@ export function StepSendSamples({
             <Label>Which products to send?</Label>
 
             {/* Suggested product cards */}
-            {suggestedProducts.map((sp) => (
-              <button
-                key={sp.id}
-                type="button"
-                onClick={() => onToggleSampleProduct(sp.id)}
-                className={`w-full flex items-center gap-3 p-3 rounded-lg border-2 text-left transition-all ${
-                  sampleProducts.includes(sp.id)
-                    ? "ring-2 ring-primary border-primary bg-primary/5"
-                    : "border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/30 hover:border-primary/50"
-                }`}
-              >
-                <div className="relative size-10 flex-shrink-0 rounded-full overflow-hidden bg-muted">
-                  <Image
-                    src={sp.image}
-                    alt={sp.name}
-                    fill
-                    className="object-cover"
-                    sizes="40px"
-                  />
+            {suggestedProducts.map((sp) => {
+              const isSelected = sampleProducts.includes(sp.id);
+              const qty = sampleQuantities[sp.id] ?? 1;
+              return (
+                <div
+                  key={sp.id}
+                  className={`w-full rounded-lg border-2 transition-all ${
+                    isSelected
+                      ? "ring-2 ring-primary border-primary bg-primary/5"
+                      : "border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/30 hover:border-primary/50"
+                  }`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => onToggleSampleProduct(sp.id)}
+                    className="w-full flex items-center gap-3 p-3 text-left"
+                  >
+                    <div className="relative size-10 flex-shrink-0 rounded-full overflow-hidden bg-muted">
+                      <Image
+                        src={sp.image}
+                        alt={sp.name}
+                        fill
+                        className="object-cover"
+                        sizes="40px"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-sm font-semibold block">{sp.name}</span>
+                      <Badge variant="secondary" className="mt-1 text-xs gap-1">
+                        <Sparkles className="size-3" />
+                        Recommended based on their needs
+                      </Badge>
+                    </div>
+                    {isSelected && <Check className="size-4 text-primary shrink-0" />}
+                  </button>
+                  {isSelected && (
+                    <div className="flex items-center justify-between gap-2 px-3 pb-3 pt-0">
+                      <span className="text-xs text-muted-foreground">Qty to send</span>
+                      <div className="flex items-center gap-1.5">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          className="size-7"
+                          disabled={qty <= 1}
+                          onClick={(e) => { e.stopPropagation(); onSetSampleQuantity(sp.id, Math.max(1, qty - 1)); }}
+                        >
+                          <Minus className="size-3" />
+                        </Button>
+                        <span className="w-6 text-center text-sm font-medium tabular-nums">{qty}</span>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          className="size-7"
+                          onClick={(e) => { e.stopPropagation(); onSetSampleQuantity(sp.id, qty + 1); }}
+                        >
+                          <Plus className="size-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <span className="text-sm font-semibold block">{sp.name}</span>
-                  <Badge variant="secondary" className="mt-1 text-xs gap-1">
-                    <Sparkles className="size-3" />
-                    Recommended based on their needs
-                  </Badge>
-                </div>
-                {sampleProducts.includes(sp.id) && (
-                  <Check className="size-4 text-primary shrink-0" />
-                )}
-              </button>
-            ))}
+              );
+            })}
 
             {/* Collapsible for other products */}
             {suggestedProducts.length > 0 ? (
@@ -193,29 +226,48 @@ export function StepSendSamples({
                   <div className="grid grid-cols-2 gap-2 pt-2">
                     {otherProducts.map((product) => {
                       const isSelected = sampleProducts.includes(product.id);
+                      const qty = sampleQuantities[product.id] ?? 1;
                       return (
-                        <button
+                        <div
                           key={product.id}
-                          type="button"
-                          onClick={() => onToggleSampleProduct(product.id)}
-                          className={`flex items-center gap-2 p-2 rounded-lg border text-left transition-all ${
+                          className={`rounded-lg border text-left transition-all ${
                             isSelected
                               ? "ring-2 ring-primary border-primary bg-primary/5"
                               : "border-border hover:border-primary/50"
                           }`}
                         >
-                          <div className="relative size-7 flex-shrink-0 rounded-full overflow-hidden bg-muted">
-                            <Image
-                              src={product.image}
-                              alt={product.name}
-                              fill
-                              className="object-cover"
-                              sizes="28px"
-                            />
-                          </div>
-                          <span className="text-sm truncate">{product.name}</span>
-                          {isSelected && <Check className="size-3.5 text-primary shrink-0 ml-auto" />}
-                        </button>
+                          <button
+                            type="button"
+                            onClick={() => onToggleSampleProduct(product.id)}
+                            className="w-full flex items-center gap-2 p-2"
+                          >
+                            <div className="relative size-7 flex-shrink-0 rounded-full overflow-hidden bg-muted">
+                              <Image
+                                src={product.image}
+                                alt={product.name}
+                                fill
+                                className="object-cover"
+                                sizes="28px"
+                              />
+                            </div>
+                            <span className="text-sm truncate">{product.name}</span>
+                            {isSelected && <Check className="size-3.5 text-primary shrink-0 ml-auto" />}
+                          </button>
+                          {isSelected && (
+                            <div className="flex items-center justify-between gap-1 px-2 pb-2">
+                              <span className="text-[10px] text-muted-foreground">Qty</span>
+                              <div className="flex items-center gap-1">
+                                <Button type="button" variant="outline" size="icon" className="size-6" disabled={qty <= 1} onClick={(e) => { e.stopPropagation(); onSetSampleQuantity(product.id, Math.max(1, qty - 1)); }}>
+                                  <Minus className="size-2.5" />
+                                </Button>
+                                <span className="w-5 text-center text-xs font-medium tabular-nums">{qty}</span>
+                                <Button type="button" variant="outline" size="icon" className="size-6" onClick={(e) => { e.stopPropagation(); onSetSampleQuantity(product.id, qty + 1); }}>
+                                  <Plus className="size-2.5" />
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       );
                     })}
                   </div>
@@ -225,70 +277,57 @@ export function StepSendSamples({
               <div className="grid grid-cols-2 gap-2">
                 {products.map((product) => {
                   const isSelected = sampleProducts.includes(product.id);
+                  const qty = sampleQuantities[product.id] ?? 1;
                   return (
-                    <button
+                    <div
                       key={product.id}
-                      type="button"
-                      onClick={() => onToggleSampleProduct(product.id)}
-                      className={`flex items-center gap-2 p-2 rounded-lg border text-left transition-all ${
+                      className={`rounded-lg border text-left transition-all ${
                         isSelected
                           ? "ring-2 ring-primary border-primary bg-primary/5"
                           : "border-border hover:border-primary/50"
                       }`}
                     >
-                      <div className="relative size-7 flex-shrink-0 rounded-full overflow-hidden bg-muted">
-                        <Image
-                          src={product.image}
-                          alt={product.name}
-                          fill
-                          className="object-cover"
-                          sizes="28px"
-                        />
-                      </div>
-                      <span className="text-sm truncate">{product.name}</span>
-                      {isSelected && <Check className="size-3.5 text-primary shrink-0 ml-auto" />}
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => onToggleSampleProduct(product.id)}
+                        className="w-full flex items-center gap-2 p-2"
+                      >
+                        <div className="relative size-7 flex-shrink-0 rounded-full overflow-hidden bg-muted">
+                          <Image
+                            src={product.image}
+                            alt={product.name}
+                            fill
+                            className="object-cover"
+                            sizes="28px"
+                          />
+                        </div>
+                        <span className="text-sm truncate">{product.name}</span>
+                        {isSelected && <Check className="size-3.5 text-primary shrink-0 ml-auto" />}
+                      </button>
+                      {isSelected && (
+                        <div className="flex items-center justify-between gap-1 px-2 pb-2">
+                          <span className="text-[10px] text-muted-foreground">Qty</span>
+                          <div className="flex items-center gap-1">
+                            <Button type="button" variant="outline" size="icon" className="size-6" disabled={qty <= 1} onClick={(e) => { e.stopPropagation(); onSetSampleQuantity(product.id, Math.max(1, qty - 1)); }}>
+                              <Minus className="size-2.5" />
+                            </Button>
+                            <span className="w-5 text-center text-xs font-medium tabular-nums">{qty}</span>
+                            <Button type="button" variant="outline" size="icon" className="size-6" onClick={(e) => { e.stopPropagation(); onSetSampleQuantity(product.id, qty + 1); }}>
+                              <Plus className="size-2.5" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>
             )}
 
             {sampleProducts.length > 0 && (
-              <div className="space-y-2 border-t pt-3 mt-2">
-                <p className="text-xs font-medium text-muted-foreground">Quantity per product</p>
-                {sampleProducts.map((pid) => {
-                  const p = getProductById(pid);
-                  if (!p) return null;
-                  const qty = sampleQuantities[pid] ?? 1;
-                  return (
-                    <div key={pid} className="flex items-center justify-between gap-2">
-                      <span className="text-sm truncate">{p.name}</span>
-                      <div className="flex items-center gap-1.5">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          className="size-7"
-                          disabled={qty <= 1}
-                          onClick={() => onSetSampleQuantity(pid, Math.max(1, qty - 1))}
-                        >
-                          <Minus className="size-3" />
-                        </Button>
-                        <span className="w-6 text-center text-sm font-medium tabular-nums">{qty}</span>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          className="size-7"
-                          onClick={() => onSetSampleQuantity(pid, qty + 1)}
-                        >
-                          <Plus className="size-3" />
-                        </Button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              <p className="text-xs text-muted-foreground">
+                {sampleProducts.length} product{sampleProducts.length !== 1 ? "s" : ""} selected
+              </p>
             )}
           </div>
 
