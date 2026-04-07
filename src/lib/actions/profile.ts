@@ -191,11 +191,12 @@ export async function getPublicProfile(subdomain: string): Promise<{
   avatar_url: string | null;
   store_subdomain: string;
   social_links: SocialLinks;
+  bydesign_rank: string | null;
 } | null> {
   const adminClient = await createAdminClient();
   const { data } = await (adminClient as SupabaseAny)
     .from("user_profiles")
-    .select("full_name, avatar_url, store_subdomain, social_links")
+    .select("full_name, avatar_url, store_subdomain, social_links, bydesign_rank")
     .eq("store_subdomain", subdomain)
     .eq("is_active", true)
     .single();
@@ -206,6 +207,7 @@ export async function getPublicProfile(subdomain: string): Promise<{
     avatar_url: data.avatar_url,
     store_subdomain: data.store_subdomain,
     social_links: (data.social_links as SocialLinks) ?? {},
+    bydesign_rank: data.bydesign_rank ?? null,
   };
 }
 

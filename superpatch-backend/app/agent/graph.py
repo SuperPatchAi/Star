@@ -15,6 +15,7 @@ from app.agent.nodes import (
     skill_executor,
     coaching_assessment,
     coaching_progress,
+    team_query,
     general_chat,
     generate_response,
 )
@@ -35,6 +36,7 @@ builder.add_node("analytics_query", analytics_query)
 builder.add_node("skill_executor", skill_executor)
 builder.add_node("coaching_assessment", coaching_assessment)
 builder.add_node("coaching_progress", coaching_progress)
+builder.add_node("team_query", team_query)
 builder.add_node("general_chat", general_chat)
 builder.add_node("generate_response", generate_response)
 
@@ -52,6 +54,7 @@ builder.add_conditional_edges(
         "skill_executor": "skill_executor",
         "coaching_assessment": "coaching_assessment",
         "coaching_progress": "coaching_progress",
+        "team_query": "team_query",
         "general_chat": "general_chat",
     },
 )
@@ -64,6 +67,7 @@ for intent_node in [
     "skill_executor",
     "coaching_assessment",
     "coaching_progress",
+    "team_query",
     "general_chat",
 ]:
     builder.add_edge(intent_node, "generate_response")

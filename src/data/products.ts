@@ -154,3 +154,32 @@ export const getPatchImage = (productId: string): string => {
 };
 
 export const PRODUCTS = products;
+
+/**
+ * Maps ByDesign product names/SKUs to internal product IDs.
+ * Keys are lowercase ByDesign product name fragments.
+ */
+export const BYDESIGN_SKU_MAP: Record<string, string> = {
+  freedom: "freedom",
+  rem: "rem",
+  liberty: "liberty",
+  boost: "boost",
+  victory: "victory",
+  focus: "focus",
+  defend: "defend",
+  ignite: "ignite",
+  "kick it": "kick-it",
+  kickit: "kick-it",
+  peace: "peace",
+  joy: "joy",
+  lumi: "lumi",
+  rocket: "rocket",
+};
+
+export function matchByDesignProduct(productName: string): string | null {
+  const lower = productName.toLowerCase().trim();
+  for (const [key, id] of Object.entries(BYDESIGN_SKU_MAP)) {
+    if (lower.includes(key)) return id;
+  }
+  return null;
+}

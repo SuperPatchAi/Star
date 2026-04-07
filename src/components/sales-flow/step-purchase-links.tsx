@@ -1,18 +1,35 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AlertCircle, CheckCircle, XCircle, ChevronDown, FileText } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  AlertCircle,
+  CheckCircle,
+  XCircle,
+  ChevronDown,
+  FileText,
+  ShoppingCart,
+  Loader2,
+  LinkIcon,
+  Package,
+} from "lucide-react";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { BusinessCardDisplay } from "@/components/card/business-card-display";
-import { getProductPurchaseUrl, buildSocialFooter } from "@/lib/utils";
+import { getProductPurchaseUrl } from "@/lib/utils";
 import { updateStoreSubdomain } from "@/lib/actions/profile";
 import { updateContactOutcome } from "@/lib/actions/contacts";
-import { SOCIAL_PLATFORMS } from "@/lib/db/types";
+import {
+  reconcileContact,
+  confirmMatch,
+  getContactPurchaseMatches,
+} from "@/lib/actions/reconcile";
 import type { Product } from "@/types";
-import type { SocialLinks } from "@/lib/db/types";
+import type { PurchaseMatch, MatchConfidence } from "@/lib/db/types";
+import type { ByDesignCustomer } from "@/lib/actions/bydesign";
 
 interface StepPurchaseLinksProps {
   product: Product;
@@ -21,29 +38,386 @@ interface StepPurchaseLinksProps {
   allProducts: Product[];
   onSubdomainSaved: (subdomain: string) => void;
   contactId?: string;
-  socialLinks?: SocialLinks;
   repName?: string | null;
   repAvatarUrl?: string | null;
+  bydesignCustomerDid?: string | null;
+  bydesignMatchConfidence?: string | null;
+  bydesignOrderCount?: number;
+  bydesignTotalSpent?: number;
+}
+
+const CONFIDENCE_STYLES: Record<
+  MatchConfidence,
+  { label: string; variant: "default" | "secondary" | "outline" | "destructive"; className: string }
+> = {
+  email: { label: "Email Match", variant: "default", className: "bg-green-600 hover:bg-green-700" },
+  phone: { label: "Phone Match", variant: "default", className: "bg-blue-600 hover:bg-blue-700" },
+  name: { label: "Name Match", variant: "default", className: "bg-amber-500 hover:bg-amber-600 text-white" },
+  manual: { label: "Manual Match", variant: "secondary", className: "" },
+};
+
+function ConfidenceBadge({ confidence }: { confidence: string }) {
+  const style = CONFIDENCE_STYLES[confidence as MatchConfidence] ?? {
+    label: confidence,
+    variant: "secondary" as const,
+    className: "",
+  };
+  return (
+    <Badge variant={style.variant} className={style.className}>
+      {style.label}
+    </Badge>
+  );
+}
+
+function formatCurrency(value: number): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(value);
+}
+
+function formatDate(dateStr: string | null): string {
+  if (!dateStr) return "—";
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+const ORDER_STATUS_MAP: Record<number, { label: string; color: string }> = {
+  1: { label: "Pending", color: "text-amber-600" },
+  2: { label: "Processing", color: "text-blue-600" },
+  3: { label: "Shipped", color: "text-indigo-600" },
+  4: { label: "Delivered", color: "text-green-600" },
+  5: { label: "Cancelled", color: "text-red-600" },
+};
+
+function PurchaseReconciliationSection({
+  contactId,
+  bydesignCustomerDid,
+  bydesignMatchConfidence,
+  bydesignOrderCount = 0,
+  bydesignTotalSpent = 0,
+}: {
+  contactId: string;
+  bydesignCustomerDid?: string | null;
+  bydesignMatchConfidence?: string | null;
+  bydesignOrderCount?: number;
+  bydesignTotalSpent?: number;
+}) {
+  const [loading, setLoading] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [matches, setMatches] = useState<PurchaseMatch[]>([]);
+  const [matchesLoaded, setMatchesLoaded] = useState(false);
+  const [isLinked, setIsLinked] = useState(!!bydesignCustomerDid);
+  const [confidence, setConfidence] = useState<string | null>(
+    bydesignMatchConfidence ?? null
+  );
+  const [orderCount, setOrderCount] = useState(bydesignOrderCount);
+  const [totalSpent, setTotalSpent] = useState(bydesignTotalSpent);
+  const [pendingCustomer, setPendingCustomer] =
+    useState<ByDesignCustomer | null>(null);
+  const [reconcileOpen, setReconcileOpen] = useState(!!bydesignCustomerDid);
+
+  useEffect(() => {
+    if (!isLinked || matchesLoaded) return;
+    let cancelled = false;
+    getContactPurchaseMatches(contactId).then(({ data }) => {
+      if (!cancelled) {
+        setMatches(data);
+        setMatchesLoaded(true);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isLinked, contactId, matchesLoaded]);
+
+  const handleReconcile = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    const result = await reconcileContact(contactId);
+    setLoading(false);
+
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
+
+    if (result.matched) {
+      setIsLinked(true);
+      setConfidence(result.confidence);
+      setOrderCount(result.orders_found);
+      if (result.orders_found > 0) {
+        const { data } = await getContactPurchaseMatches(contactId);
+        setMatches(data);
+        setMatchesLoaded(true);
+        const spent = data.reduce(
+          (sum, m) => sum + (m.order_total ?? 0),
+          0
+        );
+        setTotalSpent(spent);
+      }
+      return;
+    }
+
+    if (result.confidence === "name" && result.customer) {
+      setPendingCustomer(result.customer);
+      setConfidence("name");
+      return;
+    }
+
+    setError("No matching ByDesign customer found for this contact.");
+  }, [contactId]);
+
+  const handleConfirm = useCallback(async () => {
+    if (!pendingCustomer) return;
+    setConfirming(true);
+    setError(null);
+    const result = await confirmMatch(
+      contactId,
+      String(pendingCustomer.CustomerDID)
+    );
+    setConfirming(false);
+
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
+
+    setIsLinked(true);
+    setConfidence("manual");
+    setPendingCustomer(null);
+    setOrderCount(result.orders_found);
+    if (result.orders_found > 0) {
+      const { data } = await getContactPurchaseMatches(contactId);
+      setMatches(data);
+      setMatchesLoaded(true);
+      const spent = data.reduce(
+        (sum, m) => sum + (m.order_total ?? 0),
+        0
+      );
+      setTotalSpent(spent);
+    }
+  }, [contactId, pendingCustomer]);
+
+  const handleReject = useCallback(() => {
+    setPendingCustomer(null);
+    setConfidence(null);
+  }, []);
+
+  return (
+    <Collapsible open={reconcileOpen} onOpenChange={setReconcileOpen}>
+      <CollapsibleTrigger asChild>
+        <Button
+          variant="ghost"
+          className="w-full justify-between text-muted-foreground"
+        >
+          <span className="flex items-center gap-2">
+            <ShoppingCart className="size-4" />
+            Purchase Verification
+            {isLinked && confidence && (
+              <ConfidenceBadge confidence={confidence} />
+            )}
+          </span>
+          <ChevronDown
+            className={`size-4 transition-transform ${reconcileOpen ? "rotate-180" : ""}`}
+          />
+        </Button>
+      </CollapsibleTrigger>
+      <CollapsibleContent className="space-y-3 pt-2">
+        {error && (
+          <div className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 dark:bg-red-950 dark:border-red-800">
+            <AlertCircle className="size-4 text-red-600 dark:text-red-400 mt-0.5 shrink-0" />
+            <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+          </div>
+        )}
+
+        {/* Pending name-match confirm */}
+        {pendingCustomer && !isLinked && (
+          <Card className="border-amber-200 dark:border-amber-800">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <LinkIcon className="size-4 text-amber-600" />
+                Possible Match Found
+                <ConfidenceBadge confidence="name" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="text-sm space-y-1">
+                <p>
+                  <span className="text-muted-foreground">Name:</span>{" "}
+                  {pendingCustomer.FirstName} {pendingCustomer.LastName}
+                </p>
+                {pendingCustomer.EmailAddress && (
+                  <p>
+                    <span className="text-muted-foreground">Email:</span>{" "}
+                    {pendingCustomer.EmailAddress}
+                  </p>
+                )}
+                {pendingCustomer.Phone && (
+                  <p>
+                    <span className="text-muted-foreground">Phone:</span>{" "}
+                    {pendingCustomer.Phone}
+                  </p>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                  onClick={handleConfirm}
+                  disabled={confirming}
+                >
+                  {confirming ? (
+                    <Loader2 className="size-4 mr-1.5 animate-spin" />
+                  ) : (
+                    <CheckCircle className="size-4 mr-1.5" />
+                  )}
+                  Confirm Match
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleReject}
+                  disabled={confirming}
+                >
+                  <XCircle className="size-4 mr-1.5" />
+                  Not a Match
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Not yet matched */}
+        {!isLinked && !pendingCustomer && (
+          <div className="flex items-center justify-between rounded-lg border border-border/50 bg-muted/50 p-4">
+            <div>
+              <p className="text-sm font-medium">
+                Verify purchases in ByDesign
+              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Match this contact to their ByDesign customer record
+              </p>
+            </div>
+            <Button
+              size="sm"
+              onClick={handleReconcile}
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="size-4 mr-1.5 animate-spin" />
+              ) : (
+                <LinkIcon className="size-4 mr-1.5" />
+              )}
+              {loading ? "Matching…" : "Match Purchases"}
+            </Button>
+          </div>
+        )}
+
+        {/* Linked summary + orders */}
+        {isLinked && (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between rounded-lg border border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-800 p-3">
+              <div className="flex items-center gap-2 text-sm">
+                <CheckCircle className="size-4 text-green-600" />
+                <span className="font-medium text-green-800 dark:text-green-200">
+                  Linked to ByDesign
+                </span>
+                {confidence && (
+                  <ConfidenceBadge confidence={confidence} />
+                )}
+              </div>
+              <div className="flex gap-4 text-sm text-muted-foreground">
+                <span>
+                  {orderCount} order{orderCount !== 1 ? "s" : ""}
+                </span>
+                <span className="font-medium text-foreground">
+                  {formatCurrency(totalSpent)}
+                </span>
+              </div>
+            </div>
+
+            {matches.length > 0 && (
+              <div className="space-y-2">
+                {matches.map((match) => {
+                  const status = match.order_status_id
+                    ? ORDER_STATUS_MAP[match.order_status_id]
+                    : null;
+                  return (
+                    <Card key={match.id} className="border-border/50">
+                      <CardContent className="p-3">
+                        <div className="flex items-start justify-between">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-sm">
+                              <span className="font-medium">
+                                Order #{match.bydesign_order_id}
+                              </span>
+                              {status && (
+                                <span
+                                  className={`text-xs ${status.color}`}
+                                >
+                                  {status.label}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              {formatDate(match.order_date)}
+                            </p>
+                          </div>
+                          <span className="text-sm font-semibold">
+                            {match.order_total != null
+                              ? formatCurrency(match.order_total)
+                              : "—"}
+                          </span>
+                        </div>
+                        {match.products_purchased.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            {match.products_purchased.map((p, i) => (
+                              <Badge
+                                key={`${match.id}-${i}`}
+                                variant="outline"
+                                className="text-xs gap-1"
+                              >
+                                <Package className="size-3" />
+                                {p.name}
+                                {p.quantity > 1 && ` ×${p.quantity}`}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+      </CollapsibleContent>
+    </Collapsible>
+  );
 }
 
 function buildSingleProductScript(
   firstName: string | undefined,
   productName: string,
   url: string,
-  socialFooter: string,
 ): string {
   const name = firstName || "[Name]";
-  return `Hey ${name}, great chatting about ${productName}! Here's where you can grab yours:\n\n${url}\n\nIt's 100% drug-free and all-natural. Let me know if you have any questions!${socialFooter}`;
+  return `Hey ${name}, great chatting about ${productName}! Here's where you can grab yours:\n\n${url}\n\nIt's 100% drug-free and all-natural. Let me know if you have any questions!`;
 }
 
 function buildMultiProductScript(
   firstName: string | undefined,
   products: { name: string; url: string }[],
-  socialFooter: string,
 ): string {
   const name = firstName || "[Name]";
   const links = products.map((p) => `• ${p.name}: ${p.url}`).join("\n");
-  return `Hey ${name}, thanks for taking the time today! Here are the links to everything we talked about:\n\n${links}\n\nLet me know which one you'd like to start with, or grab them all!${socialFooter}`;
+  return `Hey ${name}, thanks for taking the time today! Here are the links to everything we talked about:\n\n${links}\n\nLet me know which one you'd like to start with, or grab them all!`;
 }
 
 export function StepPurchaseLinks({
@@ -53,9 +427,12 @@ export function StepPurchaseLinks({
   allProducts,
   onSubdomainSaved,
   contactId,
-  socialLinks = {},
   repName,
   repAvatarUrl,
+  bydesignCustomerDid,
+  bydesignMatchConfidence,
+  bydesignOrderCount,
+  bydesignTotalSpent,
 }: StepPurchaseLinksProps) {
   const [localSubdomain, setLocalSubdomain] = useState("");
   const [saving, setSaving] = useState(false);
@@ -82,11 +459,9 @@ export function StepPurchaseLinks({
     [storeSubdomain, product.id],
   );
 
-  const socialFooter = useMemo(() => buildSocialFooter(socialLinks), [socialLinks]);
-
   const singleScript = useMemo(
-    () => (productUrl ? buildSingleProductScript(contactFirstName, product.name, productUrl, socialFooter) : ""),
-    [productUrl, contactFirstName, product.name, socialFooter],
+    () => (productUrl ? buildSingleProductScript(contactFirstName, product.name, productUrl) : ""),
+    [productUrl, contactFirstName, product.name],
   );
 
   const allProductLinks = useMemo(
@@ -103,9 +478,9 @@ export function StepPurchaseLinks({
   const multiScript = useMemo(
     () =>
       allProductLinks.length > 1
-        ? buildMultiProductScript(contactFirstName, allProductLinks, socialFooter)
+        ? buildMultiProductScript(contactFirstName, allProductLinks)
         : "",
-    [allProductLinks, contactFirstName, socialFooter],
+    [allProductLinks, contactFirstName],
   );
 
   const displayName = repName || "SuperPatch Rep";
@@ -115,11 +490,6 @@ export function StepPurchaseLinks({
     .join("")
     .toUpperCase()
     .slice(0, 2) ?? "SP";
-
-  const socialEntries = useMemo(
-    () => SOCIAL_PLATFORMS.filter((p) => socialLinks[p.key]?.trim()),
-    [socialLinks],
-  );
 
   const cardShareUrl = useMemo(() => {
     if (!storeSubdomain) return undefined;
@@ -186,8 +556,6 @@ export function StepPurchaseLinks({
           initials={initials}
           avatarUrl={repAvatarUrl ?? null}
           storeUrl={`https://${storeSubdomain}.superpatch.com`}
-          socialEntries={socialEntries}
-          socialLinks={socialLinks}
           products={allProducts}
           storeSubdomain={storeSubdomain}
           contactFirstName={contactFirstName}
@@ -289,6 +657,17 @@ export function StepPurchaseLinks({
             </div>
           )}
         </div>
+      )}
+
+      {/* Purchase reconciliation */}
+      {contactId && (
+        <PurchaseReconciliationSection
+          contactId={contactId}
+          bydesignCustomerDid={bydesignCustomerDid}
+          bydesignMatchConfidence={bydesignMatchConfidence}
+          bydesignOrderCount={bydesignOrderCount}
+          bydesignTotalSpent={bydesignTotalSpent}
+        />
       )}
     </div>
   );

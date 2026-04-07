@@ -14,6 +14,7 @@ _EMPTY_CONTEXT = {
     "completed_skills": [],
     "skill_outputs": {},
     "current_skill": None,
+    "has_team": False,
 }
 
 
@@ -21,6 +22,19 @@ async def load_context(state: UnifiedAgentState) -> dict:
     """Load coaching progress and context from Supabase for the current user."""
     user_id = state["user_id"]
     client = get_supabase_client()
+
+    has_team = False
+    try:
+        team_result = (
+            client.table("d2c_team_members")
+            .select("id")
+            .eq("leader_id", user_id)
+            .limit(1)
+            .execute()
+        )
+        has_team = bool(getattr(team_result, "data", None))
+    except (APIError, Exception) as exc:
+        logger.debug("load_context: team check failed for user %s: %s", user_id, exc)
 
     try:
         result = (
@@ -36,11 +50,11 @@ async def load_context(state: UnifiedAgentState) -> dict:
         )
     except (APIError, Exception) as exc:
         logger.debug("load_context: no coaching progress for user %s: %s", user_id, exc)
-        return _EMPTY_CONTEXT
+        return {**_EMPTY_CONTEXT, "has_team": has_team}
 
     rows = getattr(result, "data", None)
     if not rows:
-        return _EMPTY_CONTEXT
+        return {**_EMPTY_CONTEXT, "has_team": has_team}
 
     row = rows[0]
     return {
@@ -50,4 +64,5 @@ async def load_context(state: UnifiedAgentState) -> dict:
         "completed_skills": row.get("completed_skills") or [],
         "skill_outputs": row.get("skill_outputs") or {},
         "current_skill": row.get("current_skill"),
+        "has_team": has_team,
     }

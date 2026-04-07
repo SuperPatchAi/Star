@@ -72,7 +72,7 @@ export function StepDiscoveryV2({
   const categoryLabel = joinCategoryLabels(discoveryCategories);
   const name = contactFirstName || "friend";
 
-  const q1Script = `So ${name}, if you could just snap your fingers and fix one thing about how you feel — what would it be? Like sleep, pain, energy... what's the big one for you?`;
+  const q1Script = `So ${name}, if you could just snap your fingers and fix one thing about how you feel — what would it be?`;
   const q2Script = `Okay so ${categoryLabel} — honestly ${name}, where are you at with that right now? Like if 1 is miserable and 10 is crushing it, what's your number?`;
   const q3Script = `How long has the ${categoryLabel} thing been going on? Like is this recent or has it been dragging on for a while?`;
   const q4Script = `Have you tried anything for the ${categoryLabel}? Meds, supplements, random stuff people recommended... anything?`;
@@ -105,7 +105,7 @@ export function StepDiscoveryV2({
 
   return (
     <div className="space-y-4">
-      {/* Question 1: Category Selection (multi-select) */}
+      {/* Question 1: Category Selection (single-select) */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-sm flex items-center gap-2">
@@ -127,7 +127,7 @@ export function StepDiscoveryV2({
             />
           </div>
           <p className="text-xs text-muted-foreground">
-            Select all that apply ({discoveryCategories.length} selected)
+            Pick the one thing that matters most
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
             {DISCOVERY_CATEGORIES.map((cat) => {

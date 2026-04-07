@@ -1,0 +1,265 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  AlertCircle,
+  Loader2,
+  Mail,
+  Lock,
+  User,
+  CheckCircle,
+  Users,
+} from "lucide-react";
+
+export function SignupForm({
+  inviteToken,
+  leaderName,
+}: {
+  inviteToken: string | null;
+  leaderName: string | null;
+}) {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const supabase = createClient();
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const metadata: Record<string, string> = { full_name: fullName };
+      if (inviteToken) {
+        metadata.invite_token = inviteToken;
+      }
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: metadata,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      if (data.user) {
+        if (!data.session) {
+          setSuccess(true);
+        } else {
+          router.push("/");
+          router.refresh();
+        }
+      }
+    } catch {
+      setError("An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (success) {
+    return (
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <div className="flex items-center justify-center mb-4">
+            <div className="rounded-full bg-green-100 p-3">
+              <CheckCircle className="h-8 w-8 text-green-600" />
+            </div>
+          </div>
+          <CardTitle className="text-2xl font-bold text-center">
+            Check your email
+          </CardTitle>
+          <CardDescription className="text-center">
+            We&apos;ve sent a confirmation link to <strong>{email}</strong>
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="text-center text-sm text-muted-foreground">
+          <p>
+            Click the link in the email to verify your account and complete
+            signup.
+          </p>
+          <p className="mt-4">
+            Didn&apos;t receive the email? Check your spam folder.
+          </p>
+        </CardContent>
+        <CardFooter>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => router.push("/login")}
+          >
+            Back to login
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="w-full max-w-md">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl font-bold">
+          Create your account
+        </CardTitle>
+        <CardDescription>
+          Sign up to start your sales journey
+        </CardDescription>
+      </CardHeader>
+      <form onSubmit={handleSignup}>
+        <CardContent className="space-y-4">
+          {leaderName && (
+            <div className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
+              <Users className="h-4 w-4 shrink-0 text-primary" />
+              <span>
+                Invited by <strong>{leaderName}</strong>
+              </span>
+            </div>
+          )}
+
+          {error && (
+            <div className="flex items-center gap-2 rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          <div className="space-y-2">
+            <Label htmlFor="fullName">Full Name</Label>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                id="fullName"
+                type="text"
+                autoComplete="name"
+                placeholder="John Doe"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="pl-10"
+                required
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                id="email"
+                type="email"
+                autoComplete="email"
+                placeholder="you@superpatch.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="pl-10"
+                required
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                id="password"
+                type="password"
+                autoComplete="new-password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="pl-10"
+                required
+                disabled={loading}
+                minLength={8}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Must be at least 8 characters
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                id="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="pl-10"
+                required
+                disabled={loading}
+              />
+            </div>
+          </div>
+        </CardContent>
+
+        <CardFooter className="flex flex-col gap-4">
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating account...
+              </>
+            ) : (
+              "Create account"
+            )}
+          </Button>
+
+          <p className="text-center text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link
+              href={inviteToken ? `/login?invite=${inviteToken}` : "/login"}
+              className="text-primary hover:underline font-medium"
+            >
+              Sign in
+            </Link>
+          </p>
+        </CardFooter>
+      </form>
+    </Card>
+  );
+}

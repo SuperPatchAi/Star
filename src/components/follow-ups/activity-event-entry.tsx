@@ -10,6 +10,10 @@ import {
   Trophy,
   XCircle,
   RotateCcw,
+  Send,
+  Users2,
+  DollarSign,
+  RefreshCw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ActivityEvent, ActivityEventType } from "@/types/activity";
@@ -26,6 +30,10 @@ const EVENT_ICONS: Record<ActivityEventType, React.ElementType> = {
   sample_confirmed: CheckCircle2,
   followup_completed: CalendarCheck,
   outcome_changed: Trophy,
+  invite_sent: Send,
+  member_joined: Users2,
+  purchase_matched: DollarSign,
+  downline_synced: RefreshCw,
 };
 
 const EVENT_COLORS: Record<ActivityEventType, string> = {
@@ -35,6 +43,10 @@ const EVENT_COLORS: Record<ActivityEventType, string> = {
   sample_confirmed: "text-green-500",
   followup_completed: "text-emerald-500",
   outcome_changed: "text-primary",
+  invite_sent: "text-indigo-500",
+  member_joined: "text-teal-500",
+  purchase_matched: "text-green-600",
+  downline_synced: "text-sky-500",
 };
 
 function formatRelativeTime(dateStr: string): string {
@@ -77,6 +89,25 @@ function getEventDescription(event: ActivityEvent): string {
       if (outcome === "lost") return `${name} marked as Lost`;
       if (outcome === "follow_up") return `${name} set to re-engage`;
       return `${name} outcome updated`;
+    }
+    case "invite_sent": {
+      const invitee = (m.invitee_name as string) || "a team member";
+      return `Invite sent to ${invitee}`;
+    }
+    case "member_joined": {
+      const memberName = (m.member_name as string) || "A team member";
+      return `${memberName} joined your team`;
+    }
+    case "purchase_matched": {
+      const total = m.order_total as number | undefined;
+      const totalStr = total ? ` ($${total.toFixed(2)})` : "";
+      return `Purchase matched for ${name}${totalStr}`;
+    }
+    case "downline_synced": {
+      const count = m.synced_count as number | undefined;
+      return count
+        ? `Downline synced: ${count} members updated`
+        : "Downline synced with ByDesign";
     }
     default:
       return `Activity for ${name}`;

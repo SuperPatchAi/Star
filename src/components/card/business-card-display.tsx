@@ -10,18 +10,19 @@ import { ShareCardButton } from "./share-card-button";
 import type { SocialLinks, SocialPlatform } from "@/lib/db/types";
 import type { Product } from "@/types";
 
-interface BusinessCardDisplayProps {
+export interface BusinessCardDisplayProps {
   displayName: string;
   initials: string;
   avatarUrl: string | null;
   storeUrl: string;
-  socialEntries: { key: SocialPlatform; label: string }[];
-  socialLinks: SocialLinks;
+  socialEntries?: { key: SocialPlatform; label: string }[];
+  socialLinks?: SocialLinks;
   products?: Product[];
   storeSubdomain?: string;
   contactFirstName?: string;
   shareUrl?: string;
   shareText?: string;
+  rank?: string | null;
 }
 
 export function BusinessCardDisplay({
@@ -29,13 +30,14 @@ export function BusinessCardDisplay({
   initials,
   avatarUrl,
   storeUrl,
-  socialEntries,
-  socialLinks,
+  socialEntries = [],
+  socialLinks = {},
   products,
   storeSubdomain,
   contactFirstName,
   shareUrl,
   shareText,
+  rank,
 }: BusinessCardDisplayProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const hasProducts = products && products.length > 0 && storeSubdomain;
@@ -57,6 +59,11 @@ export function BusinessCardDisplay({
           </Avatar>
 
           <h1 className="mt-4 text-xl font-bold">{displayName}</h1>
+          {rank && (
+            <span className="inline-block mt-1.5 text-xs font-medium bg-primary/10 text-primary px-2.5 py-0.5 rounded-full">
+              {rank}
+            </span>
+          )}
           <p className="text-sm text-muted-foreground mt-1">
             Independent SuperPatch Representative
           </p>

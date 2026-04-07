@@ -8,4 +8,5 @@ from app.agent.nodes.skill_executor import skill_executor
 from app.agent.nodes.assessment import coaching_assessment
 from app.agent.nodes.progress import coaching_progress
 from app.agent.nodes.general_chat import general_chat
+from app.agent.nodes.team_query import team_query
 from app.agent.nodes.generate_response import generate_response

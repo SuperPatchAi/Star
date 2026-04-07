@@ -16,6 +16,7 @@ import {
 import {
   Sheet,
   SheetContent,
+  SheetTitle,
 } from "@/components/ui/sheet";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -891,6 +892,9 @@ export function ContactSheet({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full max-w-full sm:max-w-full p-0 flex flex-col [&>button]:hidden">
+        <SheetTitle className="sr-only">
+          {contact ? `${contact.first_name} ${contact.last_name}` : "New Contact"}
+        </SheetTitle>
         {mode === "view" && contact ? (
           <ViewMode
             contact={contact}

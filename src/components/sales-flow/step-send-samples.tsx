@@ -19,6 +19,8 @@ import {
   Check,
   Info,
   Sparkles,
+  Minus,
+  Plus,
 } from "lucide-react";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { interpolateScript } from "@/lib/interpolate-script";
@@ -48,11 +50,13 @@ interface StepSendSamplesProps {
   contactFirstName?: string;
   continueLabel?: string;
   discoveryCategories: string[];
+  sampleQuantities: Record<string, number>;
+  onSetSampleQuantity: (productId: string, qty: number) => void;
 }
 
 const SAMPLE_OFFER_SCRIPT = `{{FirstName}}, I have something that might really help with what you're dealing with. I don't share these with everyone — only people who are genuinely open to trying something different. If I sent you some samples, would you try them with me so we can see how they work for you?`;
 
-const COMMITMENT_SCRIPT = `Call me as soon as you get my package. Do not open or use it until we're on the phone. OK?`;
+const COMMITMENT_SCRIPT = `I'm sending you some amazing things right now to try out. I'm also sending you a special gift. When you get the patches, call me — I want to walk you through how to use them to get the best results. Okay?`;
 
 export function StepSendSamples({
   products,
@@ -67,6 +71,8 @@ export function StepSendSamples({
   contactFirstName,
   continueLabel = "Continue",
   discoveryCategories,
+  sampleQuantities,
+  onSetSampleQuantity,
 }: StepSendSamplesProps) {
   const address = sampleAddress || { line1: "", line2: "", city: "", state: "", zip: "" };
   const offerScript = useMemo(() => interpolateScript(SAMPLE_OFFER_SCRIPT, contactFirstName), [contactFirstName]);
@@ -248,9 +254,41 @@ export function StepSendSamples({
             )}
 
             {sampleProducts.length > 0 && (
-              <p className="text-xs text-muted-foreground">
-                {sampleProducts.length} product{sampleProducts.length !== 1 ? "s" : ""} selected
-              </p>
+              <div className="space-y-2 border-t pt-3 mt-2">
+                <p className="text-xs font-medium text-muted-foreground">Quantity per product</p>
+                {sampleProducts.map((pid) => {
+                  const p = getProductById(pid);
+                  if (!p) return null;
+                  const qty = sampleQuantities[pid] ?? 1;
+                  return (
+                    <div key={pid} className="flex items-center justify-between gap-2">
+                      <span className="text-sm truncate">{p.name}</span>
+                      <div className="flex items-center gap-1.5">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          className="size-7"
+                          disabled={qty <= 1}
+                          onClick={() => onSetSampleQuantity(pid, Math.max(1, qty - 1))}
+                        >
+                          <Minus className="size-3" />
+                        </Button>
+                        <span className="w-6 text-center text-sm font-medium tabular-nums">{qty}</span>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          className="size-7"
+                          onClick={() => onSetSampleQuantity(pid, qty + 1)}
+                        >
+                          <Plus className="size-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
 

@@ -10,6 +10,7 @@ import {
   Calendar,
   CheckCircle2,
   AlertCircle,
+  AlertTriangle,
   ChevronDown,
   ChevronUp,
   BookOpen,
@@ -19,6 +20,10 @@ import {
   FlaskConical,
   Circle,
   Play,
+  Users,
+  Medal,
+  Activity,
+  Clock,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
@@ -968,6 +973,398 @@ function PartialProgressRenderer({ state }: ToolRendererProps) {
 }
 
 // ---------------------------------------------------------------------------
+// 8. Team Overview Card
+// ---------------------------------------------------------------------------
+
+function parseTextOutput(output: unknown): Record<string, string> {
+  if (output == null) return {}
+  const raw = typeof output === 'string' ? output : JSON.stringify(output)
+  const result: Record<string, string> = {}
+  for (const line of raw.split('\n')) {
+    const match = line.match(/^[-•*]?\s*\**(.+?)\**:\s*(.+)$/i)
+    if (match) {
+      const key = match[1].trim().toLowerCase().replace(/\s+/g, '_')
+      result[key] = match[2].trim()
+    }
+  }
+  return result
+}
+
+function TeamOverviewRenderer({ output, state }: ToolRendererProps) {
+  if (state !== 'output-available' && state !== 'result') {
+    return <LoadingShell label="Loading team overview..." />
+  }
+
+  const jsonData = parseOutput(output) as Record<string, unknown> | null
+  const textData = parseTextOutput(output)
+
+  const hasJson = jsonData && !Array.isArray(jsonData) && !jsonData.error
+  const hasText = Object.keys(textData).length > 0
+
+  if (jsonData && !Array.isArray(jsonData) && jsonData.error) {
+    return <ErrorBanner message={String(jsonData.error)} />
+  }
+
+  if (!hasJson && !hasText) {
+    return (
+      <div className="my-2 flex items-center gap-2 rounded-xl border bg-card p-3 text-xs shadow-sm text-muted-foreground">
+        <Users className="size-3.5" />
+        No team data available.
+      </div>
+    )
+  }
+
+  const get = (keys: string[]): string | number => {
+    if (hasJson) {
+      for (const k of keys) {
+        const v = (jsonData as Record<string, unknown>)[k]
+        if (v != null) return typeof v === 'number' ? v : String(v)
+      }
+    }
+    for (const k of keys) {
+      if (textData[k] != null) return textData[k]
+    }
+    return 0
+  }
+
+  const teamSize = get(['team_size', 'total_members', 'members'])
+  const totalContacts = get(['total_contacts', 'contacts'])
+  const winRate = get(['win_rate', 'win_rate_pct'])
+  const won = get(['won', 'wins', 'won_count'])
+  const lost = get(['lost', 'losses', 'lost_count'])
+  const pending = get(['pending', 'pending_count', 'in_progress'])
+  const followUps = get(['active_follow_ups', 'follow_ups', 'active_followups'])
+
+  return (
+    <div className="my-2 rounded-xl border bg-card shadow-sm">
+      <div className="flex items-center gap-2 border-b px-3 py-2">
+        <Users className="size-3.5 text-primary" />
+        <span className="text-[11px] font-medium">Team Overview</span>
+      </div>
+
+      <div className="grid grid-cols-3 divide-x border-b">
+        <StatTile label="Team Size" value={teamSize} />
+        <StatTile label="Total Contacts" value={totalContacts} />
+        <StatTile label="Win Rate" value={typeof winRate === 'number' ? `${winRate}%` : String(winRate).replace(/%$/, '') + '%'} />
+      </div>
+
+      <div className="flex items-center gap-2 border-b px-3 py-2">
+        <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 text-[10px]">
+          Won {won}
+        </Badge>
+        <Badge variant="destructive" className="text-[10px]">Lost {lost}</Badge>
+        <Badge variant="secondary" className="text-[10px]">Pending {pending}</Badge>
+      </div>
+
+      {Number(followUps) > 0 && (
+        <div className="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground">
+          <Calendar className="size-3 text-amber-500" />
+          <span>{followUps} active follow-ups</span>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// 9. Team Member Stats Card
+// ---------------------------------------------------------------------------
+
+function TeamMemberStatsRenderer({ output, state }: ToolRendererProps) {
+  if (state !== 'output-available' && state !== 'result') {
+    return <LoadingShell label="Loading member stats..." />
+  }
+
+  const data = parseOutput(output) as Record<string, unknown> | null
+  if (!data || Array.isArray(data)) {
+    return (
+      <div className="my-2 flex items-center gap-2 rounded-xl border bg-card p-3 text-xs shadow-sm text-muted-foreground">
+        <User className="size-3.5" />
+        No member data available.
+      </div>
+    )
+  }
+  if (data.error) return <ErrorBanner message={String(data.error)} />
+
+  const name = String(data.name ?? data.full_name ?? data.member_name ?? 'Unknown')
+  const rank = String(data.rank ?? data.title ?? '')
+  const totalContacts = Number(data.total_contacts ?? data.contacts ?? 0)
+  const won = Number(data.won ?? data.wins ?? 0)
+  const lost = Number(data.lost ?? data.losses ?? 0)
+  const pendingCount = Number(data.pending ?? data.in_progress ?? 0)
+  const samplesSent = Number(data.samples_sent ?? data.samples ?? 0)
+  const stepDist = (data.step_distribution ?? data.contacts_per_step ?? {}) as Record<string, number>
+  const maxStep = Math.max(1, ...Object.values(stepDist))
+
+  return (
+    <div className="my-2 rounded-xl border bg-card shadow-sm">
+      <div className="border-b p-3">
+        <div className="flex items-center gap-2">
+          <div className="flex size-8 items-center justify-center rounded-full bg-muted">
+            <User className="size-4 text-muted-foreground" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold">{name}</p>
+            {rank && <Badge variant="secondary" className="mt-0.5 text-[10px]">{rank}</Badge>}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-4 divide-x border-b">
+        <StatTile label="Contacts" value={totalContacts} />
+        <StatTile label="Won" value={won} />
+        <StatTile label="Lost" value={lost} />
+        <StatTile label="Pending" value={pendingCount} />
+      </div>
+
+      {samplesSent > 0 && (
+        <div className="flex items-center gap-2 border-b px-3 py-2 text-xs text-muted-foreground">
+          <Package className="size-3" />
+          <span>{samplesSent} samples sent</span>
+        </div>
+      )}
+
+      {Object.keys(stepDist).length > 0 && (
+        <div className="p-3">
+          <p className="mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Pipeline</p>
+          <div className="space-y-1.5">
+            {PIPELINE_STEPS.filter((step) => stepDist[step.id] != null).map((step) => {
+              const count = stepDist[step.id] ?? 0
+              const pct = maxStep > 0 ? (count / maxStep) * 100 : 0
+              return (
+                <div key={step.id} className="flex items-center gap-2 text-[11px]">
+                  <span className="w-16 text-right text-muted-foreground truncate">{step.label}</span>
+                  <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-primary/70 transition-all"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                  <span className="w-5 text-right font-medium">{count}</span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// 10. Struggling Members Card
+// ---------------------------------------------------------------------------
+
+function StrugglingMembersRenderer({ output, state }: ToolRendererProps) {
+  if (state !== 'output-available' && state !== 'result') {
+    return <LoadingShell label="Checking team health..." />
+  }
+
+  const data = parseOutput(output)
+  if (!data) return null
+  const arr = Array.isArray(data) ? data : []
+  if (arr.length === 1 && (arr[0] as Record<string, unknown>)?.error) {
+    return <ErrorBanner message={String((arr[0] as Record<string, unknown>).error)} />
+  }
+
+  if (arr.length === 0) {
+    return (
+      <div className="my-2 flex items-center gap-2 rounded-xl border bg-card p-3 text-xs shadow-sm">
+        <CheckCircle2 className="size-4 text-emerald-500" />
+        <span className="text-muted-foreground">Everyone is performing well!</span>
+      </div>
+    )
+  }
+
+  return (
+    <div className="my-2 rounded-xl border bg-card shadow-sm">
+      <div className="flex items-center gap-2 border-b px-3 py-2">
+        <AlertTriangle className="size-3.5 text-amber-500" />
+        <span className="text-[11px] font-medium">
+          {arr.length} member{arr.length !== 1 ? 's' : ''} need{arr.length === 1 ? 's' : ''} attention
+        </span>
+      </div>
+      <div className="divide-y">
+        {arr.map((item, i) => {
+          const d = item as Record<string, unknown>
+          const name = String(d.name ?? d.full_name ?? d.member_name ?? 'Unknown')
+          const reason = String(d.reason ?? d.issue ?? '')
+          const severity = String(d.severity ?? d.level ?? 'medium')
+
+          return (
+            <div key={i} className="flex items-start gap-2.5 px-3 py-2.5 text-xs">
+              <AlertTriangle
+                className={cn(
+                  'mt-0.5 size-3.5 shrink-0',
+                  severity === 'high' && 'text-destructive',
+                  severity === 'medium' && 'text-amber-500',
+                  severity === 'low' && 'text-muted-foreground',
+                )}
+              />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium">{name}</span>
+                  <Badge
+                    variant={severity === 'high' ? 'destructive' : 'secondary'}
+                    className={cn(
+                      'text-[9px]',
+                      severity === 'medium' && 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
+                    )}
+                  >
+                    {severity}
+                  </Badge>
+                </div>
+                {reason && <p className="mt-0.5 text-muted-foreground line-clamp-2">{reason}</p>}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// 11. Team Leaderboard Card
+// ---------------------------------------------------------------------------
+
+const MEDAL_STYLES = [
+  'text-amber-500',
+  'text-slate-400',
+  'text-orange-600 dark:text-orange-400',
+] as const
+
+function TeamLeaderboardRenderer({ output, state }: ToolRendererProps) {
+  if (state !== 'output-available' && state !== 'result') {
+    return <LoadingShell label="Loading leaderboard..." />
+  }
+
+  const data = parseOutput(output)
+  if (!data) return null
+  const arr = Array.isArray(data)
+    ? data
+    : (data as Record<string, unknown>).members
+      ? ((data as Record<string, unknown>).members as unknown[])
+      : (data as Record<string, unknown>).leaderboard
+        ? ((data as Record<string, unknown>).leaderboard as unknown[])
+        : []
+
+  if (!Array.isArray(arr) || arr.length === 0) {
+    return (
+      <div className="my-2 flex items-center gap-2 rounded-xl border bg-card p-3 text-xs shadow-sm text-muted-foreground">
+        <Trophy className="size-3.5" />
+        No leaderboard data available.
+      </div>
+    )
+  }
+
+  const metric = String(
+    (parseOutput(output) as Record<string, unknown>)?.metric ??
+    (parseOutput(output) as Record<string, unknown>)?.metric_label ??
+    ''
+  )
+
+  return (
+    <div className="my-2 rounded-xl border bg-card shadow-sm">
+      <div className="flex items-center gap-2 border-b px-3 py-2">
+        <Trophy className="size-3.5 text-primary" />
+        <span className="text-[11px] font-medium">
+          Leaderboard{metric ? ` — ${metric}` : ''}
+        </span>
+      </div>
+      <div className="divide-y">
+        {arr.map((item, i) => {
+          const d = item as Record<string, unknown>
+          const name = String(d.name ?? d.full_name ?? d.member_name ?? 'Unknown')
+          const value = d.value ?? d.score ?? d.metric_value ?? d.count ?? ''
+          const isTop3 = i < 3
+
+          return (
+            <div key={i} className="flex items-center gap-2.5 px-3 py-2 text-xs">
+              <span className="w-5 text-right shrink-0">
+                {isTop3 ? (
+                  <Medal className={cn('inline size-4', MEDAL_STYLES[i])} />
+                ) : (
+                  <span className="text-muted-foreground font-medium">{i + 1}</span>
+                )}
+              </span>
+              <span className={cn('flex-1 truncate', isTop3 && 'font-medium')}>{name}</span>
+              <Badge variant={isTop3 ? 'default' : 'secondary'} className="text-[10px] shrink-0">
+                {String(value)}
+              </Badge>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// 12. Team Activity Feed
+// ---------------------------------------------------------------------------
+
+function TeamActivityRenderer({ output, state }: ToolRendererProps) {
+  if (state !== 'output-available' && state !== 'result') {
+    return <LoadingShell label="Loading team activity..." />
+  }
+
+  const data = parseOutput(output)
+  if (!data) return null
+  const arr = Array.isArray(data)
+    ? data
+    : (data as Record<string, unknown>).events
+      ? ((data as Record<string, unknown>).events as unknown[])
+      : (data as Record<string, unknown>).activity
+        ? ((data as Record<string, unknown>).activity as unknown[])
+        : []
+
+  if (!Array.isArray(arr) || arr.length === 0) {
+    return (
+      <div className="my-2 flex items-center gap-2 rounded-xl border bg-card p-3 text-xs shadow-sm text-muted-foreground">
+        <Activity className="size-3.5" />
+        No recent team activity.
+      </div>
+    )
+  }
+
+  return (
+    <div className="my-2 rounded-xl border bg-card shadow-sm">
+      <div className="flex items-center gap-2 border-b px-3 py-2">
+        <Activity className="size-3.5 text-primary" />
+        <span className="text-[11px] font-medium">Recent Team Activity</span>
+      </div>
+      <div className="divide-y max-h-72 overflow-y-auto">
+        {arr.map((item, i) => {
+          const d = item as Record<string, unknown>
+          const memberName = String(d.member_name ?? d.name ?? d.full_name ?? '')
+          const description = String(d.description ?? d.event ?? d.action ?? d.message ?? '')
+          const timestamp = String(d.timestamp ?? d.created_at ?? d.date ?? '')
+
+          return (
+            <div key={i} className="flex items-start gap-2.5 px-3 py-2.5 text-xs">
+              <div className="mt-1 size-1.5 shrink-0 rounded-full bg-primary/60" />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-baseline gap-1.5">
+                  {memberName && <span className="font-medium shrink-0">{memberName}</span>}
+                  <span className="text-muted-foreground truncate">{description}</span>
+                </div>
+                {timestamp && (
+                  <div className="mt-0.5 flex items-center gap-1 text-[10px] text-muted-foreground">
+                    <Clock className="size-2.5" />
+                    <span>{timestamp}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Wire all renderers
 // ---------------------------------------------------------------------------
 
@@ -987,4 +1384,9 @@ export const TOOL_RENDERERS: Record<string, ComponentType<ToolRendererProps>> = 
   get_coaching_progress: CoachingProgressRenderer,
   save_skill_completion: SkillCompletionRenderer,
   save_partial_progress: PartialProgressRenderer,
+  get_team_overview: TeamOverviewRenderer,
+  get_team_member_stats: TeamMemberStatsRenderer,
+  list_struggling_members: StrugglingMembersRenderer,
+  get_team_leaderboard: TeamLeaderboardRenderer,
+  get_team_activity: TeamActivityRenderer,
 }

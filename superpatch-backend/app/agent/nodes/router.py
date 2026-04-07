@@ -14,6 +14,7 @@ INTENT_OPTIONS = Literal[
     "skill_executor",
     "coaching_assessment",
     "coaching_progress",
+    "team_query",
     "general_chat",
 ]
 
@@ -34,11 +35,15 @@ Classify the user's message into exactly one of these intents:
 - skill_executor: requesting to start or continue a coaching skill/exercise/worksheet
 - coaching_assessment: asking about assessment scores, evaluation, or grading
 - coaching_progress: asking about their learning progress, completed skills, or curriculum status
+- team_query: questions about team performance, coaching, leaderboard, struggling members, team activity
 - general_chat: greetings, off-topic, or anything that doesn't fit the above
 
 Use the following context signals to help classify:
 - selected_contact_id present: {has_contact}
 - current_skill active: {has_skill}
+- has_team (user leads a team): {has_team}
+
+Only classify as team_query when has_team is yes and the message is about team members or team performance.
 """
 
 
@@ -71,10 +76,12 @@ async def classify_intent(state: UnifiedAgentState) -> dict:
     structured_model = model.with_structured_output(IntentClassification)
 
     has_contact = "yes" if state.get("selected_contact_id") else "no"
+    has_team = "yes" if state.get("has_team") else "no"
 
     system_msg = SYSTEM_PROMPT.format(
         has_contact=has_contact,
         has_skill="no",
+        has_team=has_team,
     )
 
     messages = state["messages"]

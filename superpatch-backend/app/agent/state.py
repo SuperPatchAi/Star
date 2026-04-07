@@ -14,3 +14,4 @@ class UnifiedAgentState(MessagesState):
     current_skill: Optional[str] = None
     completed_skills: list[str] = []
     skill_outputs: dict[str, dict] = {}
+    has_team: bool = False

@@ -52,7 +52,7 @@ export function ShareCardButton({ cardRef, displayName, shareUrl, shareText }: S
       const blob = await res.blob();
       const file = new File([blob], "superpatch-card.png", { type: "image/png" });
 
-      const defaultText = `Connect with ${displayName}, an independent SuperPatch representative.`;
+      const defaultText = `Check out ${displayName}, an independent SuperPatch representative.`;
 
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
         await navigator.share({

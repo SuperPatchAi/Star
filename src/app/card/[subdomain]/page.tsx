@@ -86,6 +86,7 @@ export default async function CardPage({ params, searchParams }: CardPageProps) 
         storeUrl={storeUrl}
         socialEntries={socialEntries}
         socialLinks={profile.social_links}
+        rank={profile.bydesign_rank}
         {...(matchedProducts.length > 0 && {
           products: matchedProducts,
           storeSubdomain: profile.store_subdomain,

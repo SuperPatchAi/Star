@@ -27,7 +27,7 @@ export const FOLLOWUP_SEQUENCE: FollowUpTemplate[] = [
     day: "DAY 4",
     action: "Open Together",
     channel: "Zoom",
-    template: "Let's open your {{ProductName}} together! Here's the key: pay attention to what you notice about your {{categoryLabel}}, not what you expect. Just observe. The patch works with your body's natural systems — give it time and stay open to what you feel. 🔬",
+    template: "Now open it up — before we get to the patches you and I spoke about, I want to show you one of the most special things in this entire product line. Remember that special gift I told you about? It looks like this — this patch can actually help us all live longer because the secret of longevity is balance and stability.\n\nIs anybody home with you right now? I want you to experience how this thing works. I'm going to send you a video right now so you can experience it for yourself.\n\n[Send balance test video link]",
     includesRating: true,
     checkboxLabel: "Samples received & opened together",
   },

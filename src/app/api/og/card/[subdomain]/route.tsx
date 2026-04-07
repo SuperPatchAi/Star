@@ -164,6 +164,21 @@ export async function GET(
             >
               {displayName}
             </span>
+            {profile.bydesign_rank && (
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "#1a73e8",
+                  background: "#dbeafe",
+                  padding: "4px 12px",
+                  borderRadius: 20,
+                  marginTop: 6,
+                }}
+              >
+                {profile.bydesign_rank}
+              </span>
+            )}
             <span
               style={{
                 fontSize: 15,

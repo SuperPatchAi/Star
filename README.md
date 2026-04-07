@@ -32,8 +32,12 @@ src/
 │   ├── roadmaps/           # Roadmap image gallery
 │   ├── onboarding/         # New user onboarding flow (carousel, tour, checklist)
 │   ├── settings/           # Settings page (profile, social links, notifications, appearance, account, about)
+│   ├── team/              # Team Dashboard (ByDesign-connected leaders)
+│   │   ├── page.tsx       # Team dashboard with downline, analytics, leaderboard
+│   │   └── accept/        # Invite acceptance for existing users
 │   ├── card/[subdomain]/   # Public digital business card (no auth required)
 │   ├── api/og/card/        # OG image generation for card social previews (edge runtime)
+│   ├── api/cron/sync-downline/  # Cron: daily ByDesign downline + rank sync
 │   └── api/auth/           # Auth API routes (signout)
 ├── components/
 │   ├── layout/             # AppShell, AppSidebar, BottomNav
@@ -42,6 +46,7 @@ src/
 │   ├── follow-ups/         # Notification bell, activity feed, feed entries
 │   ├── onboarding/         # Onboarding components (carousel, tour, checklist)
 │   ├── settings/           # Settings section components (profile, social links, notifications, appearance, account, about)
+│   ├── team/              # Team dashboard components (overview, leaderboard, downline, coaching)
 │   ├── card/               # Business card components (BusinessCardDisplay, ShareCardButton)
 │   └── ui/                 # shadcn/ui primitives
 ├── lib/
@@ -51,7 +56,11 @@ src/
 │   ├── interpolate-script.ts # {{FirstName}}/[Name] replacement in scripts
 │   ├── roadmap-data.ts     # Roadmap spec loading functions
 │   ├── supabase/           # Supabase clients (server, client, middleware)
-│   ├── actions/            # Server actions (contacts, reminders, activity, onboarding, profile, push subscriptions)
+│   ├── actions/            # Server actions (contacts, reminders, activity, onboarding, profile, push subscriptions, bydesign, team, reconcile, invite)
+│   │   ├── bydesign.ts    # ByDesign API proxy (credential resolution, endpoint wrappers)
+│   │   ├── team.ts        # Team analytics (sync, overview, leaderboard, invites)
+│   │   ├── reconcile.ts   # Purchase reconciliation (customer matching, order history)
+│   │   └── invite.ts      # Post-signup invite linkage
 │   └── db/                 # Database TypeScript types
 ├── data/
 │   ├── products.ts         # Product catalog (13 products)
@@ -76,10 +85,10 @@ The core feature is a 7-step guided sales conversation. Rapport-first approach b
 
 ```
 1. Add Contact      → Create contact with first/last name (no product selection)
-2. Rapport          → All 13 product stories shown as selectable pills so the rep picks whichever resonates with their personal experience (decoupled from the contact's product fit, which is determined in discovery)
-3. Discovery        → 5 universal questions: category selection, quality rating (1-10), duration, what they've tried, results
-4. Send Samples     → Auto-suggested product from discovery category, address collection
-5. Follow-Up        → 7-day sequence with 1-10 rating at each touchpoint, category-contextual scripts
+2. Rapport          → Single conversational transcript script with [Name] personalization (no product pills)
+3. Discovery        → 5 universal questions: single category selection, quality rating (1-10), duration, what they've tried, results
+4. Send Samples     → Auto-suggested product from discovery category, per-product quantity stepper, address collection, "special gift" commitment script
+5. Follow-Up        → 7-day sequence with 1-10 rating at each touchpoint, Liberty special gift reveal at DAY 4, per-product check-ins when multiple patches sent
 6. Close            → Closing techniques + collapsible objection handling (merged)
 7. Purchase Links   → Share personalized product purchase URLs + Won/Lost outcome recording
 ```
@@ -101,8 +110,9 @@ User lands on /contacts
          ▼
 ┌─────────────────────────────────────────┐
 │  Step 2: Rapport Building               │
-│  All product story pills (rep's choice) │
-│  Read-only → bridges into Discovery     │
+│  Single conversational transcript       │
+│  [Name] personalized → bridges into     │
+│  Discovery                              │
 └─────────────────────────────────────────┘
          │
          ▼
@@ -202,6 +212,7 @@ create table public.d2c_contacts (
   sample_sent     boolean not null default false,
   sample_sent_at  timestamptz,
   sample_products text[] default '{}',
+  sample_quantities jsonb default '{}'::jsonb,
   sample_followup_done boolean not null default false,
   outcome         text default 'pending',
   follow_up_day   integer,
@@ -280,12 +291,12 @@ All 13 products have fully customized, product-specific content across all secti
 The central orchestrator. Manages:
 - `activeContact` state (Contact or null)
 - `currentStepIndex` (0-6)
-- `DecisionTreeState` (discovery answers, samples, follow-up ratings, closings, objections)
+- `DecisionTreeState` (discovery answers, samples with quantities, follow-up ratings, closings, objections)
 - `storeSubdomain` (user's MLM store subdomain, fetched on mount)
-- `socialLinks` (user's social handles, fetched on mount, passed to purchase links and follow-up steps)
 - Auto-save via `useEffect` with 500ms debounce
 - Contact gating (step 0 must be completed before proceeding)
 - Auto-maps discovery category to product_ids
+- Discovery category is single-select (toggling selects/deselects one category)
 - Legacy step normalization for existing contacts via `normalizeContactStep()`
 
 ### ProductTabs (`src/components/sales-flow/product-tabs.tsx`)
@@ -356,6 +367,17 @@ Premium mobile-first calendar on the Activity page:
 | `getUnifiedFeed()` | Merge reminders + activity events into a single sorted feed |
 | `subscribePush(subscription)` | Save push notification subscription |
 | `unsubscribePush(endpoint)` | Remove push notification subscription |
+| `connectByDesign(input)` | Connect ByDesign account with credentials |
+| `disconnectByDesign()` | Remove ByDesign connection |
+| `syncDownline()` | Fetch and cache ByDesign downline |
+| `getTeamOverview()` | Aggregate team stats |
+| `getTeamLeaderboard(metric, period)` | Ranked member list |
+| `getStrugglingMembers(metric, limit)` | Members needing attention |
+| `getTeamMemberStats(memberId)` | Individual member details |
+| `generateInviteLink(downlineMemberId)` | Create invite URL |
+| `acceptInvite(token)` | Accept team invitation |
+| `reconcileContact(contactId)` | Match contact to ByDesign customer |
+| `confirmMatch(contactId, customerDID)` | Manual match confirmation |
 
 All actions use the server Supabase client and scope queries to the authenticated user's ID. Path revalidation is called for `/contacts` and `/dashboard`.
 
@@ -368,6 +390,10 @@ SUPABASE_SERVICE_ROLE_KEY=       # Supabase service role key (server-side only)
 NEXT_PUBLIC_VAPID_PUBLIC_KEY=    # VAPID public key for push subscriptions
 VAPID_PRIVATE_KEY=               # VAPID private key for sending push (server-side only)
 CRON_SECRET=                     # Secret for authenticating Vercel Cron requests
+BYDESIGN_API_BASE_URL=           # ByDesign API base URL
+BYDESIGN_API_USERNAME=           # Shared ByDesign API username (dev/test)
+BYDESIGN_API_PASSWORD=           # Shared ByDesign API password (dev/test)
+BYDESIGN_ENCRYPTION_KEY=         # Symmetric key for pgcrypto credential encryption
 ```
 
 ## Development
@@ -387,6 +413,7 @@ npm run lint         # ESLint
 | Dashboard | `/dashboard` | Main entry |
 | Contacts | `/contacts` | Contact list + Kanban pipeline (unified search) |
 | Activities | `/activity` | Follow-up reminders & activity feed |
+| Team | `/team` | Team dashboard (ByDesign-connected leaders only) |
 | Practice | `/practice` | Objection flashcards |
 | Clinical Evidence | `/evidence` | Clinical studies |
 
@@ -556,6 +583,83 @@ A two-phase notification system that reminds reps to follow up with contacts at 
 | `public/sw.js` | Service worker for push events |
 | `vercel.json` | Vercel Cron schedule (daily at 12:00 UTC) |
 
+---
+
+## Team Dashboard & ByDesign Integration
+
+Leaders who connect their ByDesign backoffice account can manage their team directly within S.T.A.R.
+
+### ByDesign Connection
+- Settings page includes a ByDesign section for connecting: enter Rep ID + optional API credentials
+- Credentials are encrypted at rest using pgcrypto symmetric encryption
+- Shared test credentials available via environment variables for development
+- Rank is synced from ByDesign and displayed on the public business card
+
+### Downline Management
+- Full downline auto-synced from ByDesign volumeReport API
+- Cached in `d2c_downline_cache` table, refreshed on demand or via daily cron
+- Each downline member shows rank, level, PV/GV, status
+- Invite buttons generate unique token-based invite links
+- S.T.A.R. users in the downline are auto-detected and linked
+
+### Invite Flow
+- **New users**: `/signup?invite=TOKEN` shows "Invited by [Leader]" banner, token stored in auth metadata, team linkage on signup
+- **Existing users**: Middleware redirects authenticated `/signup?invite=TOKEN` to `/team/accept?invite=TOKEN` for one-click team join
+
+### Team Analytics
+- Overview cards: Team Size, Win Rate, Total Contacts, Active Follow-Ups
+- Leaderboard: Ranked by wins, contacts, or samples sent (week/month/all)
+- Needs Attention: Members inactive 3+ days, low win rates, no contacts
+- Activity Feed: Aggregated events across all team members
+- Coaching Drawer: Detailed member stats with step distribution
+
+### Purchase Reconciliation
+- Contacts matched to ByDesign customers by email (auto), phone (auto), or name (manual confirm)
+- Order history fetched and linked to contacts
+- Matched purchases shown in the Purchase Links step
+- Product SKU mapping via `BYDESIGN_SKU_MAP`
+- Auto-updates outcome to "won" when orders are found
+
+### J.Ai Agent Integration
+- `team_query` intent added to the LangGraph agent
+- 5 team tools: overview, member stats, struggling members, leaderboard, activity
+- Natural language queries: "who needs the most help?" "show me the leaderboard"
+- Coaching-oriented system prompt for team context
+
+### New Database Tables
+
+#### `d2c_downline_cache`
+ByDesign downline per leader. Columns: `leader_id`, `rep_did`, `rep_name`, `email`, `rank`, `level`, `pv`, `gv`, `rep_status`, `star_user_id`, `invite_token`, `invite_status`, `synced_at`. RLS: `leader_id = auth.uid()`.
+
+#### `d2c_team_members`
+Active S.T.A.R. team memberships. Columns: `leader_id`, `member_id`, `member_rep_did`, `level`, `joined_at`. RLS: leaders read their members, members read their own rows.
+
+#### `d2c_purchase_matches`
+ByDesign orders matched to contacts. Columns: `user_id`, `contact_id`, `bydesign_customer_did`, `bydesign_order_id`, `order_date`, `order_total`, `products_purchased` (jsonb). RLS: `user_id = auth.uid()`.
+
+### Key Files
+| File | Purpose |
+|------|---------|
+| `src/app/team/page.tsx` | Team dashboard page (overview, leaderboard, downline, activity) |
+| `src/app/team/accept/page.tsx` | Invite acceptance page for existing users |
+| `src/app/team/layout.tsx` | Team layout with ByDesign connection gate |
+| `src/app/api/cron/sync-downline/route.ts` | Cron: daily ByDesign downline + rank sync |
+| `src/components/team/team-overview-cards.tsx` | Team size, win rate, contacts, follow-ups |
+| `src/components/team/team-leaderboard.tsx` | Ranked member list by metric/period |
+| `src/components/team/team-needs-attention.tsx` | Members needing coaching |
+| `src/components/team/team-activity-feed.tsx` | Aggregated team activity stream |
+| `src/components/team/downline-list.tsx` | ByDesign downline with invite buttons |
+| `src/components/team/member-coaching-drawer.tsx` | Individual member stats and step distribution |
+| `src/components/team/sync-downline-button.tsx` | Manual downline sync trigger |
+| `src/components/settings/bydesign-section.tsx` | ByDesign connection form in Settings |
+| `src/lib/actions/bydesign.ts` | ByDesign API proxy (credential resolution, endpoint wrappers) |
+| `src/lib/actions/team.ts` | Team analytics server actions |
+| `src/lib/actions/reconcile.ts` | Purchase reconciliation (customer matching, order history) |
+| `src/lib/actions/invite.ts` | Post-signup invite linkage |
+| `supabase/migrations/20260326000000_team_bydesign_schema.sql` | Migration for team/downline/purchase tables |
+
+---
+
 ## Progressive Web App (PWA)
 
 The app is installable as a PWA on both Android and iOS devices.
@@ -601,9 +705,9 @@ Every user-facing script and speakable text has a share-or-copy button powered b
 | `step-rapport.tsx` | Rapport building personal story scripts |
 | `step-discovery-v2.tsx` | Discovery questions and category selection |
 | `step-send-samples.tsx` | Sample offer, commitment, and experience scripts |
-| `step-followup.tsx` | Each follow-up template (with social footer) |
+| `step-followup.tsx` | Each follow-up template |
 | `step-close.tsx` | Closing techniques + objection responses |
-| `step-purchase-links.tsx` | Branded product business card (image + URL) as primary share, text scripts as secondary (with social footer) |
+| `step-purchase-links.tsx` | Branded product business card (image + URL) as primary share, text scripts as secondary |
 | `reference-tabs-view.tsx` | All scripts across Discovery, Samples, Follow-Up, Close, and Quick Ref tabs |
 | `feed-entry.tsx` | Follow-up script templates in activity feed |
 | `contact-sheet.tsx` | Active follow-up script on contact detail |

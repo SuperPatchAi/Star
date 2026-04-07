@@ -24,15 +24,15 @@ import {
   Trash2,
 } from "lucide-react";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
-import { cn, buildSocialFooter } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import {
   FOLLOWUP_SEQUENCE,
   interpolateFollowUpTemplate,
+  type FollowUpTemplate,
 } from "@/data/followup-templates";
 import { joinCategoryLabels } from "@/data/discovery-categories";
 import { getProductById } from "@/data/products";
 import { createContact } from "@/lib/actions/contacts";
-import type { SocialLinks } from "@/lib/db/types";
 
 interface ReferralEntry {
   firstName: string;
@@ -55,7 +55,7 @@ interface StepFollowUpProps {
   followupRatings: Record<string, number>;
   onFollowupRatingChange: (dayIndex: number, rating: number) => void;
   sampleProducts: string[];
-  socialLinks?: SocialLinks;
+  sampleQuantities: Record<string, number>;
 }
 
 const GOAL = "Track improvement and build proof through consistent follow-up";
@@ -96,7 +96,7 @@ export function StepFollowUp({
   followupRatings,
   onFollowupRatingChange,
   sampleProducts,
-  socialLinks = {},
+  sampleQuantities,
 }: StepFollowUpProps) {
   const [advancing, setAdvancing] = useState(false);
   const emptyReferral = (): ReferralEntry => ({ firstName: "", lastName: "", phone: "", email: "" });
@@ -106,6 +106,26 @@ export function StepFollowUp({
   const firstProduct = sampleProducts.length > 0 ? getProductById(sampleProducts[0]) : null;
   const productName = firstProduct?.name ?? "SuperPatch";
   const baseline = discoveryQualityRating ?? 5;
+
+  const expandedSequence = useMemo(() => {
+    const multipleProducts = sampleProducts.length > 1;
+    if (!multipleProducts) return FOLLOWUP_SEQUENCE;
+
+    const expanded: (FollowUpTemplate & { productOverride?: string })[] = [];
+    for (const step of FOLLOWUP_SEQUENCE) {
+      const isCheckIn = step.action === "Experience Check-In" || step.action === "Results Follow-Up";
+      if (isCheckIn && multipleProducts) {
+        for (const pid of sampleProducts) {
+          const p = getProductById(pid);
+          if (!p) continue;
+          expanded.push({ ...step, productOverride: p.name, action: `${step.action} — ${p.name}` });
+        }
+      } else {
+        expanded.push(step);
+      }
+    }
+    return expanded;
+  }, [sampleProducts]);
 
   const ratingsEntries = useMemo(() => {
     return Object.entries(followupRatings)
@@ -120,20 +140,17 @@ export function StepFollowUp({
     return ratingsEntries[ratingsEntries.length - 1].rating;
   }, [ratingsEntries, baseline]);
 
-  const socialFooter = useMemo(() => buildSocialFooter(socialLinks), [socialLinks]);
-
-  function getInterpolatedScript(template: string, dayIndex: number) {
+  function getInterpolatedScript(template: string, dayIndex: number, productOverride?: string) {
     const currentDayRating = followupRatings[String(dayIndex)];
-    const base = interpolateFollowUpTemplate(template, {
+    return interpolateFollowUpTemplate(template, {
       firstName: contactFirstName ?? "{{FirstName}}",
-      productName,
+      productName: productOverride ?? productName,
       categoryLabel,
       baseline,
       lastRating: lastRecordedRating,
       currentRating: currentDayRating ?? lastRecordedRating,
       improvement: (currentDayRating ?? lastRecordedRating) - baseline,
     });
-    return base + socialFooter;
   }
 
   const updateReferral = (index: number, field: keyof ReferralEntry, value: string) => {
@@ -173,8 +190,8 @@ export function StepFollowUp({
     }
   };
 
-  const currentStep = FOLLOWUP_SEQUENCE[followUpDay];
-  const allComplete = followUpDay >= FOLLOWUP_SEQUENCE.length;
+  const currentStep = expandedSequence[followUpDay];
+  const allComplete = followUpDay >= expandedSequence.length;
 
   const isZoomStep = currentStep?.channel === "Zoom" || currentStep?.channel === "Zoom Call";
   const zoomBlocked = isZoomStep && !sampleReceived;
@@ -195,7 +212,7 @@ export function StepFollowUp({
           </div>
           <div className="flex flex-wrap gap-2">
             {ratingsEntries.map(({ dayIndex, rating }) => {
-              const step = FOLLOWUP_SEQUENCE[dayIndex];
+              const step = expandedSequence[dayIndex];
               const dayLabel = step?.day ?? `Day ${dayIndex}`;
               return (
                 <div
@@ -256,9 +273,9 @@ export function StepFollowUp({
           )}
 
           <div className="bg-muted rounded-lg p-3 text-sm relative group whitespace-pre-wrap">
-            {getInterpolatedScript(currentStep.template, followUpDay)}
+            {getInterpolatedScript(currentStep.template, followUpDay, (currentStep as { productOverride?: string }).productOverride)}
             <ShareCopyButton
-              text={getInterpolatedScript(currentStep.template, followUpDay)}
+              text={getInterpolatedScript(currentStep.template, followUpDay, (currentStep as { productOverride?: string }).productOverride)}
               className="absolute top-2 right-2 size-9 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
             />
           </div>
@@ -425,11 +442,11 @@ export function StepFollowUp({
         <div className="absolute left-[22px] top-0 bottom-0 w-px bg-border" />
 
         <div className="space-y-4">
-          {FOLLOWUP_SEQUENCE.map((step, index) => {
+          {expandedSequence.map((step, index) => {
             const isComplete = index < followUpDay;
             const isCurrent = index === followUpDay;
             const isFuture = index > followUpDay;
-            const scriptText = getInterpolatedScript(step.template, index);
+            const scriptText = getInterpolatedScript(step.template, index, (step as { productOverride?: string }).productOverride);
             return (
               <div key={index} className={cn("relative flex gap-4", isFuture && "opacity-40")}>
                 <div

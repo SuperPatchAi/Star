@@ -3,6 +3,7 @@ import { getNotificationPreferences } from "@/lib/actions/push-subscriptions";
 import { getSocialLinks } from "@/lib/actions/profile";
 import { ProfileSection } from "@/components/settings/profile-section";
 import { SocialLinksSection } from "@/components/settings/social-links-section";
+import { ByDesignSection } from "@/components/settings/bydesign-section";
 import { NotificationSection } from "@/components/settings/notification-section";
 import { AppearanceSection } from "@/components/settings/appearance-section";
 import { AccountSection } from "@/components/settings/account-section";
@@ -34,6 +35,8 @@ export default async function SettingsPage() {
       />
 
       <SocialLinksSection initialLinks={socialLinks} />
+
+      <ByDesignSection profile={profile} />
 
       <NotificationSection
         initialPrefs={notificationPrefs}

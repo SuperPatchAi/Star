@@ -6,7 +6,11 @@ export type ActivityEventType =
   | "sample_sent"
   | "sample_confirmed"
   | "followup_completed"
-  | "outcome_changed";
+  | "outcome_changed"
+  | "invite_sent"
+  | "member_joined"
+  | "purchase_matched"
+  | "downline_synced";
 
 export interface ActivityEvent {
   id: string;
@@ -30,6 +34,10 @@ export const EVENT_LABELS: Record<ActivityEventType, string> = {
   sample_confirmed: "Samples Received",
   followup_completed: "Follow-Up Done",
   outcome_changed: "Outcome Updated",
+  invite_sent: "Invite Sent",
+  member_joined: "Member Joined",
+  purchase_matched: "Purchase Matched",
+  downline_synced: "Downline Synced",
 };
 
 export function getItemBucket(item: UnifiedFeedItem): TimeBucket {

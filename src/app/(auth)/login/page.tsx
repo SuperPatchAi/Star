@@ -18,6 +18,10 @@ export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
 
+  const inviteParam = typeof window !== 'undefined'
+    ? new URLSearchParams(window.location.search).get('invite')
+    : null
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
@@ -35,7 +39,7 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        router.push('/')
+        router.push(inviteParam ? `/team/accept?invite=${inviteParam}` : '/')
         router.refresh()
       }
     } catch {

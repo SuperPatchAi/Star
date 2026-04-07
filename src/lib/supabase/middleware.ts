@@ -61,15 +61,24 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // If user is logged in and trying to access login/signup, redirect to home
+  // If user is logged in and trying to access login/signup, redirect appropriately
   if (user && (request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/signup')) {
+    const inviteToken = request.nextUrl.searchParams.get('invite')
     const url = request.nextUrl.clone()
-    url.pathname = '/'
+
+    if (inviteToken && (request.nextUrl.pathname === '/signup' || request.nextUrl.pathname === '/login')) {
+      url.pathname = '/team/accept'
+      url.searchParams.set('invite', inviteToken)
+    } else {
+      url.pathname = '/'
+      url.search = ''
+    }
+
     return NextResponse.redirect(url)
   }
 
   // Onboarding routing for authenticated users (skip for public card pages)
-  if (user && !request.nextUrl.pathname.startsWith('/_next') && !request.nextUrl.pathname.startsWith('/api') && !request.nextUrl.pathname.startsWith('/card')) {
+  if (user && !request.nextUrl.pathname.startsWith('/_next') && !request.nextUrl.pathname.startsWith('/api') && !request.nextUrl.pathname.startsWith('/card') && !request.nextUrl.pathname.startsWith('/team/accept')) {
     const isOnboardingRoute = request.nextUrl.pathname.startsWith('/onboarding');
 
     const { data: profile } = await supabase

@@ -42,23 +42,26 @@ alwaysApply: true
 - `card/[subdomain]/page.tsx` — Public digital business card (no auth, OG metadata, social icons, share as image); supports `?products=` param for branded product grid variant
 - `api/og/card/[subdomain]/route.tsx` — OG image generation (1200x630 PNG, edge runtime, Satori/next-og); supports `?products=` param for product recommendations in OG image
 - `api/cron/send-reminders/route.ts` — Vercel Cron endpoint: queries due reminders, sends push via `web-push`
+- `team/page.tsx` — Team Dashboard: overview stats, leaderboard, needs-attention list, activity feed, downline list (requires ByDesign connection)
+- `team/accept/page.tsx` — Invite acceptance for existing S.T.A.R. users
+- `api/cron/sync-downline/route.ts` — Vercel Cron: syncs ByDesign downline + ranks for all connected users
 - `(auth)/login/page.tsx` — Login form
 - `(auth)/signup/page.tsx` — Invite-only signup
 
 ### Sales Flow (`src/components/sales-flow/`)
-- `decision-tree.tsx` — Central orchestrator (7 steps, auto-save, contact gating, `variant="drawer"` for embedded use, dynamic `continueLabel`, timestamped question/objection tracking, fetches `storeSubdomain` on mount)
+- `decision-tree.tsx` — Central orchestrator (7 steps, auto-save, contact gating, `variant="drawer"` for embedded use, dynamic `continueLabel`, timestamped question/objection tracking, fetches `storeSubdomain` on mount, single-select discovery categories, sample quantities tracking)
 - `step-add-contact.tsx` — Step 1: create contact + select products (gate)
-- `step-rapport.tsx` — Step 2: all 13 product stories shown as selectable pills (rep picks whichever story resonates with their experience, decoupled from contact's product fit); talking points, transition bridge to discovery (read-only, no persisted state)
-- `step-discovery-v2.tsx` — Step 3: 5 universal discovery questions (category, quality rating 1-10, duration, what they've tried, results)
-- `step-send-samples.tsx` — Step 4: 2-script sample flow (offer, commitment) + product picker + address
-- `step-followup.tsx` — Step 5: 7-task follow-up sequence (shipping, arrival+checkbox, Zoom demo, experience check-in, product-specific follow-up, reorder+referral, ask for the close)
+- `step-rapport.tsx` — Step 2: single conversational transcript with [Name] personalization (no product pills); talking points, transition bridge to discovery (read-only, no persisted state)
+- `step-discovery-v2.tsx` — Step 3: 5 universal discovery questions (single category select, quality rating 1-10, duration, what they've tried, results)
+- `step-send-samples.tsx` — Step 4: 2-script sample flow (offer, "special gift" commitment) + product picker with per-product quantity stepper + address
+- `step-followup.tsx` — Step 5: follow-up sequence (shipping, arrival+checkbox, Liberty special gift reveal, per-product experience check-ins, results follow-up, reorder+referral, ask for the close); dynamically expands check-in steps when multiple products sent
 - `step-close.tsx` — Step 6: closing techniques + collapsible objection handling (merged)
 - `step-purchase-links.tsx` — Step 7: branded product business card (primary share via image+URL) + text scripts (secondary) + Won/Lost outcome recording
 - `product-tabs.tsx` — Multi-product tabbed content
 - `customer-insight.tsx` — Customer profile from roadmap
 
 ### Data (`src/data/`)
-- `products.ts` — 13 products with id, name, tagline, category, color, image
+- `products.ts` — 13 products with id, name, tagline, category, color, image; also exports BYDESIGN_SKU_MAP and matchByDesignProduct for purchase reconciliation
 - `roadmap-specs-v2/*.json` — Product-specific sales scripts (RoadmapV2 type)
 - `wordtracks/` — Legacy word track scripts per product
 
@@ -84,8 +87,17 @@ alwaysApply: true
 - `follow-up-calendar.tsx` — Week strip / full month calendar with reminder dots for the Activity page
 - `push-permission-banner.tsx` — Non-blocking push notification opt-in banner
 
+### Team (`src/components/team/`)
+- `team-overview-cards.tsx` — 4 stat cards: Team Size, Win Rate, Total Contacts, Active Follow-Ups
+- `team-needs-attention.tsx` — Members needing coaching with reasons
+- `team-leaderboard.tsx` — Ranked member list by wins/contacts/samples
+- `team-activity-feed.tsx` — Aggregated team activity events
+- `downline-list.tsx` — Full ByDesign downline with search, invite, and status badges
+- `member-coaching-drawer.tsx` — Sheet with individual member stats and step distribution
+- `sync-downline-button.tsx` — Triggers downline sync with spinner and toast
+
 ### Card (`src/components/card/`)
-- `business-card-display.tsx` — Client wrapper for public card with ref for screenshot capture + ShareCardButton; supports optional `products` prop for branded product grid variant used in Purchase Links step
+- `business-card-display.tsx` — Client wrapper for public card with ref for screenshot capture + ShareCardButton; supports optional `products` prop for branded product grid variant used in Purchase Links step; supports optional `rank` prop showing ByDesign rank badge; `socialEntries` and `socialLinks` are optional (not passed from sales flow)
 - `share-card-button.tsx` — Captures card DOM as PNG via html-to-image, shares via Web Share API or downloads; supports optional `shareUrl` and `shareText` for richer sharing payloads
 
 ### Settings (`src/components/settings/`)
@@ -95,6 +107,7 @@ alwaysApply: true
 - `appearance-section.tsx` — Light/Dark/System theme toggle via next-themes
 - `account-section.tsx` — Password reset link + sign out
 - `about-section.tsx` — App version, support link, replay onboarding (welcome + tour)
+- `bydesign-section.tsx` — ByDesign connection: Rep ID, optional API credentials, connect/disconnect, rank badge
 
 ### Lib (`src/lib/`)
 - `actions/contacts.ts` — Server actions: getContacts, getContact, createContact, updateContact, deleteContact, advanceFollowUpDay, dismissReminder, markSamplesReceived, getDashboardStats, getSalesAnalytics
@@ -103,6 +116,10 @@ alwaysApply: true
 - `actions/reminders.ts` — getFollowUpReminders, getFollowUpReminderCount (staleness + DAY sequence)
 - `actions/activity.ts` — logActivity, getActivityLog, getUnifiedFeed (unified feed merging reminders + activity events)
 - `actions/push-subscriptions.ts` — subscribePush, unsubscribePush, getNotificationPreferences, updateNotificationPreferences
+- `actions/bydesign.ts` — ByDesign API proxy: credential resolution (encrypted → env fallback), typed endpoint wrappers, verifyConnection, connectByDesign, disconnectByDesign, syncRepRank
+- `actions/team.ts` — syncDownline, getDownlineList, generateInviteLink, acceptInvite, validateInviteToken, getTeamOverview, getTeamMemberStats, getStrugglingMembers, getTeamLeaderboard, getTeamActivity
+- `actions/reconcile.ts` — matchContactToCustomer (email/phone/name tiers), reconcileContact, confirmMatch, getContactPurchaseMatches
+- `actions/invite.ts` — processPostSignupInvite (post-signup team linkage)
 - `roadmap-data.ts` — getRoadmapSpec, getRoadmapsForProducts, getAllRoadmapSpecs
 - `auth.ts` — getAuthUser, requireAdmin
 - `supabase/server.ts` — createClient (server), createAdminClient
@@ -122,23 +139,35 @@ alwaysApply: true
 
 ## Database Table: `d2c_contacts`
 
-Key columns: `user_id`, `product_ids text[]`, `first_name`, `last_name`, `email`, `phone`, address fields, `current_step`, `stage_entered_at`, `opening_types jsonb`, `questions_asked jsonb`, `objections_encountered jsonb`, `closing_techniques jsonb`, `sample_sent`, `sample_sent_at`, `sample_products text[]`, `sample_followup_done`, `outcome`, `follow_up_day`
+Key columns: `user_id`, `product_ids text[]`, `first_name`, `last_name`, `email`, `phone`, address fields, `current_step`, `stage_entered_at`, `opening_types jsonb`, `questions_asked jsonb`, `objections_encountered jsonb`, `closing_techniques jsonb`, `sample_sent`, `sample_sent_at`, `sample_products text[]`, `sample_quantities jsonb`, `sample_followup_done`, `outcome`, `follow_up_day`, `bydesign_customer_did`, `bydesign_matched_at`, `bydesign_match_confidence` (email | phone | name | manual), `bydesign_order_count`, `bydesign_total_spent`
 
 ## Database Table: `user_profiles` (onboarding columns)
 
-Key additions: `onboarding_step text` (carousel | tour | checklist | completed), `onboarding_checklist jsonb` (5 boolean milestone flags), `store_subdomain text` (MLM store subdomain for purchase URLs), `notification_preferences jsonb` (follow_up_reminders, overdue_alerts, sample_check_ins booleans), `social_links jsonb` (partial record of social platform handles: instagram, facebook, tiktok, youtube, linkedin, x)
+Key additions: `onboarding_step text` (carousel | tour | checklist | completed), `onboarding_checklist jsonb` (5 boolean milestone flags), `store_subdomain text` (MLM store subdomain for purchase URLs), `notification_preferences jsonb` (follow_up_reminders, overdue_alerts, sample_check_ins booleans), `social_links jsonb` (partial record of social platform handles: instagram, facebook, tiktok, youtube, linkedin, x), `bydesign_rep_did text` (ByDesign Rep ID), `bydesign_api_username text`, `bydesign_api_key_encrypted bytea` (pgcrypto encrypted), `bydesign_connected_at timestamptz`, `bydesign_rank text`
 
 ## Database Table: `d2c_activity_log`
 
-Append-only event log for unified activity feed. Key columns: `user_id`, `contact_id`, `event_type` (contact_created | step_changed | sample_sent | sample_confirmed | followup_completed | outcome_changed), `metadata` (jsonb), `created_at`. RLS scoped to `auth.uid() = user_id`. Events logged fire-and-forget from server actions.
+Append-only event log for unified activity feed. Key columns: `user_id`, `contact_id`, `event_type` (contact_created | step_changed | sample_sent | sample_confirmed | followup_completed | outcome_changed | invite_sent | member_joined | purchase_matched | downline_synced), `metadata` (jsonb), `created_at`. RLS scoped to `auth.uid() = user_id`. Events logged fire-and-forget from server actions.
 
 ## Database Table: `d2c_push_subscriptions`
 
 Key columns: `user_id`, `endpoint`, `p256dh`, `auth` — stores web push subscriptions per user with RLS
 
+## Database Table: `d2c_downline_cache`
+
+ByDesign downline per leader. Key columns: `leader_id`, `rep_did`, `rep_name`, `email`, `rank`, `level`, `pv`, `gv`, `rep_status`, `star_user_id`, `invite_token`, `invite_status` (not_invited | invited | accepted | declined), `synced_at`. RLS scoped to `auth.uid() = leader_id`.
+
+## Database Table: `d2c_team_members`
+
+Linked S.T.A.R. team members. Key columns: `leader_id`, `member_id`, `member_rep_did`, `level`, `joined_at`. RLS: leaders see their members, members see their own membership row.
+
+## Database Table: `d2c_purchase_matches`
+
+Matched ByDesign orders to contacts. Key columns: `user_id`, `contact_id`, `bydesign_customer_did`, `bydesign_order_id`, `order_date`, `order_total`, `products_purchased` (jsonb). RLS scoped to `auth.uid() = user_id`.
+
 ## Environment Variables
 
-`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_VAPID_PUBLIC_KEY` (push notifications), `VAPID_PRIVATE_KEY` (push, server-side only), `CRON_SECRET` (Vercel Cron auth)
+`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_VAPID_PUBLIC_KEY` (push notifications), `VAPID_PRIVATE_KEY` (push, server-side only), `CRON_SECRET` (Vercel Cron auth), `BYDESIGN_API_BASE_URL`, `BYDESIGN_API_USERNAME`, `BYDESIGN_API_PASSWORD` (dev/test shared creds), `BYDESIGN_ENCRYPTION_KEY` (pgcrypto symmetric key)
 
 ## Conventions
 

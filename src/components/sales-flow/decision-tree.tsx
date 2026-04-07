@@ -14,9 +14,8 @@ import type { Contact, TimestampedObjection, QuestionsAsked, ObjectionsEncounter
 import { normalizeQuestions, normalizeObjections, normalizeContactStep } from "@/lib/db/types";
 import { products as allProducts } from "@/data/products";
 import { updateContact, advanceFollowUpDay, markSamplesReceived } from "@/lib/actions/contacts";
-import { getStoreSubdomain, getSocialLinks, getMyProfile } from "@/lib/actions/profile";
-import type { SocialLinks } from "@/lib/db/types";
-import { getRoadmapsForProducts, getAllRoadmapSpecs } from "@/lib/roadmap-data";
+import { getStoreSubdomain, getMyProfile } from "@/lib/actions/profile";
+import { getRoadmapsForProducts } from "@/lib/roadmap-data";
 import { StepAddContact } from "./step-add-contact";
 import { StepRapport } from "./step-rapport";
 import { StepDiscoveryV2 } from "./step-discovery-v2";
@@ -35,6 +34,7 @@ export interface DecisionTreeState {
   discoveryTriedResult: string | null;
   sampleAgreed: boolean;
   sampleProducts: string[];
+  sampleQuantities: Record<string, number>;
   sampleAddress: SampleAddress | null;
   sampleReceived: boolean;
   followupRatings: Record<string, number>;
@@ -87,6 +87,7 @@ function contactToState(contact: Contact): DecisionTreeState {
     discoveryTriedResult: contact.discovery_tried_result || null,
     sampleAgreed: contact.sample_sent,
     sampleProducts: contact.sample_products || [],
+    sampleQuantities: asRecord(contact.sample_quantities, {} as Record<string, number>),
     sampleReceived: contact.sample_followup_done,
     sampleAddress: contact.address_line1
       ? { line1: contact.address_line1 || "", line2: contact.address_line2 || "", city: contact.address_city || "", state: contact.address_state || "", zip: contact.address_zip || "" }
@@ -130,6 +131,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
       discoveryTriedResult: null,
       sampleAgreed: false,
       sampleProducts: [],
+      sampleQuantities: {},
       sampleAddress: null,
       sampleReceived: false,
       followupRatings: {},
@@ -140,13 +142,11 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
   );
 
   const [storeSubdomain, setStoreSubdomain] = useState<string | null>(null);
-  const [socialLinks, setSocialLinks] = useState<SocialLinks>({});
   const [repProfile, setRepProfile] = useState<{ name: string | null; avatarUrl: string | null }>({ name: null, avatarUrl: null });
   const [keyboardOpen, setKeyboardOpen] = useState(false);
 
   useEffect(() => {
     getStoreSubdomain().then(setStoreSubdomain);
-    getSocialLinks().then(setSocialLinks);
     getMyProfile().then(({ data }) => {
       if (data) setRepProfile({ name: data.full_name, avatarUrl: data.avatar_url });
     });
@@ -195,6 +195,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
     closing_techniques: state.closingTechniques,
     sample_sent: state.sampleAgreed,
     sample_products: state.sampleProducts,
+    sample_quantities: state.sampleQuantities,
     sample_followup_done: state.sampleReceived,
     followup_ratings: state.followupRatings,
     address_line1: state.sampleAddress?.line1 || null,
@@ -243,6 +244,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
           closing_techniques: state.closingTechniques,
           sample_sent: state.sampleAgreed,
           sample_products: state.sampleProducts,
+          sample_quantities: state.sampleQuantities,
           sample_followup_done: state.sampleReceived,
           followup_ratings: state.followupRatings,
           address_line1: state.sampleAddress?.line1 || null,
@@ -280,16 +282,11 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
   }, [activeContact]);
 
   const toggleDiscoveryCategory = useCallback((key: string) => {
-    setState(prev => {
-      const next = prev.discoveryCategories.includes(key)
-        ? prev.discoveryCategories.filter(k => k !== key)
-        : [...prev.discoveryCategories, key];
-      return {
-        ...prev,
-        discoveryCategories: next,
-        discoveryQualityRating: prev.discoveryQualityRating ?? 5,
-      };
-    });
+    setState(prev => ({
+      ...prev,
+      discoveryCategories: prev.discoveryCategories.includes(key) ? [] : [key],
+      discoveryQualityRating: prev.discoveryQualityRating ?? 5,
+    }));
   }, []);
 
   useEffect(() => {
@@ -367,6 +364,13 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
     setState(prev => ({ ...prev, sampleAddress: address }));
   }, []);
 
+  const setSampleQuantity = useCallback((productId: string, qty: number) => {
+    setState(prev => ({
+      ...prev,
+      sampleQuantities: { ...prev.sampleQuantities, [productId]: qty },
+    }));
+  }, []);
+
   const handleSampleReceived = useCallback(async (received: boolean) => {
     setState(prev => ({ ...prev, sampleReceived: received }));
     if (received && activeContact) {
@@ -386,21 +390,15 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
             existingContact={activeContact}
           />
         );
-      case "rapport": {
-        const allRoadmaps = getAllRoadmapSpecs();
+      case "rapport":
         return (
-          <ProductTabs products={allProducts}>
-            {(product) => (
-              <StepRapport
-                rapportData={allRoadmaps[product.id]?.sections["2b_rapport_story"] ?? null}
-                contactFirstName={contactFirstName}
-                onContinue={goNext}
-                continueLabel={continueLabel}
-              />
-            )}
-          </ProductTabs>
+          <StepRapport
+            rapportData={null}
+            contactFirstName={contactFirstName}
+            onContinue={goNext}
+            continueLabel={continueLabel}
+          />
         );
-      }
       case "discovery":
         return (
           <StepDiscoveryV2
@@ -434,6 +432,8 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
             contactFirstName={contactFirstName}
             continueLabel={continueLabel}
             discoveryCategories={state.discoveryCategories}
+            sampleQuantities={state.sampleQuantities}
+            onSetSampleQuantity={setSampleQuantity}
           />
         );
       case "followup":
@@ -452,7 +452,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
             followupRatings={state.followupRatings}
             onFollowupRatingChange={setFollowupRating}
             sampleProducts={state.sampleProducts}
-            socialLinks={socialLinks}
+            sampleQuantities={state.sampleQuantities}
           />
         );
       case "close":
@@ -491,9 +491,12 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                 allProducts={contactProducts}
                 onSubdomainSaved={setStoreSubdomain}
                 contactId={activeContact?.id}
-                socialLinks={socialLinks}
                 repName={repProfile.name}
                 repAvatarUrl={repProfile.avatarUrl}
+                bydesignCustomerDid={activeContact?.bydesign_customer_did}
+                bydesignMatchConfidence={activeContact?.bydesign_match_confidence}
+                bydesignOrderCount={activeContact?.bydesign_order_count}
+                bydesignTotalSpent={activeContact?.bydesign_total_spent}
               />
             )}
           </ProductTabs>

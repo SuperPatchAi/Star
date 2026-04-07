@@ -16,6 +16,7 @@ import {
   ChevronsUpDown,
   User,
   Users,
+  Users2,
   LayoutDashboard,
   CalendarCheck,
   RotateCcw,
@@ -123,6 +124,7 @@ export function AppSidebar({
 
   const isDashboardActive = pathname.startsWith("/dashboard");
   const isContactsActive = pathname.startsWith("/contacts");
+  const isTeamActive = pathname.startsWith("/team");
   const isActivityActive = pathname.startsWith("/activity");
   const isPracticeActive = pathname.startsWith("/practice");
   const isEvidenceActive = pathname.startsWith("/evidence");
@@ -199,6 +201,21 @@ export function AppSidebar({
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+
+              {profile?.bydesign_rep_did && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip="Team"
+                    isActive={isTeamActive}
+                  >
+                    <Link href="/team">
+                      <Users2 className="h-4 w-4" />
+                      <span>Team</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
 
               <SidebarMenuItem>
                 <SidebarMenuButton
