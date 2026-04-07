@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -84,6 +84,12 @@ export function StepSendSamples({
     .filter(Boolean) as Product[];
   const suggestedProductIds = new Set(suggestedProducts.map(p => p.id));
   const [showAllProducts, setShowAllProducts] = useState(false);
+
+  useEffect(() => {
+    if (sampleProducts.length === 0 && suggestedProducts.length === 1) {
+      onToggleSampleProduct(suggestedProducts[0].id);
+    }
+  }, [suggestedProducts.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleAddressChange = (field: keyof SampleAddress, value: string) => {
     onSetSampleAddress({ ...address, [field]: value });
