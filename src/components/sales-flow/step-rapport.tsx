@@ -10,16 +10,16 @@ const GENERIC_RAPPORT: RoadmapRapportStory = {
   title: "BUILD RAPPORT",
   description: "Share your personal story to build trust",
   personal_story:
-    "Hey [Name], so a friend gave me this patch a while back. I honestly thought it was kind of weird — like, a patch? But I was dealing with some stuff and figured why not. And [Name], I'm not exaggerating, I just started feeling better. More like myself. I wear it every day now. It's one of those things where you don't realize how off you were until something clicks.",
+    "Hey [Name]! How are you? It's been a minute, man. I was thinking about you — about something I've been working on and using for the last little bit. Let me give you a little bit of backstory. The reason I called you today — I've had back pain for years. I hurt my back a while ago and tried everything. Chiropractor, you name it. I tried it. Pills, all of it. Nothing worked. And then my wife got me this thing. It's been a game-changer, dude. If you've got back pain — this thing has changed my life. There's no chemicals, and I'm blown away. But think about that — for me. And my wife uses something by the same company for her sleep. Changed her life as well.",
   talking_points: [
-    "Use their name early — it makes the conversation feel real",
-    "Lead with your struggle, not the product",
-    "Be honest about your skepticism — it makes you relatable",
-    "Describe how YOU felt, not what the product does",
-    "Don't sell — just tell your story and let them connect the dots",
+    "Use their name early — make it feel like a real catch-up call",
+    "Lead with your backstory and struggle, not the product name",
+    "Mention that you tried everything and nothing worked — builds credibility",
+    "Keep it personal — your experience and your wife's experience",
+    "Pivot to them by asking what bugs them about their health today",
   ],
   transition_to_discovery:
-    "Anyway [Name], that's my deal. What about you — how have you been feeling lately?",
+    "And I was thinking who else could benefit from a life-changing experience like I'm having. [Name], you're one of those people that's always been interested in new and exciting things, and I thought you would probably benefit from this experience I'm having now. I want to send you some stuff for free — but I don't know if it's for everybody. So is there anything at all that bugs you about your health and wellness today? Whether it's pain, sleep, stress, different types of things. Anything at all.",
 };
 
 interface StepRapportProps {
