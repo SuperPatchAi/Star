@@ -12,7 +12,7 @@ const SCRIPT_TEMPLATE =
   "Hey [Name]! How are you? It's been a minute, man. I was thinking about you — about something I've been working on and using for the last little bit. Let me give you a little bit of backstory. The reason I called you today — {{problem_intro}}. And then my friend got me this thing. It's been a game-changer. {{problem_callback}} — this thing has changed my life. There's no chemicals, and I'm blown away. But think about that — for me. And my friend uses something by the same company {{secondary_use}}.";
 
 const TRANSITION_SCRIPT =
-  "And I was thinking about you — [Name], you're one of those people that's always been open to new and exciting things, and I thought you'd really benefit from this experience I'm having right now. I want to send you some stuff for free to try — but I don't know if it's for everybody. So is there anything at all that bugs you about your health and wellness today? Whether it's pain, sleep, stress, different types of things. Anything at all.";
+  "And I was thinking about you — [Name], you're one of those people that's always been open to new and exciting things, and I thought you'd really benefit from this experience I'm having right now. I want to send you some stuff for free to try — I don't do this for everybody, but is there anything at all that bugs you about your health and wellness today? Whether it's pain, sleep, stress, different types of things. Anything at all.";
 
 interface ProductSnippet {
   problem_intro: string;
