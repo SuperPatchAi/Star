@@ -4,6 +4,8 @@ import { createClient, createAdminClient } from "@/lib/supabase/server";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Json = any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SupabaseAny = any;
 
 const BASE_URL =
   process.env.BYDESIGN_API_BASE_URL || "https://webapi.securefreedom.com/VoxxLife";
@@ -22,7 +24,7 @@ async function resolveCredentials(
 ): Promise<{ creds: ByDesignCredentials | null; error: string | null }> {
   const admin = await createAdminClient();
 
-  const { data: profile } = await admin
+  const { data: profile } = await (admin as SupabaseAny)
     .from("user_profiles")
     .select("bydesign_api_username, bydesign_api_key_encrypted")
     .eq("id", userId)
@@ -34,7 +36,7 @@ async function resolveCredentials(
       return { creds: null, error: "Server encryption key not configured" };
     }
 
-    const { data: decrypted, error: decryptError } = await admin.rpc(
+    const { data: decrypted, error: decryptError } = await (admin as SupabaseAny).rpc(
       "pgp_sym_decrypt_text",
       {
         encrypted_data: profile.bydesign_api_key_encrypted,
@@ -415,7 +417,7 @@ export async function connectByDesign(input: {
 
     const encKey = process.env.BYDESIGN_ENCRYPTION_KEY;
     if (encKey) {
-      const { data: encrypted, error: encError } = await admin.rpc(
+      const { data: encrypted, error: encError } = await (admin as SupabaseAny).rpc(
         "pgp_sym_encrypt_text",
         {
           plain_text: input.apiPassword,
@@ -427,7 +429,7 @@ export async function connectByDesign(input: {
     }
   }
 
-  const { error } = await admin
+  const { error } = await (admin as SupabaseAny)
     .from("user_profiles")
     .update(update)
     .eq("id", user.id);
@@ -447,7 +449,7 @@ export async function disconnectByDesign(): Promise<{ error: string | null }> {
   if (!user) return { error: "Not authenticated" };
 
   const admin = await createAdminClient();
-  const { error } = await admin
+  const { error } = await (admin as SupabaseAny)
     .from("user_profiles")
     .update({
       bydesign_rep_did: null,
@@ -468,7 +470,7 @@ export async function disconnectByDesign(): Promise<{ error: string | null }> {
 
 export async function syncRepRank(userId: string): Promise<{ error: string | null }> {
   const admin = await createAdminClient();
-  const { data: profile } = await admin
+  const { data: profile } = await (admin as SupabaseAny)
     .from("user_profiles")
     .select("bydesign_rep_did")
     .eq("id", userId)
@@ -487,7 +489,7 @@ export async function syncRepRank(userId: string): Promise<{ error: string | nul
   if (rankError) return { error: rankError };
   if (!rankName) return { error: "Could not determine rank from ByDesign" };
 
-  const { error: updateError } = await admin
+  const { error: updateError } = await (admin as SupabaseAny)
     .from("user_profiles")
     .update({ bydesign_rank: rankName, updated_at: new Date().toISOString() })
     .eq("id", userId);

@@ -128,7 +128,7 @@ export async function syncDownline(): Promise<{
   if (!user) return { count: 0, error: "Not authenticated" };
 
   const admin = await createAdminClient();
-  const { data: profile } = await admin
+  const { data: profile } = await (admin as SupabaseAny)
     .from("user_profiles")
     .select("bydesign_rep_did")
     .eq("id", user.id)
@@ -243,7 +243,7 @@ export async function acceptInvite(token: string): Promise<{
 
   if (!invite) return { leaderName: null, error: "Invalid or expired invite" };
 
-  const { data: leader } = await admin
+  const { data: leader } = await (admin as SupabaseAny)
     .from("user_profiles")
     .select("full_name")
     .eq("id", invite.leader_id)
@@ -290,7 +290,7 @@ export async function validateInviteToken(token: string): Promise<{
 
   if (!invite) return { valid: false, leaderName: null };
 
-  const { data: leader } = await admin
+  const { data: leader } = await (admin as SupabaseAny)
     .from("user_profiles")
     .select("full_name")
     .eq("id", invite.leader_id)
@@ -399,7 +399,7 @@ export async function getTeamMemberStats(memberId: string): Promise<{
 
   if (!membership) return { data: null, error: "Not a team member" };
 
-  const { data: memberProfile } = await admin
+  const { data: memberProfile } = await (admin as SupabaseAny)
     .from("user_profiles")
     .select("full_name, bydesign_rank")
     .eq("id", memberId)
