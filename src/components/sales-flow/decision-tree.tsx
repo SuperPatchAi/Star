@@ -393,7 +393,7 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
       case "rapport":
         return (
           <StepRapport
-            rapportData={null}
+            products={allProducts}
             contactFirstName={contactFirstName}
             onContinue={goNext}
             continueLabel={continueLabel}
