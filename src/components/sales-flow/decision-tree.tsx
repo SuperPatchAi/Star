@@ -14,7 +14,7 @@ import type { Contact, TimestampedObjection, QuestionsAsked, ObjectionsEncounter
 import { normalizeQuestions, normalizeObjections, normalizeContactStep } from "@/lib/db/types";
 import { products as allProducts } from "@/data/products";
 import { updateContact, advanceFollowUpDay, markSamplesReceived } from "@/lib/actions/contacts";
-import { getStoreSubdomain, getMyProfile } from "@/lib/actions/profile";
+import { getStoreSubdomain } from "@/lib/actions/profile";
 import { getRoadmapsForProducts } from "@/lib/roadmap-data";
 import { StepAddContact } from "./step-add-contact";
 import { StepRapport } from "./step-rapport";
@@ -142,14 +142,10 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
   );
 
   const [storeSubdomain, setStoreSubdomain] = useState<string | null>(null);
-  const [repProfile, setRepProfile] = useState<{ name: string | null; avatarUrl: string | null }>({ name: null, avatarUrl: null });
   const [keyboardOpen, setKeyboardOpen] = useState(false);
 
   useEffect(() => {
     getStoreSubdomain().then(setStoreSubdomain);
-    getMyProfile().then(({ data }) => {
-      if (data) setRepProfile({ name: data.full_name, avatarUrl: data.avatar_url });
-    });
   }, []);
 
   useEffect(() => {
@@ -491,8 +487,6 @@ export function DecisionTree({ initialContact, variant = "page", onContactCreate
                 allProducts={contactProducts}
                 onSubdomainSaved={setStoreSubdomain}
                 contactId={activeContact?.id}
-                repName={repProfile.name}
-                repAvatarUrl={repProfile.avatarUrl}
                 bydesignCustomerDid={activeContact?.bydesign_customer_did}
                 bydesignMatchConfidence={activeContact?.bydesign_match_confidence}
                 bydesignOrderCount={activeContact?.bydesign_order_count}

@@ -9,16 +9,12 @@ import {
   AlertCircle,
   CheckCircle,
   XCircle,
-  ChevronDown,
-  FileText,
   ShoppingCart,
   Loader2,
   LinkIcon,
   Package,
 } from "lucide-react";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { BusinessCardDisplay } from "@/components/card/business-card-display";
 import { getProductPurchaseUrl } from "@/lib/utils";
 import { updateStoreSubdomain } from "@/lib/actions/profile";
 import { updateContactOutcome } from "@/lib/actions/contacts";
@@ -38,8 +34,6 @@ interface StepPurchaseLinksProps {
   allProducts: Product[];
   onSubdomainSaved: (subdomain: string) => void;
   contactId?: string;
-  repName?: string | null;
-  repAvatarUrl?: string | null;
   bydesignCustomerDid?: string | null;
   bydesignMatchConfidence?: string | null;
   bydesignOrderCount?: number;
@@ -427,8 +421,6 @@ export function StepPurchaseLinks({
   allProducts,
   onSubdomainSaved,
   contactId,
-  repName,
-  repAvatarUrl,
   bydesignCustomerDid,
   bydesignMatchConfidence,
   bydesignOrderCount,
@@ -438,7 +430,6 @@ export function StepPurchaseLinks({
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [outcome, setOutcome] = useState<string | null>(null);
-  const [scriptsOpen, setScriptsOpen] = useState(false);
 
   const handleSaveSubdomain = useCallback(async () => {
     const cleaned = localSubdomain.trim().toLowerCase().replace(/[^a-z0-9-]/g, "");
@@ -483,27 +474,6 @@ export function StepPurchaseLinks({
     [allProductLinks, contactFirstName],
   );
 
-  const displayName = repName || "SuperPatch Rep";
-  const initials = repName
-    ?.split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2) ?? "SP";
-
-  const cardShareUrl = useMemo(() => {
-    if (!storeSubdomain) return undefined;
-    const productIds = allProducts.map((p) => p.id).join(",");
-    return `https://star-seven-sigma.vercel.app/card/${storeSubdomain}?products=${productIds}`;
-  }, [storeSubdomain, allProducts]);
-
-  const cardShareText = useMemo(() => {
-    const name = contactFirstName || "there";
-    const productNames = allProducts.map((p) => p.name).join(", ");
-    const urlLine = cardShareUrl ? `\n\nTap here to shop: ${cardShareUrl}` : "";
-    return `Hey ${name}! Here are my product picks for you: ${productNames}.${urlLine}`;
-  }, [contactFirstName, allProducts, cardShareUrl]);
-
   if (!storeSubdomain) {
     return (
       <div className="space-y-4">
@@ -546,69 +516,46 @@ export function StepPurchaseLinks({
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Share your branded card with {contactFirstName || "the customer"}.
+        Send {contactFirstName || "the customer"} their purchase link.
       </p>
 
-      {/* Branded product business card */}
-      <div className="flex justify-center">
-        <BusinessCardDisplay
-          displayName={displayName}
-          initials={initials}
-          avatarUrl={repAvatarUrl ?? null}
-          storeUrl={`https://${storeSubdomain}.superpatch.com`}
-          products={allProducts}
-          storeSubdomain={storeSubdomain}
-          contactFirstName={contactFirstName}
-          shareUrl={cardShareUrl}
-          shareText={cardShareText}
-        />
+      {/* Single product script */}
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <h4 className="text-sm font-semibold flex items-center gap-2">
+            <LinkIcon className="size-4 text-muted-foreground" />
+            {product.name} Purchase Link
+          </h4>
+          <ShareCopyButton
+            text={singleScript}
+            variant="labeled"
+            label="Copy"
+          />
+        </div>
+        <div className="bg-muted rounded-lg p-4 text-sm whitespace-pre-wrap">
+          {singleScript}
+        </div>
       </div>
 
-      {/* Collapsible text scripts */}
-      <Collapsible open={scriptsOpen} onOpenChange={setScriptsOpen}>
-        <CollapsibleTrigger asChild>
-          <Button variant="ghost" className="w-full justify-between text-muted-foreground">
-            <span className="flex items-center gap-2">
-              <FileText className="size-4" />
-              Copy as Text
-            </span>
-            <ChevronDown className={`size-4 transition-transform ${scriptsOpen ? "rotate-180" : ""}`} />
-          </Button>
-        </CollapsibleTrigger>
-        <CollapsibleContent className="space-y-4 pt-2">
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <h4 className="text-sm font-semibold">Share Script</h4>
-              <ShareCopyButton
-                text={singleScript}
-                variant="labeled"
-                label="Copy Script"
-                title={`${product.name} Purchase Link`}
-              />
-            </div>
-            <div className="bg-muted rounded-lg p-4 text-sm whitespace-pre-wrap">
-              {singleScript}
-            </div>
+      {/* Multi product script */}
+      {allProducts.length > 1 && (
+        <div className="border-t pt-4">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-semibold flex items-center gap-2">
+              <Package className="size-4 text-muted-foreground" />
+              All Products
+            </h4>
+            <ShareCopyButton
+              text={multiScript}
+              variant="labeled"
+              label="Copy All"
+            />
           </div>
-
-          {allProducts.length > 1 && (
-            <div className="border-t pt-4">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-semibold">Share All Products</h4>
-                <ShareCopyButton
-                  text={multiScript}
-                  variant="labeled"
-                  label="Copy All"
-                  title="Super Patch Purchase Links"
-                />
-              </div>
-              <div className="bg-muted rounded-lg p-4 text-sm whitespace-pre-wrap">
-                {multiScript}
-              </div>
-            </div>
-          )}
-        </CollapsibleContent>
-      </Collapsible>
+          <div className="bg-muted rounded-lg p-4 text-sm whitespace-pre-wrap">
+            {multiScript}
+          </div>
+        </div>
+      )}
 
       {/* Outcome actions */}
       {contactId && (
