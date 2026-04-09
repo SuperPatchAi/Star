@@ -184,28 +184,28 @@ export function StepSendSamples({
                     {isSelected && <Check className="size-4 text-primary shrink-0" />}
                   </button>
                   {isSelected && (
-                    <div className="flex items-center justify-between gap-2 px-3 pb-3 pt-0">
-                      <span className="text-xs text-muted-foreground">Qty to send</span>
-                      <div className="flex items-center gap-1.5">
+                    <div className="mx-3 mb-3 rounded-md bg-muted/60 border border-border/50 px-3 py-2 flex items-center justify-between">
+                      <span className="text-sm font-medium">How many to send?</span>
+                      <div className="flex items-center gap-2">
                         <Button
                           type="button"
                           variant="outline"
                           size="icon"
-                          className="size-7"
+                          className="size-8"
                           disabled={qty <= 1}
                           onClick={(e) => { e.stopPropagation(); onSetSampleQuantity(sp.id, Math.max(1, qty - 1)); }}
                         >
-                          <Minus className="size-3" />
+                          <Minus className="size-3.5" />
                         </Button>
-                        <span className="w-6 text-center text-sm font-medium tabular-nums">{qty}</span>
+                        <span className="w-8 text-center text-base font-semibold tabular-nums">{qty}</span>
                         <Button
                           type="button"
                           variant="outline"
                           size="icon"
-                          className="size-7"
+                          className="size-8"
                           onClick={(e) => { e.stopPropagation(); onSetSampleQuantity(sp.id, qty + 1); }}
                         >
-                          <Plus className="size-3" />
+                          <Plus className="size-3.5" />
                         </Button>
                       </div>
                     </div>
@@ -260,15 +260,15 @@ export function StepSendSamples({
                             {isSelected && <Check className="size-3.5 text-primary shrink-0 ml-auto" />}
                           </button>
                           {isSelected && (
-                            <div className="flex items-center justify-between gap-1 px-2 pb-2">
-                              <span className="text-[10px] text-muted-foreground">Qty</span>
-                              <div className="flex items-center gap-1">
-                                <Button type="button" variant="outline" size="icon" className="size-6" disabled={qty <= 1} onClick={(e) => { e.stopPropagation(); onSetSampleQuantity(product.id, Math.max(1, qty - 1)); }}>
-                                  <Minus className="size-2.5" />
+                            <div className="mx-2 mb-2 rounded-md bg-muted/60 border border-border/50 px-2 py-1.5 flex items-center justify-between">
+                              <span className="text-xs font-medium">Qty</span>
+                              <div className="flex items-center gap-1.5">
+                                <Button type="button" variant="outline" size="icon" className="size-7" disabled={qty <= 1} onClick={(e) => { e.stopPropagation(); onSetSampleQuantity(product.id, Math.max(1, qty - 1)); }}>
+                                  <Minus className="size-3" />
                                 </Button>
-                                <span className="w-5 text-center text-xs font-medium tabular-nums">{qty}</span>
-                                <Button type="button" variant="outline" size="icon" className="size-6" onClick={(e) => { e.stopPropagation(); onSetSampleQuantity(product.id, qty + 1); }}>
-                                  <Plus className="size-2.5" />
+                                <span className="w-6 text-center text-sm font-semibold tabular-nums">{qty}</span>
+                                <Button type="button" variant="outline" size="icon" className="size-7" onClick={(e) => { e.stopPropagation(); onSetSampleQuantity(product.id, qty + 1); }}>
+                                  <Plus className="size-3" />
                                 </Button>
                               </div>
                             </div>
@@ -311,15 +311,15 @@ export function StepSendSamples({
                         {isSelected && <Check className="size-3.5 text-primary shrink-0 ml-auto" />}
                       </button>
                       {isSelected && (
-                        <div className="flex items-center justify-between gap-1 px-2 pb-2">
-                          <span className="text-[10px] text-muted-foreground">Qty</span>
-                          <div className="flex items-center gap-1">
-                            <Button type="button" variant="outline" size="icon" className="size-6" disabled={qty <= 1} onClick={(e) => { e.stopPropagation(); onSetSampleQuantity(product.id, Math.max(1, qty - 1)); }}>
-                              <Minus className="size-2.5" />
+                        <div className="mx-2 mb-2 rounded-md bg-muted/60 border border-border/50 px-2 py-1.5 flex items-center justify-between">
+                          <span className="text-xs font-medium">Qty</span>
+                          <div className="flex items-center gap-1.5">
+                            <Button type="button" variant="outline" size="icon" className="size-7" disabled={qty <= 1} onClick={(e) => { e.stopPropagation(); onSetSampleQuantity(product.id, Math.max(1, qty - 1)); }}>
+                              <Minus className="size-3" />
                             </Button>
-                            <span className="w-5 text-center text-xs font-medium tabular-nums">{qty}</span>
-                            <Button type="button" variant="outline" size="icon" className="size-6" onClick={(e) => { e.stopPropagation(); onSetSampleQuantity(product.id, qty + 1); }}>
-                              <Plus className="size-2.5" />
+                            <span className="w-6 text-center text-sm font-semibold tabular-nums">{qty}</span>
+                            <Button type="button" variant="outline" size="icon" className="size-7" onClick={(e) => { e.stopPropagation(); onSetSampleQuantity(product.id, qty + 1); }}>
+                              <Plus className="size-3" />
                             </Button>
                           </div>
                         </div>
